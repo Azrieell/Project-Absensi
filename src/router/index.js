@@ -12,6 +12,7 @@ import DataKeterangan from "../views/admin/DataKeterangan.vue";
 import Perusahaan from "../views/admin/Perusahaan.vue";
 
 const routes = [
+  
   {
     path: '/beranda',
     name: 'HomeAdmin',
@@ -32,6 +33,7 @@ const routes = [
     name: 'EditDataAdmin',
     component: EditDataAdmin
   },
+  // Azriel
   {
     path: '/datajabatan',
     name: 'DataJabatan',
