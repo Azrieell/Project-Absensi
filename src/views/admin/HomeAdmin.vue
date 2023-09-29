@@ -19,7 +19,7 @@
 
     <!-- Content -->
     <div class="container mx-auto p-5">
-      <div class="grid grid-cols-3 gap-4" style="margin-left: 100px; font-family: 'Fredoka', sans-serif;">
+      <div class="grid grid-cols-3 gap-4" style="margin-left: 40px; font-family: 'Fredoka', sans-serif;">
         <div class="">
           <h2 style="margin-left: 100px; color: white;" class="text-2xl">Jumlah Karyawan</h2>
           <!-- Icon Person -->

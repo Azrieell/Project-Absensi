@@ -1,13 +1,15 @@
 <template>
   <!-- sidebar -->
+
   <div class="w-full h-full">
     <dh-component>
       <div class="flex flex-no-wrap">
         <!-- Sidebar starts -->
         <!-- Remove class [ hidden ] and replace [ sm:flex ] with [ flex ] -->
         <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
-        <div style="min-height: 1000px"
+        <div style="min-height: 1200px"
           class="w-64 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
+          <div class="fixed">
           <div class="px-8">
             <div class="h-16 w-full flex items-center">
               <h2 class="font-medium text-white text-4xl p-6 mx-auto mt-12" style="font-family: 'Fredoka', sans-serif;">
@@ -60,7 +62,9 @@
                     <path
                       d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0zM7 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-1.496-.854a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z" />
                   </svg>
-                  <span class="text-xl ml-3" style="font-family: 'Fredoka', sans-serif;">Data Jabatan</span>
+                  <router-link to="/datajabatan">
+                    <span class="text-xl ml-3" style="font-family: 'Fredoka', sans-serif;">Data Jabatan</span>
+                  </router-link>
                 </a>
               </li>
               <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center mb-8">
@@ -90,7 +94,8 @@
                 </a>
               </li>
               <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center">
-                <a href="javascript:void(0)" class="flex items-center focus:outline-none focus:ring-2 focus:ring-white mb-9">
+                <a href="javascript:void(0)"
+                  class="flex items-center focus:outline-none focus:ring-2 focus:ring-white mb-9">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
                     class="bi bi-geo-alt" viewBox="0 0 16 16">
                     <path
@@ -114,7 +119,9 @@
               </li>
             </ul>
           </div>
+          </div>
         </div>
+
 
         <div class="">
 
