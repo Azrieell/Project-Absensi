@@ -1,17 +1,33 @@
 <template>
+
+  <div
+    style="width: 100%; height: 60%; background-color: #FC5185; border-radius: 10px;  font-family: 'Fredoka', sans-serif; margin-bottom: 4%;">
+    <div class="container">
+      <h1 class="text-3xl text-white pl-12 pt-7"><b>Data User</b></h1>
+    </div>
+  </div>
+
   <div class="container">
     <div
       class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-12">
-      <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Akun Admin</b></h1>
+      <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Akun</b></h1>
       <div class="pt-4">
         <div class="mb-6 pt-2">
+          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
+          <input type="text" id="name" placeholder="Masukan Nama"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
-          <input type="text" id="default-input" placeholder="Masukan Email"
-            class="bg-red-50 border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
+          <input type="text" id="email" placeholder="Masukan Email"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input"
             class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
-          <input type="password" id="default-input" placeholder="Masukan Password"
-            class="bg-red-50 border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
+          <input type="password" id="password" placeholder="Masukan Password"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
+            Password</label>
+          <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+          <input type="text" class="hidden" value="admin" disabled>
           <br>
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Simpan
@@ -28,6 +44,7 @@
             <th>ID</th>
             <th>EMAIL</th>
             <th>PASSWORD</th>
+            <th>ROLE</th>
             <th>EDIT</th>
             <th>HAPUS</th>
           </tr>
@@ -37,17 +54,18 @@
             <td>1</td>
             <td>admin@gmail.com</td>
             <td>rrq team terbaik</td>
+            <td>Admin</td>
             <td>
               <router-link to="/editadmin">
-              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                  class="bi bi-pencil-square" viewBox="0 0 16 16">
-                  <path
-                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                  <path fill-rule="evenodd"
-                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                </svg>
-              </button>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path
+                      d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                    <path fill-rule="evenodd"
+                      d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                  </svg>
+                </button>
               </router-link>
             </td>
             <td>
