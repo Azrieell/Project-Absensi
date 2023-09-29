@@ -7,6 +7,9 @@ import DataKaryawan from "../views/admin/DataKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
 import EditDataAdmin from "../views/admin/EditDataAdmin.vue";
 import DataJabatan from "../views/admin/DataJabatan.vue";
+import DataAbsen from "../views/admin/DataAbsen.vue";
+import DataKeterangan from "../views/admin/DataKeterangan.vue";
+import Perusahaan from "../views/admin/Perusahaan.vue";
 
 const routes = [
   {
@@ -33,6 +36,21 @@ const routes = [
     path: '/datajabatan',
     name: 'DataJabatan',
     component: DataJabatan,
+  },
+  {
+    path: '/dataabsensi',
+    name: 'DataAbsen',
+    component: DataAbsen,
+  },
+  {
+    path: '/dataketerangan',
+    name: 'DataKeterangan',
+    component: DataKeterangan,
+  },
+  {
+    path: '/perusahaan',
+    name: 'Perusahaan',
+    component: Perusahaan,
   },
 ];
 

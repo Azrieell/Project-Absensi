@@ -14,26 +14,20 @@
       <div class="pt-4">
         <div class="mb-6 pt-2">
           <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
-          <input type="text" id="name" placeholder="Masukan Email"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
+          <input type="text" id="name" placeholder="Masukan Nama"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
           <input type="text" id="email" placeholder="Masukan Email"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input"
             class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
           <input type="password" id="password" placeholder="Masukan Password"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
             Password</label>
           <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
-          <label for="role" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Pilih Role</label>
-          <select id="role"
-            class="bg-white border border-gray-500 text-gray-600 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-lg">
-            <option value="US">Admin</option>
-            <option value="CA">Karyawan</option>
-            <option value="FR">Manager</option>
-          </select>
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+          <input type="text" class="hidden" value="admin" disabled>
           <br>
           <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Simpan
