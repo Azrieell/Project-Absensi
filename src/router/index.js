@@ -11,6 +11,11 @@ import DataAbsen from "../views/admin/DataAbsen.vue";
 import DataKeterangan from "../views/admin/DataKeterangan.vue";
 import Perusahaan from "../views/admin/Perusahaan.vue";
 
+import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
+import AbsenKaryawan from "../views/karyawan/AbsenKaryawan.vue";
+import SakitKaryawan from "../views/karyawan/SakitKaryawan.vue";
+import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
+import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
 const routes = [
   
   {
@@ -33,7 +38,6 @@ const routes = [
     name: 'EditDataAdmin',
     component: EditDataAdmin
   },
-  // Azriel
   {
     path: '/datajabatan',
     name: 'DataJabatan',
@@ -54,6 +58,35 @@ const routes = [
     name: 'Perusahaan',
     component: Perusahaan,
   },
+
+
+
+  {
+    path: '/homekaryawan',
+    name: 'HomeKaryawan',
+    component: HomeKaryawan
+  },
+  {
+    path: '/absenkaryawan',
+    name: 'AbsenKaryawan',
+    component: AbsenKaryawan
+  },
+  {
+    path: '/sakitkaryawan',
+    name: 'SakitKaryawan',
+    component: SakitKaryawan
+  },
+  {
+    path: '/izinkaryawan',
+    name: 'IzinKaryawan',
+    component: IzinKaryawan
+  },
+  {
+    path: '/informasikaryawan',
+    name: 'InformasiKaryawan',
+    component: InformasiKaryawan
+  },
+
 ];
 
 const router = createRouter({

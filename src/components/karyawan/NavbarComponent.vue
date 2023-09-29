@@ -13,9 +13,9 @@
       <ul data-te-navbar-nav-ref>
         <li class="mb-4 lg:mb-0 lg:pr-2" data-te-nav-item-ref>
           <a
-            class="text-white transition duration-200"
+            class="text-white font-bold transition duration-200"
             href="#"
-            data-te-nav-link-ref style="font-style: italic; margin-left: 1100%;"
+            data-te-nav-link-ref style="font-family: 'Fredoka', sans-serif; font-size: 40px;  margin-left: 500%;"
             >Absensi</a>
         </li>
       </ul>

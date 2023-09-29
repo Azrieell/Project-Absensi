@@ -11,7 +11,7 @@
     <!-- Akhir Border/Kotak -->
 
     <!-- Judul -->
-    <div style="padding: 20px;">
+    <div style="padding: 20px;">  
       <h1 class="text-2xl ml-5 mb-5 text-white" style="font-family: 'Fredoka', sans-serif;">Informasi Perusahaan</h1>
       <hr>
     </div>
