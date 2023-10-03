@@ -7,9 +7,16 @@
         <!-- Sidebar starts -->
         <!-- Remove class [ hidden ] and replace [ sm:flex ] with [ flex ] -->
         <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
+<<<<<<< HEAD
         <div style="min-height: 2000px;"
           class="w-64  absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
             <div class="fixed px-8">
+=======
+        <div style="min-height: 700px"
+          class="w-64 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
+          <div class="fixed">
+            <div class="px-8">
+>>>>>>> 14568e565b931954f0545f6aea9acf8df324ca4d
               <div class="h-16 w-full flex items-center">
                 <h2 class="font-medium text-white text-4xl p-6 mx-auto mt-12"
                   style="font-family: 'Fredoka', sans-serif;">
