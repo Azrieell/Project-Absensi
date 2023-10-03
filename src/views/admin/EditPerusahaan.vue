@@ -24,9 +24,19 @@
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.3611571789847!2d107.58770767035121!3d-6.96665165279127!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e8deccecb6f1%3A0x658cc60fbe5017b9!2sSMK%20Assalaam%20Bandung%20(PUSAT%20KEUNGGULAN)!5e0!3m2!1sid!2sid!4v1696157120200!5m2!1sid!2sid"
             width="500" height="400" style="border:0;" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+            
       </div>
-      <div class="mt-12 ml-5">
+      <div class="mt-12 ml-5 grid grid-cols-3">
         <h4>Status : </h4>
+        <div>
+          <label class="flex items-center space-x-2">
+      <span v-if="isSwitchOn" class="text-green-500">ON</span>
+      <span v-else class="text-red-500">OFF</span>
+      <button @click="toggleSwitch" class="bg-gray-300 w-12 h-6 rounded-full transition duration-300 ease-in-out">
+        <span :class="{ 'translate-x-6': isSwitchOn }" class="block w-6 h-6 bg-white rounded-full shadow-md transform"></span>
+      </button>
+    </label>
+        </div>
       </div>
       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-12 ml-5">
         Simpan
@@ -37,7 +47,23 @@
 
 
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+      isSwitchOn: false
+    };
+  },
+  methods: {
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    },
+    toggleSwitch() {
+      this.isSwitchOn = !this.isSwitchOn;
+    }
+  },
+}
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka&display=swap');
 
