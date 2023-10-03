@@ -2,6 +2,7 @@ import {
   createWebHistory,
   createRouter,
 } from "vue-router";
+import Login from "../views/auth/Login.vue"
 import HomeAdmin from "../views/admin/HomeAdmin.vue";
 import DataKaryawan from "../views/admin/DataKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
@@ -17,7 +18,13 @@ import SakitKaryawan from "../views/karyawan/SakitKaryawan.vue";
 import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
 import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
 const routes = [
-  
+  // auth
+  {
+    path: '/auth/login',
+    name: 'Login',
+    component: Login
+  },
+
   {
     path: '/beranda',
     name: 'HomeAdmin',
