@@ -15,7 +15,7 @@
           <h4>Nama Perusahaan :</h4>
         </div>
         <div>
-          <h4>SMK ASSALAAM BANDUNG</h4>
+          <input type="text" name="" id="" class="text-black" placeholder="Nama Perusahaan" style="width: 150%;">
         </div>
       </div>
       <div class="grid grid-cols-3">
@@ -28,11 +28,9 @@
       <div class="mt-12 ml-5">
         <h4>Status : </h4>
       </div>
-      <router-link to="/editperusahaan">
-        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-12 ml-5">
-          Edit
-        </button>
-      </router-link>
+      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-12 ml-5">
+        Simpan
+      </button>
     </div>
   </div>
 
