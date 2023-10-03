@@ -56,7 +56,7 @@
             <td>rrq team terbaik</td>
             <td>Admin</td>
             <td>
-              <router-link to="/editadmin">
+              <router-link @click="scrollToTop" to="/admin/datauser/edit">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -83,3 +83,12 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  methods: {
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+  },
+}
+</script>

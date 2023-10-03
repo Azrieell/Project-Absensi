@@ -8,14 +8,14 @@
   </div>
 
   <div class="container">
-    <router-link to="/tambahkaryawan">
+    <router-link @click="scrollToTop" to="/admin/datakaryawan/tambah">
       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-10">
         Tambah Karyawan
       </button>
     </router-link>
     <div>
       <div
-        class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mb-10">
+        class="max-w-full max-h-full p-8 overflow-x-auto bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mb-10">
         <table>
           <thead>
             <tr>
@@ -66,16 +66,11 @@
 </style>
 
 <script>
-import { onMounted } from 'vue';
-export default{
-  setup(props, context) {
-    onMounted(() => {
-      try {
-        context.emit("id-menu", 2);
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  },
-}
+export default {
+    methods: {
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+  }
+  }
 </script>

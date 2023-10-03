@@ -2,6 +2,7 @@ import {
   createWebHistory,
   createRouter,
 } from "vue-router";
+import AdminLayout from "../layouts/AdminLayout.vue"
 import Login from "../views/auth/Login.vue"
 import HomeAdmin from "../views/admin/HomeAdmin.vue";
 import DataKaryawan from "../views/admin/DataKaryawan.vue";
@@ -20,68 +21,70 @@ import EditPerusahaan from "../views/admin/EditPerusahaan.vue";
 // import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
 // import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
 const routes = [
-<<<<<<< HEAD
-  // auth
   {
     path: '/auth/login',
     name: 'Login',
     component: Login
   },
-=======
->>>>>>> 14568e565b931954f0545f6aea9acf8df324ca4d
 
   {
-    path: '/beranda',
-    name: 'HomeAdmin',
-    component: HomeAdmin,
-    Roles: 'Admin'
-  },
-  {
-    path: '/tambahkaryawan',
-    name: 'tambahKaryawan',
-    component: TambahKaryawan
-  },
-  {
-    path: '/datakaryawan',
-    name: 'DataKaryawan',
-    component: DataKaryawan
-  },
-  {
-    path: '/datauser',
-    name: 'DataUser',
-    component: DataUser
-  },
-  {
-    path: '/editadmin',
-    name: 'EditDataAdmin',
-    component: EditDataAdmin
-  },
-  {
-    path: '/datajabatan',
-    name: 'DataJabatan',
-    component: DataJabatan,
-  },
-  {
-    path: '/dataabsensi',
-    name: 'DataAbsen',
-    component: DataAbsen,
-  },
-  {
-    path: '/dataketerangan',
-    name: 'DataKeterangan',
-    component: DataKeterangan,
-  },
-  {
-    path: '/perusahaan',
-    name: 'Perusahaan',
-    component: Perusahaan,
-  },
-  {
-    path: '/editperusahaan',
-    name: 'EditPerusahaan',
-    component: EditPerusahaan
+    path: '/admin/home',
+    component: AdminLayout,
+    children: [
+      {
+        path: '/admin/home',
+        component: HomeAdmin,
+        name: 'HomeAdmin',
+      },
+      {
+        path: '/admin/datakaryawan',
+        component: DataKaryawan,
+        name: 'DataKaryawan',
+      },
+      {
+        path: '/admin/datakaryawan/tambah',
+        component: TambahKaryawan,
+        name: 'TamabahKaryawan',
+      },
+      {
+        path: '/admin/datauser',
+        component: DataUser,
+        name: 'DataUser',
+      },
+      {
+        path: '/admin/datauser/edit',
+        component: EditDataAdmin,
+        name: 'EditDataAdmin',
+      },
+      {
+        path: '/admin/datajabatan',
+        name: 'DataJabatan',
+        component: DataJabatan,
+      },
+      {
+        path: '/admin/keterangan',
+        name: 'DataKeterangan',
+        component: DataKeterangan,
+      },
+      {
+        path: '/admin/dataabsen',
+        name: 'DataAbsen',
+        component: DataAbsen,
+      },
+      {
+        path: '/admin/perusahaan',
+        name: 'Perusahaan',
+        component: Perusahaan,
+      },
+      {
+        path: '/admin/perusahaan/edit',
+        name: 'EditPerusahaan',
+        component: EditPerusahaan,
+      },
+    ]
   },
 
+  
 
   // {
   //   path: '/homekaryawan',
