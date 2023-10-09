@@ -1,63 +1,106 @@
 <template>
-  <div class="flex flex-wrap mt-4">
-  <div class="flex w-full flex-col md:w-1/2">
-    
-    <div class="lg:w-[28rem] mx-auto my-auto flex flex-col justify-center pt-8 md:justify-start md:px-6 md:pt-0">
-      <p class="text-left text-3xl font-bold">Welcome to Comet <span class="text-sky-400">Apparel</span></p>
-      <p class="mt-2 text-left text-gray-500">Welcome back, please enter your details.</p>
-      <button class="-2 mt-8 flex items-center justify-center rounded-md border px-4 py-1 outline-none ring-gray-400 ring-offset-2 transition focus:ring-2 hover:border-transparent hover:bg-black hover:text-white"><img class="mr-2 h-5" src="https://static.cdnlogo.com/logos/g/35/google-icon.svg" alt /> Log in with Google</button>
-      <div class="relative mt-8 flex h-px place-items-center bg-gray-200">
-        <div class="absolute left-1/2 h-6 w-14 -translate-x-1/2 bg-white text-center text-sm text-gray-500">or</div>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
+    <isAlert :show="alertShow" :message="isError" ></isAlert>
+    <div class="max-w-sm w-full">
+      <div class="p-10" style="margin-left: 118px ;
+    margin-right: 112px;">
+        <div class="absolute flex items-center justify-center bg-emerald-600 w-16 h-16 rounded-3xl">
+        <svg class="w-[47px] h-[42px] text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 18">
+    <path d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+  </svg>
       </div>
-      <form class="flex flex-col pt-3 md:pt-8" @submit.prevent="performLogin">
-        <div class="flex flex-col pt-4">
-          <div class="focus-within:border-b-gray-500 relative flex overflow-hidden border-b-2 transition">
-            <input type="text" v-model="email" class="w-full flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="Email or username" required />
-          </div>
-        </div>
-        <div class="mb-12 flex flex-col pt-4">
-          <div class="focus-within:border-b-gray-500 relative flex overflow-hidden border-b-2 transition">
-            <input type="password"  v-model="password" class="w-full flex-1 appearance-none border-gray-300 bg-white px-4 py-2 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="Password" required/>
-          </div>
-        </div>
-        <button type="submit" class="w-full rounded-lg bg-gradient-to-r from-lime-400 to-sky-400 px-4 py-2 text-center text-base font-semibold text-white shadow-md ring-gray-500 ring-offset-2 transition focus:ring-2">Log in</button>
-      </form>
-      <div class="py-12 text-center">
-        <p class="whitespace-nowrap text-gray-600">
-          Don't have an account?
-          <a href="/register" class="underline-offset-4 font-semibold text-gray-900 underline">Register for free.</a>
-        </p>
       </div>
-    </div>
-  </div>
-  <div class="pointer-events-none relative hidden h-screen select-none bg-black md:block md:w-1/2">
-    <div class="absolute bottom-0 z-10 px-8 text-white opacity-100">
-      <p class="mb-8 text-3xl font-semibold leading-10">We work 10x faster than our compeititors and stay consistant. While they're bogged won with techincal debt, we're realeasing new features.</p>
-      <p class="mb-4 text-3xl font-semibold">John Elmond</p>
-      <p class="">Founder, Emogue</p>
-      <p class="mb-7 text-sm opacity-70">Web Design Agency</p>
-    </div>
-    <img class="-z-1 absolute top-0 h-full w-full object-cover opacity-90" src="#" />
-  </div>
-</div>
+      <div class="border border-collapse border-gray-400 shadow-md rounded-3xl p-8 ">
+        <div class="text-center">
+          <i class="fas fa-user-circle text-4xl text-indigo-600"></i>
+        </div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Login
+        </h2>
+        <form class="mt-8 space-y-6" @submit.prevent="performLogin">
+          <input type="hidden" name="remember" value="true">
+          <div class="rounded-md shadow-sm -space-y-px">
+            <div class="my-4">
+              <label for="email" class="">Email address</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                class="appearance-none rounded relative block w-full px-3 py-2 border bg-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+                v-model="email"
+              >
+            </div>
+            <div>
+              <label for="password" class="">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                class="appearance-none rounded relative block w-full px-3 py-2 border bg-white border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+                v-model="password"
+              >
+            </div>
+          </div>
 
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+              >
+              <label for="remember-me" class="ml-2 block text-sm text-gray-900">
+                Remember me
+              </label>
+            </div>
+
+            <div class="text-sm">
+              <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="group relative w-full flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              Log in
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import isAlert from '../../components/Alert.vue';
 
 export default {
+  components: {
+    isAlert
+  },
   data() {
       return {
           email: '',
           password: '',
+          alertShow: false,
       };
   },
   computed: {
     ...mapGetters('auth', ['loginError', 'isAuthenticated']),
   },
   methods: {
-      ...mapActions('auth', ['login']),
+      ...mapActions('auth', ['login']), 
       async performLogin() {
           const credentials = {
               email: this.email,
@@ -65,19 +108,21 @@ export default {
           };
 
           const success = await this.login(credentials);
-
-          if (success && this.isAuthenticated) {
-              // Redirect to the desired route on successful login
-              this.$router.push('/beranda');
+          const role = localStorage.getItem('role');
+          if (success && this.isAuthenticated && role === 'admin') {
+            this.$router.push({name: 'HomeAdmin'});
+          } else if (success && this.isAuthenticated && role === 'user') {
+            this.$router.push({name: 'HomeKaryawan'});
           } else {
             // handle login error
-            if (this.loginError) {
-              
-            } else {
-              alert("Login Failed");
+            if (this.loginError){
+                
+            }else{
+              this.alertShow = true
             }
               
           }
+
       },
   },
 };
