@@ -50,11 +50,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>admin@gmail.com</td>
-            <td>rrq team terbaik</td>
-            <td>Admin</td>
+          <tr v-for="user in getuser" :id="user.uuid">
+            <td>{{ user.id}}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role }}</td>
             <td>
               <router-link @click="scrollToTop" to="/admin/datauser/edit">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -82,13 +82,23 @@
       </table>
     </div>
   </div>
+  
 </template>
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
+  computed: {
+     ...mapGetters('user', ['getuser'])
+  },
   methods: {
     scrollToTop() {
       window.scrollTo(0, 0);
-    }
+    },
+    ...mapActions('user', ['fetchUser']),
   },
+  created() {
+      this.fetchUser();
+    },
 }
 </script>
