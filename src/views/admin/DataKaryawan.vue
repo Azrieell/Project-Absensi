@@ -26,7 +26,7 @@
               <th>AGAMA</th>
               <th>ALAMAT</th>
               <th>NO TELEPON</th>
-              <th>JABATAN</th>
+              <th>POSISI</th>
             </tr>
           </thead>
           <tbody>
@@ -38,7 +38,7 @@
               <td>Islam</td>
               <td>Bandung</td>
               <td>0879521262</td>
-              <td>CEO</td>
+              <td>Manager</td>
             </tr>
           </tbody>
         </table>
