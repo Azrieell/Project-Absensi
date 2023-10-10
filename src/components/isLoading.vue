@@ -1,0 +1,15 @@
+<template>
+  <div class="fixed top-0 left-0 w-screen h-screen flex justify-center items-center bg-white z-50">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500"></div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'isLoading',
+}
+</script>
+
+<style scoped>
+/* Tambahkan gaya CSS sesuai kebutuhan Anda */
+</style>

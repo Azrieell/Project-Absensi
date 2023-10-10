@@ -9,27 +9,38 @@ import DataKaryawan from "../views/admin/DataKaryawan.vue";
 import TambahKaryawan from "../views/admin/TambahKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
 import EditDataAdmin from "../views/admin/EditDataAdmin.vue";
-import DataJabatan from "../views/admin/DataJabatan.vue";
+import DataJabatan from "../views/admin/DataJabatan.vue"  ;
 import DataAbsen from "../views/admin/DataAbsen.vue";
 import DataKeterangan from "../views/admin/DataKeterangan.vue";
 import Perusahaan from "../views/admin/Perusahaan.vue";
 import EditPerusahaan from "../views/admin/EditPerusahaan.vue";
+import  store  from "../store";
 
-// import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
+import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
 // import AbsenKaryawan from "../views/karyawan/AbsenKaryawan.vue";
 // import SakitKaryawan from "../views/karyawan/SakitKaryawan.vue";
 // import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
 // import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
 const routes = [
   {
-    path: '/auth/login',
+    path: '/',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: { requiresGuest: true },
+    beforeEnter: (to, from, next) => {
+      // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
+      setTimeout(() => {
+        next()
+      }, 1000)
+    },
   },
 
   {
-    path: '/admin/home',
+    path: '/admin',
     component: AdminLayout,
+    name: 'AdminLayout',
+    meta: { requiresLogin: true },
+    meta: { requiresAdmin: true },
     children: [
       {
         path: '/admin/home',
@@ -86,11 +97,13 @@ const routes = [
 
   
 
-  // {
-  //   path: '/homekaryawan',
-  //   name: 'HomeKaryawan',
-  //   component: HomeKaryawan
-  // },
+  {
+    path: '/karyawan/home',
+    name: 'HomeKaryawan',
+    component: HomeKaryawan,
+    meta: { requiresLogin: true },
+    meta: { requiresUser: true }
+  },
   // {
   //   path: '/absenkaryawan',
   //   name: 'AbsenKaryawan',
@@ -146,6 +159,35 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const role =  localStorage.getItem('role');
+  if (to.meta.requiresGuest && store.getters["auth/isAuthenticated"] && role === 'admin') {
+    next('/admin/home');
+  } else if (to.meta.requiresGuest && store.getters["auth/isAuthenticated"] && role === 'user') {
+    next('/karyawan/home');
+  } else {
+    next()
+  }
+});
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresLogin && !store.getters["auth/isAuthenticated"]) {
+    next("/");
+  } else {
+    next()
+  }
+});
+
+router.beforeEach((to, from, next) => {
+  const role =  localStorage.getItem('role');
+  if (to.meta.requiresAdmin && role !== 'admin') {
+    next("/admin/home");
+  } else if (to.meta.requiresUser && role !== 'user') {
+    next("/karyawan/home");
+  } else {
+    next()
+  }
 });
 
 export default router;

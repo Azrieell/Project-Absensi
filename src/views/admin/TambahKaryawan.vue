@@ -56,7 +56,7 @@
               TELEPHONE</label>
             <input type="text" id="telp" placeholder="Masukan Nomor Telepon"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <label for="role" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Pilih Role</label>
+            <label for="role" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Pilih Jabatan</label>
             <select id="role"
               class="bg-white border border-gray-500 text-gray-600 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-lg mb-4">
               <option value="admin">Admin</option>
