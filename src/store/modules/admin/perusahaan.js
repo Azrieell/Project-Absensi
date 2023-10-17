@@ -1,20 +1,20 @@
 import axios from "axios";
 
-const user = {
+const perusahaan = {
     namespaced: true,
     state: {
-        user: []
+        perusahaan: []
     },
     getters: {
-        getuser: (state) => state.user
+        getPerusahaan: (state) => state.perusahaan
     },
     actions: {
-        async fetchUser({
+        async fetchPerusahaan({
             commit
         }) {
             try {
                 const response = await axios.get('http://localhost:5000/api/v1/users');
-                commit('SET_USER', response.data)
+                commit('SET_PERUSAHAAN', response.data)
                 return response.data
             } catch (error) {
                 alert(error.message)
@@ -23,10 +23,10 @@ const user = {
         }
     },
     mutations: {
-        SET_USER(state, user) {
-            state.user = user
+        SET_PERUSAHAAN(state, perusahaan) {
+            state.perusahaan = perusahaan
         }
     }
 }
 
-export default user;
+export default perusahaan;

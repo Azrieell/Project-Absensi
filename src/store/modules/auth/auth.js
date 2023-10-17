@@ -8,26 +8,30 @@ const auth = {
     user: []
   },
   getters: {
-      isError: state => state.loginError,
-      isAuthenticated: state => !!state.role,
+    isError: state => state.loginError,
+    isAuthenticated: state => !!state.role,
   },
   actions: {
-    async login({ commit }, credentials) {
+    async login({
+      commit
+    }, credentials) {
       try {
-       const response = await axios.post('http://localhost:5000/api/v1/auth/login', credentials);
-       const user = response.data.role;
-       
-       localStorage.setItem('role', user);
-       commit('SET_USER_LOGIN', null);
-       commit('SET_ROLE', user)
-       return true
+        const response = await axios.post('http://localhost:5000/api/v1/auth/login', credentials);
+        const user = response.data.role;
+
+        localStorage.setItem('role', user);
+        commit('SET_USER_LOGIN', null);
+        commit('SET_ROLE', user)
+        return true
       } catch (error) {
         const errorMessage = error.response.data.msg;
         commit("SET_LOGIN_ERROR", errorMessage);
         return false;
       }
     },
-    async getMe({commit}){
+    async getMe({
+      commit
+    }) {
       try {
         const response = await axios.get('http://localhost:5000/api/v1/auth/me');
         commit('SET_USER', response)
@@ -35,11 +39,13 @@ const auth = {
         console.log(error.message);
       }
     },
-    async logout({commit}) {
+    async logout({
+      commit
+    }) {
       try {
         // Lakukan permintaan HTTP DELETE ke API logout
         await axios.delete('http://localhost:5000/api/v1/auth/logout');
-        
+
         // Lakukan commit untuk menghapus data pengguna dari toko atau melakukan penanganan lain yang diperlukan
         const role = localStorage.getItem('role');
         localStorage.removeItem('role');
@@ -47,7 +53,7 @@ const auth = {
 
         //Log Token removed
         console.log("Role Removed:", role);
-        window.location.href = '/';
+        this.$route.push("/");
         return true
       } catch (error) {
         console.log(error.message)
