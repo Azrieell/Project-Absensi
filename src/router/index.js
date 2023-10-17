@@ -41,56 +41,82 @@ const routes = [
     name: 'AdminLayout',
     meta: { requiresLogin: true },
     meta: { requiresAdmin: true },
+    beforeEnter: (to, from, next) => {
+      // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
+      setTimeout(() => {
+        next()
+      }, 1000)
+    },
     children: [
       {
         path: '/admin/home',
         component: HomeAdmin,
         name: 'HomeAdmin',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/datakaryawan',
         component: DataKaryawan,
         name: 'DataKaryawan',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/datakaryawan/tambah',
         component: TambahKaryawan,
         name: 'TamabahKaryawan',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/datauser',
         component: DataUser,
         name: 'DataUser',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/datauser/edit',
         component: EditDataAdmin,
         name: 'EditDataAdmin',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/datajabatan',
         name: 'DataJabatan',
         component: DataJabatan,
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/keterangan',
         name: 'DataKeterangan',
         component: DataKeterangan,
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/dataabsen',
         name: 'DataAbsen',
         component: DataAbsen,
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/perusahaan',
         name: 'Perusahaan',
         component: Perusahaan,
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
       {
         path: '/admin/perusahaan/edit',
         name: 'EditPerusahaan',
         component: EditPerusahaan,
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
       },
     ]
   },
@@ -170,7 +196,7 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-});
+}); 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresLogin && !store.getters["auth/isAuthenticated"]) {
     next("/");
@@ -182,12 +208,11 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   const role =  localStorage.getItem('role');
   if (to.meta.requiresAdmin && role !== 'admin') {
-    next("/admin/home");
+    next("/");
   } else if (to.meta.requiresUser && role !== 'user') {
-    next("/karyawan/home");
+    next("/");
   } else {
     next()
   }
 });
-
 export default router;

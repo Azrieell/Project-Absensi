@@ -44,10 +44,9 @@ const auth = {
         const role = localStorage.getItem('role');
         localStorage.removeItem('role');
         commit('SET_ROLE', '');
-
         //Log Token removed
         console.log("Role Removed:", role);
-        window.location.href = '/';
+        window.location.href  = '/';
         return true
       } catch (error) {
         console.log(error.message)
@@ -68,5 +67,4 @@ const auth = {
     },
   },
 };
-
 export default auth;

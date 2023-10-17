@@ -106,7 +106,6 @@ export default {
               email: this.email,
               password: this.password,
           };
-
           const success = await this.login(credentials);
           const role = localStorage.getItem('role');
           if (success && this.isAuthenticated && role === 'admin') {
