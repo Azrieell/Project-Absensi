@@ -42,15 +42,15 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>NAMA</th>
             <th>EMAIL</th>
-            <th>PASSWORD</th>
             <th>ROLE</th>
             <th>EDIT</th>
             <th>HAPUS</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in getuser" :id="user.uuid">
+          <tr v-for="user in getuser" :key="user.uuid">
             <td>{{ user.id}}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
@@ -82,23 +82,26 @@
       </table>
     </div>
   </div>
-  
+
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex';
+  import {
+    mapActions,
+    mapGetters
+  } from 'vuex';
 
-export default {
-  computed: {
-     ...mapGetters('user', ['getuser'])
-  },
-  methods: {
-    scrollToTop() {
-      window.scrollTo(0, 0);
+  export default {
+    computed: {
+      ...mapGetters('user', ['getuser'])
     },
-    ...mapActions('user', ['fetchUser']),
-  },
-  created() {
+    methods: {
+      scrollToTop() {
+        window.scrollTo(0, 0);
+      },
+      ...mapActions('user', ['fetchUser']),
+    },
+    created() {
       this.fetchUser();
     },
-}
+  }
 </script>
