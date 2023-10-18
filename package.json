@@ -13,10 +13,12 @@
     "flowbite": "^1.8.1",
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
+    "sweetalert2": "^11.7.32",
     "vue": "^3.3.4",
     "vue-cookie": "^1.1.4",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.2.5",
+    "vue-sweetalert2": "^5.0.5",
     "vue3-geolocation": "^1.0.0",
     "vue3-google-map": "^0.18.0",
     "vuex": "^4.0.2"

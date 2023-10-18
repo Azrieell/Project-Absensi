@@ -27,18 +27,23 @@
               <th>ALAMAT</th>
               <th>NO TELEPON</th>
               <th>POSISI</th>
+              <th>FOTO</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Azriel</td>
-              <td>Bandung, 12-12-2005</td>
-              <td>Laki-Laki</td>
-              <td>Islam</td>
-              <td>Bandung</td>
-              <td>0879521262</td>
-              <td>Manager</td>
+            <tr v-for="karyawan in getkaryawan" :key="id">
+              <td>{{ karyawan.nip }}</td>
+              <td>{{ karyawan.nama }}</td>
+              <td>{{ karyawan.tmp_tgl_lahir }}</td>
+              <td>{{ karyawan.jenis_kelamin }}</td>
+              <td>{{ karyawan.agama }}</td>
+              <td>{{ karyawan.alamat }}</td>
+              <td>{{ karyawan.no_hp }}</td>
+              <td>{{ karyawan.jabatan }}</td>
+              <td><img :src="karyawan.url" alt="" srcset=""></td>
+            </tr>
+            <tr v-if="getkaryawan == 0">
+              <td colspan="9" class="text-center font-medium text-2xl">Data not found</td>
             </tr>
           </tbody>
         </table>
@@ -66,11 +71,23 @@
 </style>
 
 <script>
-export default {
+  import {
+    mapActions,
+    mapGetters
+  } from 'vuex';
+
+  export default {
+    computed: {
+      ...mapGetters('karyawan', ['getkaryawan'])
+    },
     methods: {
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    }
-  }
+      scrollToTop() {
+        window.scrollTo(0, 0);
+      },
+      ...mapActions('karyawan', ['fetchKaryawan'])
+    },
+    created() {
+      this.fetchKaryawan();
+    },
   }
 </script>
