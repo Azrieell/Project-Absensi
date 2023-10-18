@@ -21,26 +21,25 @@ const karyawan = {
         return false
       }
     },
-    async AddKaryawan({ commit }, employeeData) {
+    async createEmployee({ commit }, employeeData) {
       try {
-        const response = await axios.post('http://localhost:5000/api/v1/employee/user/create', employeeData);
-        commit('SET_ADD_KARYAWAN', response.data)
-        return true
+        const response = await axios.post('http://localhost:5000/api/v1/employee/user/create', employeeData, {
+          headers: {
+            'Content-Type': 'multipart/form-data', // Set header Content-Type to multipart/form-data
+          },
+        });
+        commit('SET_EMPLOYEE', response.data);
+        return response.data;
       } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: error.response.data.msg,
-        })
-        return false
+        throw error;
       }
-    }
+    },
   },
   mutations: {
     SET_KARYAWAN(state, karyawan) {
       state.karyawan = karyawan
     },
-    SET_ADD_KARYAWAN(state, karyawan) {
+    SET_EMPLOYEE(state, karyawan) {
       state.karyawan = karyawan
     }
   }

@@ -14,7 +14,7 @@
 
       <div class="pt-4">
           <div class="mb-6 pt-2">
-            <form  @submit.prevent="createEmployee">
+            <form  @submit.prevent="submitEmployee">
             <label for="default-input"
               class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Username</label>
             <input type="text" required id="name" placeholder="Masukan Username" v-model="employeeData.username"
@@ -75,7 +75,7 @@
               </select>
               <label for="default-input" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">PILIH
                 FOTO</label>
-              <input type="file" required ref="fileInput" @change="handleFileChange"
+                <input type="file" @change="handleFileUpload" accept="image/*"
                 class="bg-white border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
               <br>
               <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
@@ -99,19 +99,19 @@
     data() {
       return {
         employeeData: {
-          username: '',
-          email: '',
-          password: '1234567',
-          confPassword: '1234567',
-          nip: '',
-          nama: '',
-          tmp_tgl_lahir: '',
-          jenis_kelamin: '',
-          agama: '',
-          alamat: '',
-          no_hp: '',
-          jabatan: '',
-          file: null
+        username: '',
+        email: '',
+        password: '1234567',
+        confPassword: '1234567',
+        nip: '',
+        nama: '',
+        tmp_tgl_lahir: '',
+        jenis_kelamin: '',
+        agama: '',
+        alamat: '',
+        no_hp: '',
+        jabatan: '',
+        file: null, 
         }
       }
     },
@@ -119,46 +119,28 @@
       ...mapGetters('posisi', ['getPosisi'])
     },
     methods: {
-      ...mapActions('karyawan',['AddKaryawan']),
-      // async createEmployee() {
-      //   const employeeData = {
-      //     username: this.employeeData.username,
-      //     email: this.employeeData.email,
-      //     password: this.employeeData.password,
-      //     confPassword: this.employeeData.confPassword,
-      //     nip: this.employeeData.nip,
-      //     nama: this.employeeData.nama,
-      //     tmp_tgl_lahir: this.employeeData.tmp_tgl_lahir,
-      //     jenis_kelamin: this.employeeData.jenis_kelamin,
-      //     agama: this.employeeData.agama,
-      //     alamat: this.employeeData.alamat,
-      //     no_hp: this.employeeData.no_hp,
-      //     jabatan: this.employeeData.jabatan,
-      //     file: this.employeeData.file
-      //   };
-      //   const success = await this.AddKaryawan(employeeData);
-      //   if (success) {
-      //     this.$router.push({
-      //       name: 'DataKaryawan'
-      //     });
-      //   }else {
-      //       Swal.fire({
-      //         icon: 'error',
-      //         title: 'Oops...',
-      //         text: 'gagal menambahkan data',
-      //         footer: '<a href="">Why do I have this issue?</a>'
-      //       });
-
-      //   }
+      ...mapActions('karyawan',['createEmployee']),
+      async submitEmployee() {
+      try {
+        const response = await this.$store.dispatch('karyawan/createEmployee', this.employeeData);
+        this.$router.push({name: 'DataKaryawan'});
+        return response
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        })
+      }
+    },
+      // // Method untuk mengirimkan data pegawai ke Vuex action
+      // createEmployee() {
+      //   this.$store.dispatch('karyawan/AddKaryawan', this.employeeData);
       // },
-      // Method untuk mengirimkan data pegawai ke Vuex action
-      createEmployee() {
-        this.$store.dispatch('karyawan/AddKaryawan', this.employeeData);
-      },
-      // Method untuk meng-handle perubahan pada input file
-      handleFileChange(event) {
-        this.employeeData.file = event.target.files[0];
-      },
+      // // Method untuk meng-handle perubahan pada input file
+      handleFileUpload(event) {
+      this.employeeData.file = event.target.files[0];
+    },
       ...mapActions('posisi', ['fetchPosisi'])
     },
     created() {
