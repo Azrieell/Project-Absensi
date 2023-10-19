@@ -13,7 +13,7 @@ const perusahaan = {
             commit
         }) {
             try {
-                const response = await axios.get('http://localhost:5000/api/v1/users');
+                const response = await axios.get('https://api-absensi-indol.vercel.app/api/v1/users');
                 commit('SET_PERUSAHAAN', response.data)
                 return response.data
             } catch (error) {

@@ -99,7 +99,11 @@
             if (this.loginError){
                 
             }else{
-              this.alertShow = true
+              Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: this.isError,
+               });
             }
               
           }

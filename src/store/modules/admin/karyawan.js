@@ -1,19 +1,24 @@
 import axios from "axios";
 
+
 const karyawan = {
   namespaced: true,
   state: {
-    karyawan: []
+    karyawan: [],
+    errorAdd: []
   },
   getters: {
-    getkaryawan: (state) => state.karyawan
+    getkaryawan: (state) => state.karyawan,
+    isErrorAdd: (state) => state.errorAdd
   },
   actions: {
     async fetchKaryawan({
       commit
     }) {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/employee');
+        const response = await axios.get('/api/v1/employee',{
+          withCredentials: true
+        });
         commit('SET_KARYAWAN', response.data)
         return response.data
       } catch (error) {
@@ -23,7 +28,7 @@ const karyawan = {
     },
     async createEmployee({ commit }, employeeData) {
       try {
-        const response = await axios.post('http://localhost:5000/api/v1/employee/user/create', employeeData, {
+        const response = await axios.post('/api/v1/employee/user/create', employeeData, {
           headers: {
             'Content-Type': 'multipart/form-data', // Set header Content-Type to multipart/form-data
           },
@@ -31,11 +36,16 @@ const karyawan = {
         commit('SET_EMPLOYEE', response.data);
         return response.data;
       } catch (error) {
+        const errorAdd = error.response.message
+        commit('SET_ERROR_ADD', errorAdd)
         throw error;
       }
     },
   },
   mutations: {
+    SET_ERROR_ADD(state, error){
+      state.errorAdd = error
+    },
     SET_KARYAWAN(state, karyawan) {
       state.karyawan = karyawan
     },

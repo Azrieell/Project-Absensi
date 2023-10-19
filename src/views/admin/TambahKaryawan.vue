@@ -69,8 +69,8 @@
                 Jabatan</label>
               <select id="role" required v-model="employeeData.jabatan"
                 class="bg-white border border-gray-500 text-gray-600 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded-lg mb-4">
-                <option value="" disabled>Pilih jabatan</option>
-                <option v-for="jabatan in getPosisi" :value="jabatan" :key="jabatan.id" value="admin">
+                <option value="" disabled>Pilih Jabatan</option>
+                <option v-for="jabatan in getPosisi" :value="jabatan.jabatan">
                   {{ jabatan.jabatan }}</option>
               </select>
               <label for="default-input" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">PILIH
@@ -116,7 +116,8 @@
       }
     },
     computed: {
-      ...mapGetters('posisi', ['getPosisi'])
+      ...mapGetters('posisi', ['getPosisi']),
+      ...mapGetters('karyawan', ['isErrorAdd'])
     },
     methods: {
       ...mapActions('karyawan',['createEmployee']),
@@ -129,7 +130,7 @@
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: 'Something went wrong!',
+          text: this.isErrorAdd,
         })
       }
     },
@@ -142,6 +143,9 @@
       this.employeeData.file = event.target.files[0];
     },
       ...mapActions('posisi', ['fetchPosisi'])
+    },
+    beforeMount() {
+        this.fetchPosisi();
     },
     created() {
       this.fetchPosisi();

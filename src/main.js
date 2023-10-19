@@ -7,10 +7,12 @@ import "./style.css";
 import Vue3Geolocation from 'vue3-geolocation';
 import axios from 'axios';
 
+
+axios.defaults.baseURL = 'http://localhost:5000';
 axios.defaults.withCredentials = true;
 
-const app = createApp(App);
-app.use(store);
-app.use(Vue3Geolocation)
+const app = createApp(App);     
+app.use(store); 
+app.use(Vue3Geolocation);
 app.use(VueCookies);
-app.use(router).mount('#app')
+app.use(router).mount('#app');

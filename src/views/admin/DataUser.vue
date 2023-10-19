@@ -12,27 +12,31 @@
       class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-12">
       <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Akun</b></h1>
       <div class="pt-4">
-        <div class="mb-6 pt-2">
-          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
-          <input type="text" id="name" placeholder="Masukan Nama"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
-          <input type="text" id="email" placeholder="Masukan Email"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-          <label for="default-input"
-            class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
-          <input type="password" id="password" placeholder="Masukan Password"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
-            Password</label>
-          <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-          <input type="text" class="hidden" value="admin" disabled>
-          <br>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Simpan
-          </button>
-        </div>
+        <form @submit.prevent="submituser">
+          <div class="mb-6 pt-2">
+            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
+            <input type="text" id="name" placeholder="Masukan Nama" v-model="userData.name"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+            <label for="default-input"
+              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
+            <input type="text" id="email" placeholder="Masukan Email" v-model="userData.email"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+            <label for="default-input"
+              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
+            <input type="password" id="password" placeholder="Masukan Password" v-model="userData.password"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
+              Password</label>
+            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
+              v-model="userData.confPassword"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+            <input type="text" class="hidden" value="admin" disabled>
+            <br>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Simpan
+            </button>
+          </div>
+        </form>
       </div>
     </div>
     <br>
@@ -91,14 +95,41 @@
   } from 'vuex';
 
   export default {
+    data() {
+      return {
+        userData: {
+          name: '',
+          email: '',
+          password: '1234567',
+          confPassword: '1234567',
+        }
+      }
+    },
     computed: {
       ...mapGetters('user', ['getuser'])
     },
     methods: {
+      ...mapActions('user',['AddUser']),
+      async submituser() {
+        try {
+          const response = await this.$store.dispatch('user/AddUser', this.userData);
+          return response
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+          })
+        }
+      },
+
       scrollToTop() {
         window.scrollTo(0, 0);
       },
       ...mapActions('user', ['fetchUser']),
+    },
+    beforeMount() {
+        this.fetchUser()
     },
     created() {
       this.fetchUser();
