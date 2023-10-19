@@ -18,6 +18,7 @@
           <td></td>
           <th>Absen Kedatangan</th>
           <th>Absen Pulang</th>
+          <th>Absen Foto</th>
           <th>Hapus</th>
         </tr>
       </thead>
@@ -28,6 +29,7 @@
           <td></td>
           <td>Senin, 10-09-2023 07:00 am</td>
           <td>Senin, 10-09-2023 17.50 pm</td>
+          <td></td>
           <td>
             <button class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"

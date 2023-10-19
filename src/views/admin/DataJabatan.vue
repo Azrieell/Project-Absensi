@@ -13,15 +13,18 @@
       <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Data Jabatan</b></h1>
       <div class="pt-4">
         <div class="mb-6 pt-2">
-          <label for="default-input"
-            class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Jabatan</label>
-          <input type="text" id="default-input" placeholder="Masukan Data Jabatan"
-            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
-          <br>
-          <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Simpan
-          </button>
+          <form @submit.prevent="submitposisi">
+            <label for="default-input"
+              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Jabatan</label>
+            <input type="text" id="default-input" placeholder="Masukan Data Jabatan" v-model="Dataposisi.jabatan"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
+            <br>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Simpan
+            </button>
+          </form>
         </div>
+
       </div>
     </div>
   </div>
@@ -61,14 +64,40 @@
 </style>
 
 <script>
-  import {mapActions,mapGetters } from 'vuex';
+  import {
+    mapActions,
+    mapGetters
+  } from 'vuex';
 
   export default {
+    data() {
+      return {
+        Dataposisi: {
+          jabatan: '',
+        }
+      }
+    },
     computed: {
       ...mapGetters('posisi', ['getPosisi'])
     },
     methods: {
-      ...mapActions('posisi', ['fetchPosisi'])
+      ...mapActions('posisi', ['AddPosisi']),
+      async submitposisi() {
+        try {
+          const response = await this.$store.dispatch('posisi/AddPosisi', this.Dataposisi);
+          return response
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+          })
+        }
+      },
+      ...mapActions('posisi', ['fetchPosisi']),
+    },
+    beforeMount() {
+        this.fetchPosisi();
     },
     created() {
       this.fetchPosisi();
