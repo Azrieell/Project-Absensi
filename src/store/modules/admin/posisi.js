@@ -7,7 +7,14 @@ const posisi = {
     isLoading: false,
   },
   getters: {
-    getPosisi: (state) => state.posisi
+    getPosisi: (state) => state.posisi,
+    getPosisiById: (state) => (id) => {
+      console.log("fetching single posisi by id:", id);
+      console.log("ProductData:", state.posisi);
+      const posisi = state.posisi;
+      console.log("posisi:", posisi);
+      return posisi;
+    }
   },
   actions: {
     async fetchPosisi({
