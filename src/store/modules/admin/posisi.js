@@ -3,7 +3,8 @@ import axios from "axios";
 const posisi = {
   namespaced: true,
   state: {
-    posisi: []
+    posisi: [],
+    isLoading: false,
   },
   getters: {
     getPosisi: (state) => state.posisi
@@ -27,11 +28,29 @@ const posisi = {
       try {
         const response = await axios.post('/api/v1/employee/position/create', created);
         commit('SET_ADDPOSISI', response.data)
+        Swal.fire(
+          'Sukses!',
+          'Berhasil Menambah Data User',
+          'success'
+        )
         return response.data
       } catch (error) {
         alert(error.message)
         return false
       }
+    },
+    deletePosition({
+      commit,
+      dispatch
+    }, id) {
+      axios.delete(`http://localhost:5000/api/v1/employee/position/delete/${id}`)
+        .then(response => {
+          console.log('Position deleted:', response.data);
+          dispatch('fetchPosisi'); 
+        })
+        .catch(error => {
+          console.error('Error deleting position:', error);
+        });
     },
   },
   mutations: {
@@ -40,6 +59,9 @@ const posisi = {
     },
     SET_ADDPOSISI(state, posisi) {
       state.posisi = posisi
+    },
+    SET_LOADING(state, isLoading) {
+      state.isLoading = isLoading;
     },
   }
 }

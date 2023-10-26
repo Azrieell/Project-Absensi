@@ -39,10 +39,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="posisi in getPosisi" :key="id">
+        <tr v-for="posisi in getPosisi" :key="posisi.id">
           <td>{{ posisi.id }}</td>
           <td>{{ posisi.jabatan }}</td>
-          <td><button class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
+          <td><button @click="deletePosition(posisi.id)"
+              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"
                 viewBox="0 0 16 16">
                 <path
@@ -66,7 +67,8 @@
 <script>
   import {
     mapActions,
-    mapGetters
+    mapGetters,
+    mapState
   } from 'vuex';
 
   export default {
@@ -78,7 +80,7 @@
       }
     },
     computed: {
-      ...mapGetters('posisi', ['getPosisi'])
+      ...mapGetters('posisi', ['getPosisi']),
     },
     methods: {
       ...mapActions('posisi', ['AddPosisi']),
@@ -95,12 +97,14 @@
         }
       },
       ...mapActions('posisi', ['fetchPosisi']),
+      ...mapActions(['deletePosition']),
     },
     beforeMount() {
-        this.fetchPosisi();
+      this.fetchPosisi();
     },
     created() {
       this.fetchPosisi();
+      this.$store.dispatch('fetchPosisi');
     },
   }
 </script>
