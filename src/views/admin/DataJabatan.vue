@@ -97,24 +97,24 @@
         }
       },
       ...mapActions('posisi', ['fetchPosisi']),
-      ...mapActions('posisi',['deletePosition']),
+      ...mapActions('posisi', ['deletePosition']),
       async deletePosition(id) {
-      try {
-        await this.$store.dispatch('posisi/deletePosition', id);
-        Swal.fire(
-  'Good job!',
-  'You clicked the button!',
-  'success'
-)
-      } catch (error) {
-        Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: 'Something went wrong!',
-  footer: '<a href="">Why do I have this issue?</a>'
-})
-      }
-    },
+        try {
+          await this.$store.dispatch('posisi/deletePosition', id);
+          Swal.fire(
+            'Good job!',
+            'You clicked the button!',
+            'success'
+          )
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            footer: '<a href="">Why do I have this issue?</a>'
+          })
+        }
+      },
     },
     beforeMount() {
       this.fetchPosisi();

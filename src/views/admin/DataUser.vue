@@ -41,7 +41,7 @@
     </div>
     <br>
     <div
-      class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
+      class="overflow-y-auto h-80 max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
       <table>
         <thead>
           <tr>
@@ -60,7 +60,7 @@
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <router-link @click="scrollToTop" to="/admin/datauser/edit">
+              <router-link @click="scrollToTop" :to="{ name: 'EditDataAdmin', params: { uuid: user.uuid}}">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -73,7 +73,8 @@
               </router-link>
             </td>
             <td>
-              <button class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
+              <button @click="deleteUser(user.uuid)"
+                class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"
                   viewBox="0 0 16 16">
                   <path
@@ -106,10 +107,10 @@
       }
     },
     computed: {
-      ...mapGetters('user', ['getuser'])
+      ...mapGetters('user', ['getuser']),
     },
     methods: {
-      ...mapActions('user',['AddUser']),
+      ...mapActions('user', ['AddUser']),
       async submituser() {
         try {
           const response = await this.$store.dispatch('user/AddUser', this.userData);
@@ -122,14 +123,34 @@
           })
         }
       },
-
+      ...mapActions('user', ['fetchUser']),
+      ...mapActions('user', ['deleteUser']),
+      async deleteUser(uuid) {
+        try {
+          await this.$store.dispatch('user/deleteUser', uuid);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Berhasil Menghapus Data',
+            showConfirmButton: false,
+            timer: 1500
+          })
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+            footer: '<a href="">Why do I have this issue?</a>'
+          })
+        }
+      },
       scrollToTop() {
         window.scrollTo(0, 0);
       },
-      ...mapActions('user', ['fetchUser']),
+
     },
     beforeMount() {
-        this.fetchUser()
+      this.fetchUser()
     },
     created() {
       this.fetchUser();

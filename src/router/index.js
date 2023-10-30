@@ -77,7 +77,7 @@ const routes = [
         meta: { requiresAdmin: true },
       },
       {
-        path: '/admin/datauser/edit',
+        path: '/admin/datauser/edit/:uuid',
         component: EditDataAdmin,
         name: 'EditDataAdmin',
         meta: { requiresLogin: true },
