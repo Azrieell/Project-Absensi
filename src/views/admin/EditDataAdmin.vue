@@ -54,10 +54,10 @@
       },
     },
     methods: {
-      ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById']),
+      ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById', 'getSingleById']),
       async updateUser(useruuid) {
         try {
-          await this.updateUser(useruuid, this.userData);
+          await this.updateUser({useruuid: useruuid, userData: this.userData});
           // await this.$store.dispatch('user/updateUser', useruuid, this.userData);
           Swal.fire({
             position: 'top-end',
