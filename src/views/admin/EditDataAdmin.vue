@@ -5,15 +5,24 @@
       <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Edit Akun Admin</b></h1>
       <div class="pt-4">
         <div class="mb-6 pt-2">
+          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Nama</label>
+          <input type="text" id="name" placeholder="Masukan Nama" v-model="userData.name"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
-          <input type="text" id="username" placeholder="Masukan Email"
-            class="bg-red-50 border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
+          <input type="text" required id="email" placeholder="Masukan Email" v-model="userData.email"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <label for="default-input"
             class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
-          <input type="password" id="password" placeholder="Masukan Password"
-            class="bg-red-50 border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
+          <input type="password" required id="password" placeholder="Masukan Password" v-model="userData.password"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
+          <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Konfirmasi
+            Password</label>
+          <input type="password" required id="confpassword" placeholder="Konfirmasi Password"
+            v-model="userData.confPassword"
+            class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
           <br>
-          <button  @click="editUser(user.uuid)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button @click="updateUser(user.useruuid)"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Simpan
           </button>
         </div>
@@ -27,25 +36,61 @@
     mapGetters
   } from 'vuex';
   export default {
+    data() {
+      return {
+        userData: {
+          name: '',
+          email: '',
+          password: '',
+          confPassword: '',
+        }
+      }
+    },
     computed: {
-      ...mapGetters('user', ['getuser']),
+      ...mapGetters('user', ['getuser', 'getError']),
+      ...mapGetters("user", ["getSingleById"]),
+      user() {
+        return this.getSingleById(this.$route.params.uuid);
+      },
     },
     methods: {
-      ...mapActions('user',['fetchUsers','updateUser']),
-      async editUser(uuid) {
-        const updatedData = {}; // Data yang ingin Anda perbarui
-        await this.updateUser({
-          uuid,
-          updatedData
-        });
-        // Lakukan tindakan setelah pembaruan selesai
+      ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById', 'getSingleById']),
+      async updateUser(useruuid) {
+        try {
+          await this.updateUser({useruuid: useruuid, userData: this.userData});
+          // await this.$store.dispatch('user/updateUser', useruuid, this.userData);
+          Swal.fire({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Berhasil Edit Data',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          this.$router.push({
+            name: 'DataUser'
+          })
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message || 'Gagal memperbarui user'
+            // text: this.getError || 'gagal update user'
+          })
+        }
       },
       scrollToTop() {
         window.scrollTo(0, 0);
       }
     },
     created() {
-      this.fetchUsers();
+      this.fetchUser();
+      this.userData.name = this.getSingleById(this.$route.params.uuid).name;
+      this.userData.email = this.getSingleById(this.$route.params.uuid).email;
     },
+    mounted() {
+      const useruuid = this.$route.params.uuid;
+      console.log("Useruuid:", useruuid);
+      this.fetchUserById(useruuid);
+    }
   }
 </script>
