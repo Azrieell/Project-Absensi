@@ -57,70 +57,68 @@
       </tbody>
     </table>
   </div>
-
 </template>
 
-<style>
-
-</style>
+<style></style>
 
 <script>
-  import {
-    mapActions,
-    mapGetters,
-    mapState
-  } from 'vuex';
+import {
+  mapActions,
+  mapGetters,
+  mapState
+} from 'vuex';
 
-  export default {
-    data() {
-      return {
-        Dataposisi: {
-          jabatan: '',
-        }
+export default {
+  data() {
+    return {
+      Dataposisi: {
+        jabatan: '',
+      }
+    }
+  },
+  computed: {
+    ...mapGetters('posisi', ['getPosisi']),
+  },
+  methods: {
+    ...mapActions('posisi', ['AddPosisi']),
+    async submitposisi() {
+      try {
+        const response = await this.$store.dispatch('posisi/AddPosisi', this.Dataposisi);
+        return response
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        })
       }
     },
-    computed: {
-      ...mapGetters('posisi', ['getPosisi']),
-    },
-    methods: {
-      ...mapActions('posisi', ['AddPosisi']),
-      async submitposisi() {
-        try {
-          const response = await this.$store.dispatch('posisi/AddPosisi', this.Dataposisi);
-          return response
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-          })
-        }
-      },
-      ...mapActions('posisi', ['fetchPosisi']),
-      ...mapActions('posisi',['deletePosition']),
-      async deletePosition(id) {
+    ...mapActions('posisi', ['fetchPosisi']),
+    ...mapActions('posisi', ['deletePosition']),
+    async deletePosition(id) {
       try {
         await this.$store.dispatch('posisi/deletePosition', id);
         Swal.fire(
-  'Good job!',
-  'You clicked the button!',
-  'success'
-)
+          'Good job!',
+          'You clicked the button!',
+          'success'
+        ),
+        this.fetchPosisi();
       } catch (error) {
         Swal.fire({
-  icon: 'error',
-  title: 'Oops...',
-  text: 'Something went wrong!',
-  footer: '<a href="">Why do I have this issue?</a>'
-})
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+          footer: '<a href="">Why do I have this issue?</a>'
+        })
       }
     },
-    },
-    beforeMount() {
-      this.fetchPosisi();
-    },
-    created() {
-      this.fetchPosisi();
-    },
-  }
+  },
+  beforeMount() {
+    this.fetchPosisi();
+  },
+  created() {
+    this.fetchPosisi();
+  },
+}
 </script>

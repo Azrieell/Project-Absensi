@@ -102,7 +102,7 @@
               Swal.fire({
               icon: 'error',
               title: 'Oops...',
-              text: this.isError,
+              text: this.isError || 'Error',
                });
             }
               

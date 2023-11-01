@@ -6,6 +6,7 @@ import AdminLayout from "../layouts/AdminLayout.vue"
 import Login from "../views/auth/Login.vue"
 import HomeAdmin from "../views/admin/HomeAdmin.vue";
 import DataKaryawan from "../views/admin/DataKaryawan.vue";
+import SingleDataKaryawan from "../views/admin/SingleDataKaryawan.vue";
 import TambahKaryawan from "../views/admin/TambahKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
 import EditDataAdmin from "../views/admin/EditDataAdmin.vue";
@@ -63,6 +64,13 @@ const routes = [
         meta: { requiresAdmin: true },
       },
       {
+        path: '/admin/singledatakaryawan/:uuid',
+        component: SingleDataKaryawan,
+        name: 'SingleDataKaryawan',
+        meta: { requiresLogin: true },
+        meta: { requiresAdmin: true },
+      },
+      {
         path: '/admin/datakaryawan/tambah',
         component: TambahKaryawan,
         name: 'TamabahKaryawan',
@@ -77,7 +85,7 @@ const routes = [
         meta: { requiresAdmin: true },
       },
       {
-        path: '/admin/datauser/edit',
+        path: '/admin/datauser/edit/:uuid',
         component: EditDataAdmin,
         name: 'EditDataAdmin',
         meta: { requiresLogin: true },

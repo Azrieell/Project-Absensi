@@ -6,14 +6,21 @@ const user = {
         user: []
     },
     getters: {
-        getuser: (state) => state.user
+        getuser: (state) => state.user,
+        getUserByuuid: (state) => (uuid) => {
+            console.log("fetching single user by uuid:", uuid);
+            console.log("ProductData:", state.user);
+            const user = state.user;
+            console.log("user:", user);
+            return user;
+          }
     },
     actions: {
         async fetchUser({
             commit
         }) {
             try {
-                const response = await axios.get('/api/v1/users');
+                const response = await axios.get('http://localhost:5000/api/v1/users');
                 commit('SET_USER', response.data)
                 return response.data
             } catch (error) {
@@ -25,7 +32,7 @@ const user = {
             commit
         }, userData) {
             try {
-                const response = await axios.post('/api/v1/users/add', userData );
+                const response = await axios.post('http://localhost:5000/api/v1/users/add', userData );
                 commit('SET_ADD_USER', response.data);
                 Swal.fire(
                     'Berhasil!',
@@ -35,13 +42,21 @@ const user = {
                 return response.data;
             } catch (error) {
                 throw error;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!',
-                })
             }
         },
+        async deleteUser({
+            commit,
+            dispatch
+          }, uuid) {
+            axios.delete(`http://localhost:5000/api/v1/users/destroy/${uuid}`)
+              .then(response => {
+                console.log('Position deleted:', response.data);
+                dispatch('fetchPosisi'); 
+              })
+              .catch(error => {
+                console.error('Error deleting position:', error);
+              });
+          },
     },
     mutations: {
         SET_USER(state, user) {
