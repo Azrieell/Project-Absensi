@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded-lg w-90 p-4  border border-gray-200 ml-10 mr-10" style="margin-top: 2%; background-color: #EEEEEE;">
+    <div class="rounded-lg w-90 p-4  border border-gray-200 ml-10 mr-10 mt-10" style="background-color: #EEEEEE;">
         <div class="container">
             <p class="text-sm text-black">Selamat Pagi</p>
             <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Leonel Messi</h5>
@@ -7,8 +7,7 @@
 
         <hr class="mt-2 my-6 border-black sm:mx-auto ">
 
-
-        <div class="w-full max-w-sm  border  rounded-lg shadow" style="background-color: #D9D9D9; margin-left: 35%;">
+        <div class="w-full max-w-sm mx-auto border rounded-lg shadow " style="background-color: #D9D9D9;">
             
 <div class="flex items-center justify-center w-full">
     <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
@@ -26,22 +25,20 @@
         <br>
 
 
-        <div class="mr-30 ml-32  block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
-            style="background-color: #DDDDDD; max-width: 30%; margin-left: 37%;">
-            <div class="grid grid-cols-2 mt-6 ml-10">
+        <div class=" max-w-sm mx-auto sm:ml-30 mb-8 w-52 block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+            style="background-color: #DDDDDD;">
+            <div class="grid grid-cols-2 mt-4 ml-8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-12 h-12 ml-10">
+                    stroke="currentColor" class="w-12 h-12 ml-4 mt-2">
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
                     <path stroke-linecap="round" stroke-linejoin="round"
                         d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
                 </svg>
-                <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50 "
-                    style="margin-left: -35%; margin-top: 7%;">
+                <h5 class="mb-2 mt-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50 ">
                     Absen Masuk
                 </h5>
             </div>
         </div>
-
     </div>
 </template>
