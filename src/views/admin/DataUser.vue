@@ -44,7 +44,7 @@
           <tr>
             <th>ID</th>
             <th>NAMA</th>
-            <th>EMAIL</th>
+            <th>EMAIL</th> 
             <th>ROLE</th>
             <th>EDIT</th>
             <th>HAPUS</th>
@@ -146,5 +146,8 @@ export default {
   created() {
     this.fetchUser();
   },
+  mounted(){
+    this.fetchUser();
+  }
 }
 </script>
