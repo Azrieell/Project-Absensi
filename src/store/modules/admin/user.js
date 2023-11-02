@@ -3,7 +3,9 @@ import axios from "axios";
 const user = {
     namespaced: true,
     state: {
-        user: []
+        user: [],
+        singleId: [],
+        errorUpdated: null
     },
     getters: {
         getuser: (state) => state.user,
@@ -22,6 +24,18 @@ const user = {
             try {
                 const response = await axios.get('http://localhost:5000/api/v1/users');
                 commit('SET_USER', response.data)
+                return response.data
+            } catch (error) {
+                alert(error.message)
+                return false
+            }
+        },
+        async fetchUserById({
+            commit
+        }, useruuid) {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/v1/users/${useruuid}`);
+                commit('SET_SINGLE_USER', response.data)
                 return response.data
             } catch (error) {
                 alert(error.message)
@@ -59,13 +73,24 @@ const user = {
           },
     },
     mutations: {
+        ERROR_UPDATE_USER(state, error) {
+            state.errorUpdated = error
+        },
         SET_USER(state, user) {
             state.user = user
         },
         SET_ADD_USER(state, user) {
             state.user = user
+        },
+        SET_SINGLE_USER(state, user) {
+            state.singleId = user
+        },
+        updateUserData(state, updatedUser) {
+            const index = state.user.findIndex((userItem) => userItem.uuid === updatedUser.uuid);
+            if (index !== -1) {
+                Object.assign(state.user[index], updatedUser);
+            }
         }
     }
 }
-
 export default user;

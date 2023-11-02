@@ -38,7 +38,7 @@
     </div>
     <br>
     <div
-      class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
+      class="overflow-y-auto h-80 max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700">
       <table>
         <thead>
           <tr>
