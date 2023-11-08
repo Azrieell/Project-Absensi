@@ -27,20 +27,24 @@
               <th>ALAMAT</th>
               <th>NO TELEPON</th>
               <th>POSISI</th>
-              <th>FOTO</th>
+              <th>ACTION</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="karyawan in getkaryawan" :key="id">
+            <tr v-for="karyawan in getkaryawan" :key="karyawan.uuid">
+              
               <td>{{ karyawan.nip }}</td>
               <td>{{ karyawan.nama }}</td>
-              <td>{{ karyawan.tmp_tgl_lahir }}</td>
+              <td>{{ karyawan.kota }} ,{{ karyawan.tgl_lahir }}</td>
               <td>{{ karyawan.jenis_kelamin }}</td>
               <td>{{ karyawan.agama }}</td>
               <td>{{ karyawan.alamat }}</td>
               <td>{{ karyawan.no_hp }}</td>
               <td>{{ karyawan.jabatan }}</td>
-              <td><img :src="karyawan.url" alt="" srcset=""></td>
+              <td><router-link @click="scrollToTop" :to="{name: 'SingleDataKaryawan', params: { uuid: karyawan.uuid}}">
+              <span class="text-base underline text-blue-600">Detail</span>
+              </router-link></td>
+            
             </tr>
             <tr v-if="getkaryawan == 0">
               <td colspan="9" class="text-center font-medium text-2xl">Data not found</td>
@@ -61,8 +65,6 @@
     border-collapse: collapse;
     width: 100%;
   }
-
-  td,
   th {
     border: 1px solid white;
     text-align: left;

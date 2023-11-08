@@ -6,6 +6,7 @@ import AdminLayout from "../layouts/AdminLayout.vue"
 import Login from "../views/auth/Login.vue"
 import HomeAdmin from "../views/admin/HomeAdmin.vue";
 import DataKaryawan from "../views/admin/DataKaryawan.vue";
+import SingleDataKaryawan from "../views/admin/SingleDataKaryawan.vue";
 import TambahKaryawan from "../views/admin/TambahKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
 import EditDataAdmin from "../views/admin/EditDataAdmin.vue";

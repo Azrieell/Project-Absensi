@@ -21,7 +21,7 @@ const posisi = {
       commit
     }) {
       try {
-        const response = await axios.get('/api/v1/employee/position/get');
+        const response = await axios.get('http://localhost:5000/api/v1/employee/position/get');
         commit('SET_POSISI', response.data)
         return response.data
       } catch (error) {
@@ -33,7 +33,7 @@ const posisi = {
       commit
     }, created) {
       try {
-        const response = await axios.post('/api/v1/employee/position/create', created);
+        const response = await axios.post('http://localhost:5000/api/v1/employee/position/create', created);
         commit('SET_ADDPOSISI', response.data)
         Swal.fire(
           'Sukses!',

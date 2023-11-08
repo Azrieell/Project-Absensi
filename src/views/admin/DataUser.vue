@@ -1,5 +1,4 @@
 <template>
-
   <div
     style="width: 100%; height: 60%; background-color: #FC5185; border-radius: 10px;  font-family: 'Fredoka', sans-serif; margin-bottom: 4%;">
     <div class="container">
@@ -17,8 +16,7 @@
             <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
             <input type="text" id="name" placeholder="Masukan Nama" v-model="userData.name"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <label for="default-input"
-              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
+            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
             <input type="text" id="email" placeholder="Masukan Email" v-model="userData.email"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <label for="default-input"
@@ -27,10 +25,8 @@
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
               Password</label>
-            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
-              v-model="userData.confPassword"
+            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password" v-model="userData.confPassword"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <input type="text" class="hidden" value="admin" disabled>
             <br>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Simpan
@@ -47,7 +43,7 @@
           <tr>
             <th>ID</th>
             <th>NAMA</th>
-            <th>EMAIL</th>
+            <th>EMAIL</th> 
             <th>ROLE</th>
             <th>EDIT</th>
             <th>HAPUS</th>
@@ -55,12 +51,12 @@
         </thead>
         <tbody>
           <tr v-for="user in getuser" :key="user.uuid">
-            <td>{{ user.id}}</td>
+            <td>{{ user.id }}</td>
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
-              <router-link @click="scrollToTop" :to="{ name: 'EditDataAdmin', params: { uuid: user.uuid}}">
+              <router-link @click="scrollToTop" :to="{ name: 'EditDataAdmin', params: { uuid: user.uuid } }">
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                     class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -87,73 +83,70 @@
       </table>
     </div>
   </div>
-
 </template>
 <script>
-  import {
-    mapActions,
-    mapGetters
-  } from 'vuex';
+import {
+  mapActions,
+  mapGetters
+} from 'vuex';
 
-  export default {
-    data() {
-      return {
-        userData: {
-          name: '',
-          email: '',
-          password: '1234567',
-          confPassword: '1234567',
-        }
+export default {
+  data() {
+    return {
+      userData: {
+        name: '',
+        email: '',
+        password: '',
+        confPassword: '',
+      }
+    }
+  },
+  computed: {
+    ...mapGetters('user', ['getuser'])
+  },
+  methods: {
+    ...mapActions('user', ['AddUser', 'deleteUser', 'fetchUser']),
+    async submituser() {
+      try {
+        const response = await this.$store.dispatch('user/AddUser', this.userData);
+        return response
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        })
       }
     },
-    computed: {
-      ...mapGetters('user', ['getuser']),
+    async deleteUser(uuid) {
+      try {
+        await this.$store.dispatch('user/deleteUser', uuid);
+        Swal.fire(
+          'Berhasil menghapus user!',
+          'You clicked the button!',
+          'success'
+        )
+        this.fetchUser();
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'gagal menghapus user!',
+        })
+      }
     },
-    methods: {
-      ...mapActions('user', ['AddUser']),
-      async submituser() {
-        try {
-          const response = await this.$store.dispatch('user/AddUser', this.userData);
-          return response
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-          })
-        }
-      },
-      ...mapActions('user', ['fetchUser']),
-      ...mapActions('user', ['deleteUser']),
-      async deleteUser(uuid) {
-        try {
-          await this.$store.dispatch('user/deleteUser', uuid);
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Berhasil Menghapus Data',
-            showConfirmButton: false,
-            timer: 1500
-          })
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Something went wrong!',
-            footer: '<a href="">Why do I have this issue?</a>'
-          })
-        }
-      },
-      scrollToTop() {
-        window.scrollTo(0, 0);
-      },
-
+    scrollToTop() {
+      window.scrollTo(0, 0);
     },
-    beforeMount() {
-      this.fetchUser()
-    },
-    created() {
-      this.fetchUser();
-    },
+  },
+  beforeMount() {
+    this.fetchUser();
+  },
+  created() {
+    this.fetchUser();
+  },
+  mounted(){
+    this.fetchUser();
   }
+}
 </script>

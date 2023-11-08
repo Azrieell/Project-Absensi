@@ -3,8 +3,9 @@ import auth from "./modules/auth/auth.js";
 import user from "./modules/admin/user.js";
 import karyawan from "./modules/admin/karyawan.js";
 import posisi from "./modules/admin/posisi.js";
-import perusahaan from "./modules/admin/perusahaan.js";
-import userkaryawan from "./modules/karyawan/userkaryawan.js";
+import presence from "./modules/admin/presence.js";
+import information from "./modules/admin/information.js";
+import company from "./modules/admin/company.js";
 
 const store = createStore({
     state: {
@@ -16,7 +17,10 @@ const store = createStore({
         karyawan,
         posisi,
         perusahaan,
-        userkaryawan
+        userkaryawan,
+        presence,
+        information,
+        company
     },
 });
 

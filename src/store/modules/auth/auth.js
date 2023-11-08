@@ -16,7 +16,7 @@ const auth = {
       commit
     }, credentials) {
       try {
-        const response = await axios.post('/api/v1/auth/login', credentials);
+        const response = await axios.post('http://localhost:5000/api/v1/auth/login', credentials);
 
         const user = response.data.role;
         localStorage.setItem('role', user);
@@ -33,7 +33,7 @@ const auth = {
       commit
     }) {
       try {
-        const response = await axios.get('/api/v1/auth/me');
+        const response = await axios.get('http://localhost:5000/api/v1/auth/me');
         commit('SET_USER', response)
       } catch (error) {
         console.log(error.message);
@@ -44,7 +44,7 @@ const auth = {
     }) {
       try {
         // Lakukan permintaan HTTP DELETE ke API logout
-        await axios.delete('/api/v1/auth/logout');
+        await axios.delete('http://localhost:5000/api/v1/auth/logout');
 
         // Lakukan commit untuk menghapus data pengguna dari toko atau melakukan penanganan lain yang diperlukan
         const role = localStorage.getItem('role');

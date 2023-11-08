@@ -7,8 +7,6 @@ import "./style.css";
 import Vue3Geolocation from 'vue3-geolocation';
 import axios from 'axios';
 
-
-axios.defaults.baseURL = 'http://localhost:5000';
 axios.defaults.withCredentials = true;
 
 const app = createApp(App);     
