@@ -1,48 +1,76 @@
 <template>
-    <div class="rounded-lg w-90 p-4  border border-gray-200 ml-10 mr-10"
-        style="margin-top: 2%; background-color: #EEEEEE;">
-        <div class="container">
-            <p class="text-sm text-black">Selamat Pagi</p>
-            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Leonel Messi</h5>
-        </div>
-
-        <hr class="mt-2 my-6 border-black sm:mx-auto ">
-
-
-        <div class="w-full max-w-sm  border  rounded-lg shadow" style="background-color: #D9D9D9; margin-left: 35%;">
-
-            <div class="flex items-center justify-center w-full">
-                <label for="dropzone-file"
-                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                        </svg>
-                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
-                                upload</span></p>
-                    </div>
-                    <input id="dropzone-file" type="file" class="hidden" />
-                </label>
+    <div class="flex items-center">
+        <div
+            class="container mx-auto p-9 bg-white max-w-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-2xl">Selamat Pagi</p>
+                    <h1 class="mt-1 text-2xl font-semibold">Aloe Cactus</h1>
+                </div>
+                <div class="flex flex-col-reverse ml-12">
+                    <p class="ml-12 text-1xl">12.00 WIB</p>
+                </div>
             </div>
-
-        </div>
-        <br>
-        <div class=" max-w-sm mx-auto sm:ml-30 mb-8 w-52 block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
-            style="background-color: #DDDDDD;">
-            <div class="grid grid-cols-2 mt-4 ml-8">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-12 h-12 ml-4 mt-2">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                </svg>
-                <h5 class="mb-2 mt-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50 ">
-                    Absen Masuk
-                </h5>
+            <br>
+            <div v-if="showCamera">
+                <video ref="videoElement" autoplay></video>
+                <button @click="takeSnapshot"
+                    class="text-white items-center mt-5 mx-20 text-md w-50 font-semibold bg-green-400 py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110">
+                    <span>Absen Sekarang</span>
+                </button>
+            </div>
+            <div v-else>
+                <img :src="imageData" alt="">
             </div>
         </div>
     </div>
 </template>
+
+<script>
+    import VueWebCam from 'vue-web-cam';
+
+    export default {
+        components: {
+            VueWebCam
+        },
+        data() {
+            return {
+                showCamera: true,
+                imageData: null,
+                videoElement: null
+            };
+        },
+        methods: {
+            async takeSnapshot() {
+                const video = this.$refs.videoElement;
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageUrl = canvas.toDataURL('image/png');
+                this.imageData = imageUrl;
+                this.showCamera = false;
+                await this.uploadImageToApi(imageUrl); // Fungsi untuk mengunggah gambar ke API
+            },
+            async uploadImageToApi(imageData) {
+                // Logika untuk mengirim data gambar ke API dan menyimpannya ke database
+                // Anda dapat menggunakan metode seperti axios untuk melakukan permintaan HTTP
+            }
+        },
+        mounted() {
+            const video = this.$refs.videoElement;
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(stream => {
+                        video.srcObject = stream;
+                        this.videoElement = video;
+                    })
+                    .catch(error => {
+                        console.error('Could not access the webcam: ', error);
+                    });
+            }
+        }
+    };
+</script>

@@ -4,6 +4,7 @@ import user from "./modules/admin/user.js";
 import karyawan from "./modules/admin/karyawan.js";
 import posisi from "./modules/admin/posisi.js";
 import perusahaan from "./modules/admin/perusahaan.js";
+import userkaryawan from "./modules/karyawan/userkaryawan.js";
 
 const store = createStore({
     state: {
@@ -14,7 +15,8 @@ const store = createStore({
         user,
         karyawan,
         posisi,
-        perusahaan
+        perusahaan,
+        userkaryawan
     },
 });
 

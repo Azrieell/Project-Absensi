@@ -36,6 +36,7 @@
     mapGetters
   } from 'vuex';
   export default {
+    props:["useruuid"],
     data() {
       return {
         userData: {
@@ -55,28 +56,8 @@
     },
     methods: {
       ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById', 'getSingleById']),
-      async updateUser(useruuid) {
-        try {
-          await this.updateUser({useruuid: useruuid, userData: this.userData});
-          // await this.$store.dispatch('user/updateUser', useruuid, this.userData);
-          Swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Berhasil Edit Data',
-            showConfirmButton: false,
-            timer: 1500
-          });
-          this.$router.push({
-            name: 'DataUser'
-          })
-        } catch (error) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.message || 'Gagal memperbarui user'
-            // text: this.getError || 'gagal update user'
-          })
-        }
+      updatedUser(){
+        this.updateUser(this.userData)
       },
       scrollToTop() {
         window.scrollTo(0, 0);
@@ -91,6 +72,7 @@
       const useruuid = this.$route.params.uuid;
       console.log("Useruuid:", useruuid);
       this.fetchUserById(useruuid);
+      this.$store.dispatch("user/updateUser", this.useruuid)
     }
   }
 </script>

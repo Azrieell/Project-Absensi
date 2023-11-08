@@ -69,21 +69,20 @@ const user = {
                 })
             }
         },
-        async updateUser({
-            commit
-        }, {
-            useruuid,
-            userData
-        }) {
+        async updateUser({commit,useruuid}, userData) {
             try {
-                const response = await axios.patch(`http://localhost:5000/api/v1/users/update/${useruuid}`, userData);
-                commit('updateUserData', response.data);
+                const response = await axios.patch(`http://localhost:5000/api/v1/users/update/${useruuid}`, userData, {
+                    headers:{
+
+                    }
+                });
+            
+                commit('UPDATE_USER_DATA', response.data);
                 return response.data
             } catch (error) {
-                const updateError = error.response.data.message;
-                commit('ERROR_UPDATE_USER', updateError)
-                throw error
-            }
+                // alert(000error)
+                console.log(error)
+            } 
         },
         deleteUser({
             commit,
@@ -112,12 +111,9 @@ const user = {
         SET_SINGLE_USER(state, user) {
             state.singleId = user
         },
-        updateUserData(state, updatedUser) {
-            const index = state.user.findIndex((userItem) => userItem.uuid === updatedUser.uuid);
-            if (index !== -1) {
-                Object.assign(state.user[index], updatedUser);
-            }
-        }
+        UPDATE_USER_DATA(state, user) {
+            state.user = user
+        },
     }
 }
 export default user;
