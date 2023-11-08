@@ -13,7 +13,7 @@
 
       <div class="pt-4">
         <div class="mb-6 pt-2">
-          <form @submit.prevent="submitEmployee">
+          <form @submit.prevent="addEmployee">
             <label for="default-input"
               class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Username</label>
             <input type="text" required id="name" placeholder="Masukan Username" v-model="employeeData.username"
@@ -21,11 +21,15 @@
             <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
             <input type="email" required id="email" placeholder="Masukan Email" v-model="employeeData.email"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password
-              default</label>
-            <input type="text" required id="email" placeholder="Password default" value="1234567" disabled
+            <label for="default-input"
+              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Password</label>
+            <input type="password" id="password" placeholder="Masukan Password" v-model="employeeData.password"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <input type="text" class="hidden" value="admin" disabled>
+            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
+              Password</label>
+            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
+              v-model="employeeData.confPassword"
+              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px; margin-top: 25px; margin-bottom: 15px;">
               <b>Isi
                 Data Karyawan</b>
@@ -81,12 +85,13 @@
               </select>
               <label for="default-input" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">PILIH
                 FOTO</label>
-              <input type="file" id="foto" @change="handleFileUpload" accept="image/*"
+              <input type="file" @change="handleFileUpload"
                 class="bg-white border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
               <br>
               <img v-if="employeeData.file" :src="employeeData.file" alt="Gambar yang Dipilih"
                 class="p-5 w-72 h-72 rounded-full">
-              <button @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <button @click="scrollToTop" type="submit"
+                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                 Simpan
               </button>
             </div>
@@ -111,16 +116,16 @@ export default {
         email: '',
         password: '1234567',
         confPassword: '1234567',
-        nip: null,
+        nip: '',
         nama: '',
         kota: '',
         tgl_lahir: '',
         jenis_kelamin: '',
         agama: '',
         alamat: '',
-        no_hp: null,
+        no_hp: '',
         jabatan: '',
-        file: null,
+        file: null // Untuk file foto
       }
     }
   },
@@ -130,18 +135,35 @@ export default {
   methods: {
     ...mapActions('posisi', ['fetchPosisi']),
     ...mapActions('karyawan', ['createEmployee']),
-    async submitEmployee() {
-      try {
-        const response = await this.$store.dispatch('karyawan/createEmployee', this.employeeData);
-        this.$router.push({ name: 'DataKaryawan' });
-        return response
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Gagal menambah data karyawan',
-        }) || alert(error.message)
-      }
+    addEmployee() {
+      this.$store.dispatch('karyawan/createEmployee', this.employeeData)
+        .then(() => {
+          this.$router.push({name: 'SingleDataKaryawan'})
+          // Clear the form or navigate to a different page
+          this.employeeData = {
+            username: '',
+            email: '',
+            password: '',
+            confPassword: '',
+            nip: '',
+            nama: '',
+            kota: '',
+            tgl_lahir: '',
+            jenis_kelamin: '',
+            agama: '',
+            alamat: '',
+            no_hp: '',
+            jabatan: '',
+            file: null
+          };
+        })
+        .catch(error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong!',
+          })
+        });
     },
     // // Method untuk meng-handle perubahan pada input file
     handleFileUpload(event) {

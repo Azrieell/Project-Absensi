@@ -22,7 +22,7 @@
             
               <img :src="employee.url ||  'https://i.pinimg.com/originals/c6/e9/ed/c6e9ed167165ca99c4d428426e256fae.png'" alt="Gambar yang Dipilih"
               class="p-1 w-72 h-72 rounded-full border border-gray-950">  
-              <div class="text-sm p-5 font-semibold mb-4">Akun Karyawan</div> 
+              <div class="text-sm p-5 font-semibold mb-4">Akun Pengguna</div> 
               <div class="mb-4 pl-5">
                 <label class="text-sm text-gray-600">Username:</label>
                 <div class="text-lg font-medium">{{ employee['user'].name }}</div>

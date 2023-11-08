@@ -62,9 +62,9 @@ const user = {
         commit("SET_UPDATE_USER", response.data);
         return response.data;
       } catch (error) {
-        const updateError = error.response.data.message;
+        const updateError = error.response.data.msg;
         commit("ERROR_UPDATE_USER", updateError);
-        throw error;
+        return false
       }
     },
     async deleteUser({ commit, dispatch }, uuid) {
@@ -81,7 +81,7 @@ const user = {
   },
   mutations: {
     ERROR_UPDATE_USER(state, error) {
-      state.errorUpdated = error;
+      state.errorUpdated = error; // Jika Anda ingin menyimpan pesan kesalahan, Anda bisa menyimpannya di state juga
     },
     SET_USER(state, user) {
       state.user = user;

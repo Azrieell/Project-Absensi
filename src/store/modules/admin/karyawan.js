@@ -46,18 +46,13 @@ const karyawan = {
       try {
         const response = await axios.post(
           "http://localhost:5000/api/v1/employee/user/create",
-          employeeData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data", // Set header Content-Type to multipart/form-data
-            },
-          }
+          employeeData
         );
-        commit("SET_ADD_EMPLOYEE", response.data);
-        return response.data;
+        const newEmployee = response.data; // Jika server mengembalikan data karyawan yang baru dibuat
+        commit("SET_ADD_EMPLOYEE", newEmployee);
+        return newEmployee;
       } catch (error) {
-        console.log(error.message);
-        throw error;
+        alert(error.message)
       }
     },
   },

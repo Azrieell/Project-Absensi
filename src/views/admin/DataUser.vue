@@ -27,7 +27,6 @@
               Password</label>
             <input type="password" id="confirmpassword" placeholder="Konfirmasi Password" v-model="userData.confPassword"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <input type="text" class="hidden" value="admin" disabled>
             <br>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Simpan

@@ -6,7 +6,7 @@
       <h1 class="text-3xl text-white pl-12 pt-7"><b>Data Keterangan</b></h1>
     </div>
   </div>
-
+<div class="container">
   <div
     class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-12">
     <table>
@@ -17,29 +17,36 @@
           <th>Keterangan</th>
           <th>Alasan Tidak Hadir</th>
           <th>Foto Bukti</th>
-          <th>Hapus</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>1</td>
-          <td>Ageng</td>
-          <td>Izin</td>
-          <td>Ngadu Gapleh</td>
-          <td>Foto</td>
-          <td>
-            <button class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"
-                viewBox="0 0 16 16">
-                <path
-                  d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
-              </svg>
-            </button>
-          </td>
+        <tr v-for="information in getInformation" :key="information.id">
+          <td>{{ information.id }}</td>
+          <td>{{ information['user'].name }}</td>
+          <td>{{ information.keterangan }}</td>
+          <td>{{ information.alasan }}</td>
+          <td><img :src="information.url" alt="" srcset="" class="w-32"></td>
         </tr>
       </tbody>
     </table>
   </div>
-
-
+  </div>
 </template>
+<script>
+import { mapActions, mapGetters } from 'vuex';
+
+export default {
+  computed:{
+    ...mapGetters('information',['getInformation'])
+  },
+  methods:{
+    ...mapActions('information',['fetchInformation'])
+  },
+  created() {
+    this.fetchInformation();
+  },
+  beforeMount(){
+    this.fetchInformation();
+  }
+}
+</script>
