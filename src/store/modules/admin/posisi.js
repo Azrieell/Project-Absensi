@@ -21,7 +21,7 @@ const posisi = {
       commit
     }) {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/employee/position/get');
+        const response = await axios.get('https://api-absensi-omega.vercel.app/api/v1/employee/position/get');
         commit('SET_POSISI', response.data)
         return response.data
       } catch (error) {
@@ -33,13 +33,8 @@ const posisi = {
       commit
     }, created) {
       try {
-        const response = await axios.post('http://localhost:5000/api/v1/employee/position/create', created);
+        const response = await axios.post('https://api-absensi-omega.vercel.app/api/v1/employee/position/create', created);
         commit('SET_ADDPOSISI', response.data)
-        Swal.fire(
-          'Sukses!',
-          'Berhasil Menambah Data User',
-          'success'
-        )
         return response.data
       } catch (error) {
         alert(error.message)
@@ -50,7 +45,7 @@ const posisi = {
       commit,
       dispatch
     }, id) {
-      axios.delete(`http://localhost:5000/api/v1/employee/position/delete/${id}`)
+      axios.delete(`https://api-absensi-omega.vercel.app/api/v1/employee/position/delete/${id}`)
         .then(response => {
           console.log('Position deleted:', response.data);
           dispatch('fetchPosisi'); 

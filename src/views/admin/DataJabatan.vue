@@ -1,12 +1,4 @@
 <template>
-  <div
-    style="width: 100%; height: 60%; background-color: #FC5185; border-radius: 10px;  font-family: 'Fredoka', sans-serif;">
-    <div class="container">
-      <h1 class="text-3xl text-white pl-12 pt-7"><b>Data Jabatan</b></h1>
-    </div>
-  </div>
-
-
   <div class="container">
     <div
       class="max-w-full max-h-full p-8 bg-white border border-gray-500 rounded-xl shadow dark:bg-gray-600 dark:border-gray-600 mt-12">
@@ -20,7 +12,8 @@
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg">
             <br>
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Simpan
+              <span v-if="isLoading">Menyimpan...</span>
+              <span v-else>Simpan</span>
             </button>
           </form>
         </div>
@@ -29,38 +22,42 @@
     </div>
   </div>
 
-  <div class="p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-12 pl-12">
-    <table>
-      <thead>
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
         <tr>
-          <th>ID</th>
-          <th>JABATAN</th>
-          <th>HAPUS</th>
+          <th scope="col" class="px-6 py-3">
+            Jabatan
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Action
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="posisi in getPosisi" :key="posisi.id">
-          <td>{{ posisi.id }}</td>
-          <td>{{ posisi.jabatan }}</td>
-          <td><button @click="deletePosition(posisi.id)"
-              class="bg-red-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3"
-                viewBox="0 0 16 16">
+        <tr v-for="posisi in getPosisi" :key="posisi.id"
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{ posisi.jabatan }}
+          </td>
+          <td class="px-6 py-4">
+            <button @click="deletePosition(posisi.id)"
+              class="bg-red-700 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+              <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor" viewBox="0 0 18 20">
                 <path
-                  d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z" />
+                  d="M17 4h-4V2a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v2H1a1 1 0 0 0 0 2h1v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1a1 1 0 1 0 0-2ZM7 2h4v2H7V2Zm1 14a1 1 0 1 1-2 0V8a1 1 0 0 1 2 0v8Zm4 0a1 1 0 0 1-2 0V8a1 1 0 0 1 2 0v8Z" />
               </svg>
-            </button></td>
+            </button>
+          </td>
         </tr>
-        <tr v-if="getPosisi == 0">
-          <td colspan="3" class="text-center">data not found</td>
+        <tr v-if="getPosisi.length === 0">
+          <td colspan="3" class="text-center">Data jabatan tidak ditemukan</td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
-
-<style></style>
-
 <script>
 import {
   mapActions,
@@ -73,7 +70,8 @@ export default {
     return {
       Dataposisi: {
         jabatan: '',
-      }
+      },
+      isLoading: false,
     }
   },
   computed: {
@@ -83,9 +81,18 @@ export default {
     ...mapActions('posisi', ['AddPosisi']),
     async submitposisi() {
       try {
+        this.isLoading = true;
         const response = await this.$store.dispatch('posisi/AddPosisi', this.Dataposisi);
+        this.fetchPosisi();
+        Swal.fire(
+          'Sukses!',
+          'Berhasil Menambah Data jabatan' + this.Dataposisi.jabatan,
+          'success'
+        )
+        this.isLoading = false;
         return response
       } catch (error) {
+        this.isLoading = false;
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -103,7 +110,7 @@ export default {
           'You clicked the button!',
           'success'
         ),
-        this.fetchPosisi();
+          this.fetchPosisi();
       } catch (error) {
         Swal.fire({
           icon: 'error',

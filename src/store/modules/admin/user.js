@@ -1,27 +1,27 @@
+// Di dalam file user.js (module Vuex user)
 import axios from "axios";
 
 const user = {
   namespaced: true,
   state: {
-    user: [],
+    users: [],
     singleId: [],
     errorUpdated: null,
   },
   getters: {
-    getuser: (state) => state.user,
+    getusers: (state) => state.users,
     getError: (state) => state.errorUpdated,
-    getSingleById: state => useruuid => {
-        // Coba mencari data dalam state.user berdasarkan useruuid
-        const singleUser = state.user.find(p => p.uuid === useruuid);
-        console.log('user:', singleUser);
-        return singleUser
-      }
+    getSingleById: (state) => (useruuid) => {
+      const singleUser = state.users.find((p) => p.uuid === useruuid);
+      console.log("user:", singleUser);
+      return singleUser;
+    },
   },
   actions: {
     async fetchUser({ commit }) {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/users");
-        commit("SET_USER", response.data);
+        const response = await axios.get("https://api-absensi-omega.vercel.app/api/v1/users");
+        commit("SET_USERS", response.data);
         return response.data;
       } catch (error) {
         alert(error.message);
@@ -31,7 +31,7 @@ const user = {
     async fetchUserById({ commit }, useruuid) {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/users/${useruuid}`
+          `https://api-absensi-omega.vercel.app/api/v1/users/${useruuid}`
         );
         commit("SET_SINGLE_USER", response.data);
         return response.data;
@@ -43,58 +43,89 @@ const user = {
     async AddUser({ commit }, userData) {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/v1/users/add",
+          "https://api-absensi-omega.vercel.app/api/v1/users/add",
           userData
         );
         commit("SET_ADD_USER", response.data);
-        Swal.fire("Berhasil!", "Berhasil Menambah User", "success");
         return response.data;
       } catch (error) {
         throw error;
       }
     },
-    async updateUser({ commit }, uuid, userDataEdit ) {
+    async updateUser({ commit }, {uuid, userDataEdit}) {
       try {
         const response = await axios.patch(
-          `http://localhost:5000/api/v1/users/update/${uuid}`,
+          `https://api-absensi-omega.vercel.app/api/v1/users/update/${uuid}`,
           userDataEdit
         );
-        commit("SET_UPDATE_USER", response.data);
+        console.log('Respon dari Backend setelah Update:', response.data);
+        commit("SET_UPDATE_USER", { uuid, user: response.data });
         return response.data;
       } catch (error) {
         const updateError = error.response.data.msg;
         commit("ERROR_UPDATE_USER", updateError);
-        return false
+        throw error;
       }
     },
     async deleteUser({ commit, dispatch }, uuid) {
-      axios
-        .delete(`http://localhost:5000/api/v1/users/destroy/${uuid}`)
-        .then((response) => {
-          console.log("user deleted:", response.data);
+      // Tampilkan konfirmasi SweetAlert
+      const confirmationResult = await Swal.fire({
+        title: "Anda yakin?",
+        text: "Ingin menghapus user!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus!"
+      });
+
+      // Jika pengguna mengonfirmasi penghapusan
+      if (confirmationResult.isConfirmed) {
+        try {
+          // Lakukan penghapusan
+          await axios.delete(`https://api-absensi-omega.vercel.app/api/v1/users/destroy/${uuid}`);
+          
+          // Tampilkan SweetAlert sukses
+          Swal.fire({
+            title: "Terhapus!",
+            text: "User Telah terhapus.",
+            icon: "sukses"
+          });
+
+          // Perbarui daftar pengguna setelah penghapusan
           dispatch("fetchUser");
-        })
-        .catch((error) => {
+        } catch (error) {
           console.error("Error deleting user:", error);
-        });
+
+          // Tampilkan SweetAlert kesalahan jika penghapusan gagal
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Error Menghapus user!",
+          });
+        }
+      }
     },
   },
   mutations: {
     ERROR_UPDATE_USER(state, error) {
-      state.errorUpdated = error; // Jika Anda ingin menyimpan pesan kesalahan, Anda bisa menyimpannya di state juga
+      state.errorUpdated = error;
     },
-    SET_USER(state, user) {
-      state.user = user;
+    SET_USERS(state, user) {  
+      state.users = user;
     },
     SET_ADD_USER(state, user) {
-      state.user = user;
+      state.users = user;
     },
-    SET_UPDATE_USER(state, user) {
-      state.singleId = user;
+    SET_UPDATE_USER(state, { uuid, user }) {
+      const updatedUser = state.users.find((u) => u.uuid === uuid);
+      state.users[updatedUser] = user;
+      state.errorUpdated = null;
     },
     SET_SINGLE_USER(state, user) {
       state.singleId = user;
     },
   },
 };
+
 export default user;

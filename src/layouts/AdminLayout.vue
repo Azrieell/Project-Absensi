@@ -5,11 +5,11 @@
         <!-- Sidebar starts -->
         <!-- Remove class [ hidden ] and replace [ sm:flex ] with [ flex ] -->
         <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
-        <div style="min-height: 2000px;"
+        <div style="min-height: 1900px;"
           class="w-64 sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
           <div class="fixed px-8">
             <div class="h-16 w-full flex items-center">
-              <h2 class="font-medium text-white text-4xl p-6 mx-auto mt-12" style="font-family: 'Fredoka', sans-serif;">
+              <h2 class="font-medium text-white text-4xl p-6 mx-auto mt-12"> <!-- Removed inline style -->
                 <b>Admin</b>
               </h2>
             </div>
@@ -78,8 +78,9 @@
                     <span class="text-xl ml-3" style="font-family: 'Fredoka', sans-serif;">Data Absen</span>
                   </router-link>
                 </a>
-                <!-- <div class="py-1 px-3 bg-gray-600 rounded text-gray-300 flex items-center justify-center text-xs">25
-                </div> -->
+                <div class="py-1 px-3 bg-gray-600 rounded text-gray-300 flex items-center justify-center text-xs">{{
+                  getPresence.length }}
+                </div>
               </li>
               <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center mb-8">
                 <a href="javascript:void(0)" class="flex items-center focus:outline-none focus:ring-2 focus:ring-white">
@@ -94,6 +95,7 @@
                     <span class="text-xl ml-3" style="font-family: 'Fredoka', sans-serif;">Data Keterangan</span>
                   </router-link>
                 </a>
+
               </li>
               <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center">
                 <a href="javascript:void(0)"
@@ -109,29 +111,15 @@
                   </router-link>
                 </a>
               </li>
-              <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center">
-                <a href="javascript:void(0)" class="flex items-center focus:outline-none focus:ring-2 focus:ring-white">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-                    class="bi bi-box-arrow-left" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                      d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z" />
-                    <path fill-rule="evenodd"
-                      d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
-                  </svg>
-                  <router-link to="/">
-                    <button @click="logout">
-                      <span class="text-xl ml-3" style="font-family: 'Fredoka', sans-serif;">LogOut</span>
-                    </button>
-                  </router-link>
-                </a>
-              </li>
             </ul>
           </div>
-
         </div>
-        <div class="container mx-auto py-10 h-64 md:w-4/5 w-11/12 px-6">
+        <div class="min-h-screen md:w-4/5 w-11/12 px-6">
+          <NavbarAdmin></NavbarAdmin>
+          <transition name="fade"> <!-- Add transition class name -->
+            <router-view v-if="!loading" />
+          </transition>
           <Loading v-if="loading" />
-          <router-view v-else />
         </div>
       </div>
     </dh-component>
@@ -139,13 +127,18 @@
 </template>
   
 <script>
-import { mapActions } from "vuex"
+import { mapActions, mapGetters } from "vuex"
 import Loading from '../components/Loading.vue';
+import NavbarAdmin from "../components/admin/NavbarAdmin.vue";
 
 export default {
   name: 'AdminLayout',
   components: {
-    Loading
+    Loading,
+    NavbarAdmin
+  },
+  computed: {
+    ...mapGetters('presence', ['getPresence'])
   },
   methods: {
     ...mapActions('auth', ['logout']),
@@ -171,3 +164,12 @@ export default {
   }
 }
 </script>  
+<style scoped>
+/* Add this style block to your component's template */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+</style>

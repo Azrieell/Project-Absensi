@@ -1,10 +1,4 @@
 <template>
-  <div
-    style="width: 100%; height: 60%; background-color: #FC5185; border-radius: 10px;  font-family: 'Fredoka', sans-serif; margin-bottom: 4%;">
-    <div class="container">
-      <h1 class="text-3xl text-white pl-12 pt-7"><b>{{ employee.nama }}</b></h1>
-    </div>
-  </div>
   <div class="container">
     <div v-if="employee == 0" class="animate-pulse"> 
     <span class="text-center text-3xl font-semibold">
@@ -104,7 +98,6 @@ import {
   mapActions,
   mapGetters
 } from 'vuex';
-import Loading from '../../components/Loading.vue';
 
 export default {
   computed: {
