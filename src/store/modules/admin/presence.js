@@ -9,9 +9,9 @@ getters:{
 getPresence: (state) => state.presence
 },
 actions:{
-    async fetchPresence({commit}){
+    async fetchPresence({commit}){  
        try {
-        const response = await axios.get('https://api-absensi-omega.vercel.app/api/v1/employee/presence/get');
+        const response = await axios.get('/employee/presence/get');
         commit('SET_PRESENCE', response.data);
         return response.data
        } catch (error) {

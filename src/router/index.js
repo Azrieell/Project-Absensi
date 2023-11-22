@@ -35,6 +35,9 @@ const routes = [
         next()
       }, 1000)
     },
+    meta: {
+      title: 'login',
+    },
   },
 
   {
@@ -43,6 +46,9 @@ const routes = [
     name: 'AdminLayout',
     meta: { requiresLogin: true },
     meta: { requiresAdmin: true },
+    meta: {
+      title: 'Admin Dashboard',
+    },
     beforeEnter: (to, from, next) => {
       // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
       setTimeout(() => {
@@ -56,6 +62,9 @@ const routes = [
         name: 'HomeAdmin',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Beranda',
+        },
       },
       {
         path: '/admin/datakaryawan',
@@ -63,6 +72,9 @@ const routes = [
         name: 'DataKaryawan',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data Karyawan',
+        },
       },
       {
         path: '/admin/singledatakaryawan/:uuid',
@@ -70,6 +82,9 @@ const routes = [
         name: 'SingleDataKaryawan',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Detail Data Karyawan',
+        },
       },
       {
         path: '/admin/EditDataKaryawan/:uuid',
@@ -77,6 +92,9 @@ const routes = [
         name: 'Edit Data Karyawan',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Edit Data Karyawan',
+        },
       },
       {
         path: '/admin/datakaryawan/tambah',
@@ -84,6 +102,9 @@ const routes = [
         name: 'TamabahKaryawan',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Tambah Data Karyawan',
+        },
       },
       {
         path: '/admin/datauser',
@@ -91,6 +112,9 @@ const routes = [
         name: 'DataUser',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data User',
+        },
       },
       {
         path: '/admin/datauser/edit/:uuid',
@@ -98,6 +122,9 @@ const routes = [
         name: 'EditDataAdmin',
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Edit User',
+        },
       },
       {
         path: '/admin/datajabatan',
@@ -105,6 +132,9 @@ const routes = [
         component: DataJabatan,
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data Jabatan',
+        },
       },
       {
         path: '/admin/keterangan',
@@ -112,6 +142,9 @@ const routes = [
         component: DataKeterangan,
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data Keterangan Karyawan',
+        },
       },
       {
         path: '/admin/dataabsen',
@@ -119,6 +152,9 @@ const routes = [
         component: DataAbsen,
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data Absensi Karyawan',
+        },
       },
       {
         path: '/admin/perusahaan',
@@ -126,6 +162,9 @@ const routes = [
         component: Perusahaan,
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Data Perusahaan',
+        },
       },
       {
         path: '/admin/perusahaan/edit',
@@ -133,6 +172,9 @@ const routes = [
         component: EditPerusahaan,
         meta: { requiresLogin: true },
         meta: { requiresAdmin: true },
+        meta: {
+          title: 'Edit Data Perusahaan',
+        },
       },
     ]
   },

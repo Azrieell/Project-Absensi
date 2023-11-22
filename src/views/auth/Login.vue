@@ -121,5 +121,14 @@ export default {
 
     },
   },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

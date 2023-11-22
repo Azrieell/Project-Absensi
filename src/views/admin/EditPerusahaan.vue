@@ -67,9 +67,10 @@
               </label>
             </div>
           </div>
-          <button type="submit" @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white  font-bold py-2 px-4 rounded mt-12 ml-5">
-            Simpan
-          </button>
+          <button type="submit" @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <span v-if="isLoading">Menyimpan...</span>
+              <span v-else>Simpan</span>
+            </button>
         </div>
       </form>
     </div>
@@ -93,6 +94,7 @@ export default {
       },
       map: null,
       circle: null,
+      isLoading: false
     };
   },
   computed: {
@@ -117,13 +119,13 @@ export default {
 
     async updateCompany() {
       try {
-        // delete this.companyData.latitude;
-        // delete this.companyData.longitude;
-
+        this.isLoading = true
         await this.$store.dispatch('company/updateCompany', this.companyData).then(() => {
           this.$router.push({ name: 'Perusahaan' });
         });
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -187,6 +189,15 @@ export default {
     this.companyData.longitude = company.longitude;
     this.companyData.latitude = company.latitude;
     this.companyData.radius = company.radius;
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
   },
 }
 </script>

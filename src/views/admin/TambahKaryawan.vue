@@ -7,10 +7,6 @@
       <div class="pt-4">
         <div class="mb-6 pt-2">
           <form @submit.prevent="addEmployee">
-            <label for="username" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Username</label>
-            <input type="text" id="username" placeholder="Masukan Username" v-model="employeeData.username"
-              class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-
             <label for="email" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
             <input type="email" id="email" placeholder="Masukan Email" v-model="employeeData.email"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
@@ -104,8 +100,10 @@
                 class="bg-white border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5" />
               <div v-if="!employeeData.file" class="text-base text-red-500 font-semibold">Foto harus diunggah.</div>
             </div>
-            <button type="submit" @click="scrollToTop"
-              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Simpan</button>
+            <button type="submit" @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <span v-if="isLoading">Menyimpan...</span>
+              <span v-else>Simpan</span>
+            </button>
           </form>
         </div>
       </div>
@@ -137,6 +135,7 @@ export default {
       },
       phoneError: '',
       passwordVisible: false,
+      isLoading: false
     };
   },
   computed: {
@@ -147,9 +146,13 @@ export default {
     ...mapActions('karyawan', ['createEmployee']),
     async addEmployee() {
       try {
+        this.isLoading = true
+        this.employeeData.username = this.employeeData.nama;
         this.$store.dispatch('karyawan/createEmployee', this.employeeData)
         this.$router.push({ name: 'DataKaryawan' });
+        this.isLoading = false
       } catch (error) {
+        this.isLoading = false
         console.error(error);
         throw false
       }
@@ -194,6 +197,15 @@ export default {
   },
   created() {
     this.fetchPosisi();
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

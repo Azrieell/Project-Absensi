@@ -7,10 +7,11 @@
         <!--- more free and premium Tailwind CSS components at https://tailwinduikit.com/ --->
         <div style="min-height: 1900px;"
           class="w-64 sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
-          <div class="fixed px-8">
+          <div class="fixed px-7">
             <div class="h-16 w-full flex items-center">
-              <h2 class="font-medium text-white text-4xl p-6 mx-auto mt-12"> <!-- Removed inline style -->
-                <b>Admin</b>
+              <h2 class="font-medium text-white text-4xl p- mx-auto mt-12"> <!-- Removed inline style -->
+                <span class="font-bold">Admin</span>
+                <p class="text-sm text-ellipsis overflow-hidden">{{ getCompany.nama || 'Company...' }}</p>
               </h2>
             </div>
             <ul class="mt-12">
@@ -79,7 +80,7 @@
                   </router-link>
                 </a>
                 <div class="py-1 px-3 bg-gray-600 rounded text-gray-300 flex items-center justify-center text-xs">{{
-                  getPresence.length }}
+                  presence.length }}
                 </div>
               </li>
               <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center mb-8">
@@ -137,14 +138,42 @@ export default {
     Loading,
     NavbarAdmin
   },
+  data(){
+    return{
+      selectedDate: null,
+    }
+  },
   computed: {
-    ...mapGetters('presence', ['getPresence'])
+    ...mapGetters('presence', ['getPresence']),
+    ...mapGetters('company', ['getCompany']),
+    presence() {
+      // Filter data berdasarkan tanggal yang dipilih
+      let filteredData = this.getPresence;
+      if (this.selectedDate) {
+        const selectedDate = new Date(this.selectedDate);
+        filteredData = filteredData.filter(presence => new Date(presence.tgl_absen) >= selectedDate);
+      }
+      // Jika setelah filtering data kosong, kembalikan array kosong
+      if (filteredData.length === 0) return [];
+
+      return filteredData;
+    },
   },
   methods: {
     ...mapActions('auth', ['logout']),
+    ...mapActions('karyawan', ['fetchKaryawan']),
+    ...mapActions('presence', ['fetchPresence']),
+    ...mapActions('company', ['fetchCompany']),
+    ...mapActions('information',['fetchInformation']),
+    ...mapActions('user',['fetchUser']),
+    ...mapActions('posisi',['fetchPosisi']),
     scrollToTop() {
       window.scrollTo(0, 0);
-    }
+    },
+    filterByDate() {
+      // Pemanggilan ini akan memperbarui data yang ditampilkan berdasarkan tanggal yang dipilih
+      this.currentPage = 1;
+    },
   },
   data() {
     return {
@@ -161,6 +190,21 @@ export default {
   },
   mounted() {
     this.loading = false;
+  },
+  created(){
+       // Set tanggal awal menjadi hari ini
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    this.selectedDate = `${year}-${month}-${day}`;
+
+    this.fetchKaryawan();
+    this.fetchPresence();
+    this.fetchCompany();
+    this.fetchInformation();
+    this.fetchUser();
+    this.fetchPosisi();
   }
 }
 </script>  

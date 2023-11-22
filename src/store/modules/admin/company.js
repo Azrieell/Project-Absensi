@@ -12,7 +12,7 @@ const company = {
     async fetchCompany({ commit }) {
       try {
         const response = await axios.get(
-          "https://api-absensi-omega.vercel.app/api/v1/employee/company/get"
+          "/employee/company/get"
         );
         commit("SET_COMPANY", response.data);
         return response.data;
@@ -23,7 +23,7 @@ const company = {
     },
     async updateCompany({commit, dispatch}, companyData){
       try {
-        const response = await axios.patch('https://api-absensi-omega.vercel.app/api/v1/employee/company/update', companyData);
+        const response = await axios.patch('/employee/company/update', companyData);
         commit('SET_UPDATE_COMPANY', response.data)
         // dispatch('fetchCompany')
         return response.data

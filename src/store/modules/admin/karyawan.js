@@ -1,4 +1,5 @@
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const karyawan = {
   namespaced: true,
@@ -14,7 +15,10 @@ const karyawan = {
     getEmployeeByUuid: (state) => (employeUuid) => {
       console.log("fetching single employee by uuid:", employeUuid);
       console.log("employeeData:", state.singleKaryawan);
-      const employee = state.singleKaryawan;
+
+      // Ambil elemen pertama dari array singleKaryawan jika ada
+      const employee = state.singleKaryawan[0];
+
       console.log("employee:", employee);
       return employee;
     },
@@ -22,9 +26,7 @@ const karyawan = {
   actions: {
     async fetchKaryawan({ commit }) {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/v1/employee"
-        );
+        const response = await axios.get("/employee");
         commit("SET_EMPLOYEE", response.data);
         return response.data;
       } catch (error) {
@@ -34,9 +36,7 @@ const karyawan = {
     },
     async fetchSingleKaryawan({ commit }, employeUuid) {
       try {
-        const response = await axios.get(
-          `https://api-absensi-omega.vercel.app/api/v1/employee/${employeUuid}`
-        );
+        const response = await axios.get(`/employee/${employeUuid}`);
         commit("SET_SINGLE_EMPLOYEE", response.data);
         return response.data;
       } catch (error) {
@@ -45,12 +45,12 @@ const karyawan = {
       }
     },
     resetSingleKaryawan({ commit }) {
-    commit("SET_SINGLE_EMPLOYEE", null);
-  },
+      commit("SET_SINGLE_EMPLOYEE", null);
+    },
     async createEmployee({ commit }, employeeData) {
       try {
         const response = await axios.post(
-          "https://api-absensi-omega.vercel.app/api/v1/employee/user/create",
+          "/employee/user/create",
           employeeData,
           {
             headers: {
@@ -74,7 +74,7 @@ const karyawan = {
     async updateEmployee({ commit }, { uuid, employeeEditData }) {
       try {
         const response = await axios.patch(
-          `http://localhost:5000/api/v1/employee/update/${uuid}`,
+          `/employee/update/${uuid}`,
           employeeEditData,
           {
             headers: {
@@ -103,13 +103,13 @@ const karyawan = {
       state.karyawan = karyawan;
     },
     SET_SINGLE_EMPLOYEE(state, karyawan) {
-      state.singleKaryawan = karyawan;
+      state.singleKaryawan = [karyawan];
     },
     SET_SEARCH_EMPLOYEE(state, karyawan) {
       state.karyawan = karyawan;
     },
     SET_UPDATE_EMPLOYEE(state, { uuid, karyawan }) {
-      const updatedKaryawan = state.karyawan.find((u) => u.uuid === uuid);
+      const updatedKaryawan = state.karyawan.findIndex((u) => u.uuid === uuid);
       state.karyawan[updatedKaryawan] = karyawan;
       state.errorUpdated = null;
     },

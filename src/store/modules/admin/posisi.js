@@ -14,58 +14,80 @@ const posisi = {
       const posisi = state.posisi;
       console.log("posisi:", posisi);
       return posisi;
-    }
+    },
   },
   actions: {
-    async fetchPosisi({
-      commit
-    }) {
+    async fetchPosisi({ commit }) {
       try {
-        const response = await axios.get('https://api-absensi-omega.vercel.app/api/v1/employee/position/get');
-        commit('SET_POSISI', response.data)
-        return response.data
+        const response = await axios.get("/employee/position/get");
+        commit("SET_POSISI", response.data);
+        return response.data;
       } catch (error) {
-        alert(error.message)
-        return false
+        alert(error.message);
+        return false;
       }
     },
-    async AddPosisi({
-      commit
-    }, created) {
+    async AddPosisi({ commit }, created) {
       try {
-        const response = await axios.post('https://api-absensi-omega.vercel.app/api/v1/employee/position/create', created);
-        commit('SET_ADDPOSISI', response.data)
-        return response.data
+        const response = await axios.post("/employee/position/create", created);
+        commit("SET_ADDPOSISI", response.data);
+        return response.data;
       } catch (error) {
-        alert(error.message)
-        return false
+        alert(error.message);
+        return false;
       }
     },
-    deletePosition({
-      commit,
-      dispatch
-    }, id) {
-      axios.delete(`https://api-absensi-omega.vercel.app/api/v1/employee/position/delete/${id}`)
-        .then(response => {
-          console.log('Position deleted:', response.data);
-          dispatch('fetchPosisi'); 
-        })
-        .catch(error => {
-          console.error('Error deleting position:', error);
-        });
-    },
+   async deletePosition({ commit, dispatch }, id) {
+      // Tampilkan konfirmasi SweetAlert
+      const confirmationResult = await Swal.fire({
+        title: "Anda yakin?",
+        text: "Ingin menghapus jabatan!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus!"
+      });
+
+      // Jika pengguna mengonfirmasi penghapusan
+      if (confirmationResult.isConfirmed) {
+        try {
+          // Lakukan penghapusan
+          await axios.delete(`/employee/position/delete/${id}`);
+          
+          // Tampilkan SweetAlert sukses
+          Swal.fire({
+            title: "Terhapus!",
+            text: "jabatan Telah terhapus.",
+            icon: "success"
+          });
+
+          // Perbarui daftar pengguna setelah penghapusan
+          dispatch("fetchPosisi");
+        } catch (error) {
+          console.error("Error deleting jabatan:", error);
+
+          // Tampilkan SweetAlert kesalahan jika penghapusan gagal
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Error Menghapus jabatan!",
+          });
+        }
+      }
+    }
   },
   mutations: {
     SET_POSISI(state, posisi) {
-      state.posisi = posisi
+      state.posisi = posisi;
     },
     SET_ADDPOSISI(state, posisi) {
-      state.posisi = posisi
+      state.posisi = posisi;
     },
     SET_LOADING(state, isLoading) {
       state.isLoading = isLoading;
     },
-  }
-}
+  },
+};
 
 export default posisi;

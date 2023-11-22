@@ -12,7 +12,7 @@ const information = {
     async fetchInformation({ commit }) {
       try {
         const response = await axios.get(
-          "https://api-absensi-omega.vercel.app/api/v1/employee/information/get"
+          "/employee/information/get"
         );
         commit("SET_INFORMATION", response.data);
         return response.data;

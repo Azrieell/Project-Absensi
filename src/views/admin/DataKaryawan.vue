@@ -5,7 +5,7 @@
         Tambah Karyawan
       </button>
     </router-link>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="overflow-x-auto shadow-md sm:rounded-lg">
       <div class="pb-4 bg-white dark:bg-gray-900">
         <label for="table-search" class="sr-only">Search</label>
         <div class="relative mt-1">
@@ -178,6 +178,15 @@ export default {
   },
   beforeMount() {
     this.fetchKaryawan();
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
   },
 };
 </script>
