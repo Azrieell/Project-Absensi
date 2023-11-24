@@ -55,6 +55,11 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default{
+  data(){
+    return{
+      selectedDate: null,
+    }
+  },
   computed:{
     ...mapGetters('karyawan',['getkaryawan']),
     ...mapGetters('presence',['getPresence']),
@@ -62,29 +67,49 @@ export default{
     employee(){
       return this.getkaryawan
     },
-    presence(){
-      return this.getPresence
+      presence() {
+      // Filter data berdasarkan tanggal yang dipilih
+      let filteredData = this.getPresence;
+      if (this.selectedDate) {
+        const selectedDate = new Date(this.selectedDate);
+        filteredData = filteredData.filter(presence => new Date(presence.tgl_absen) >= selectedDate);
+      }
+      // Jika setelah filtering data kosong, kembalikan array kosong
+      if (filteredData.length === 0) return [];
+
+      return filteredData;
     },
     company(){
       return this.getCompany
     }
   },
   methods:{
-    ...mapActions('karyawan', ['fetchKaryawan']),
-    ...mapActions('presence', ['fetchPresence']),
-    ...mapActions('company', ['fetchCompany']),
-    ...mapActions('information',['fetchInformation']),
-    ...mapActions('user',['fetchUser']),
-    ...mapActions('posisi',['fetchPosisi']),
+    ...mapActions('presence',['fetchPresence']),
+    filterByDate() {
+      // Pemanggilan ini akan memperbarui data yang ditampilkan berdasarkan tanggal yang dipilih
+      this.currentPage = 1;
+    },
   },
   created(){
-    this.fetchKaryawan();
+     // Set tanggal awal menjadi hari ini
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    this.selectedDate = `${year}-${month}-${day}`;
+
+    // Ambil data presensi setelah mengatur tanggal awal
     this.fetchPresence();
-    this.fetchCompany();
-    this.fetchInformation();
-    this.fetchUser();
-    this.fetchPosisi();
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 }
 </script>
 <style>

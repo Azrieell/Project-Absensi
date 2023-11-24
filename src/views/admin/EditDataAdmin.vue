@@ -95,5 +95,14 @@ export default {
     this.fetchUserById(this.$route.params.uuid);
     this.loadData();
   },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

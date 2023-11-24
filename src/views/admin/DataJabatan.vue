@@ -35,7 +35,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="posisi in getPosisi" :key="posisi.id"
+        <tr v-for="(posisi, index) in paginatedUsers" :key="posisi.uuid"
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
           <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
             {{ posisi.jabatan }}
@@ -57,12 +57,22 @@
       </tbody>
     </table>
   </div>
+  <div class="flex justify-between items-center mt-4">
+      <button @click="prevPage" :disabled="currentPage === 1"
+        class="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+        Previous Page
+      </button>
+      <div>{{ currentPage }} / {{ totalPages }}</div>
+      <button @click="nextPage" :disabled="currentPage === totalPages"
+        class="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+        Next Page
+      </button>
+    </div>
 </template>
 <script>
 import {
   mapActions,
-  mapGetters,
-  mapState
+  mapGetters
 } from 'vuex';
 
 export default {
@@ -72,10 +82,20 @@ export default {
         jabatan: '',
       },
       isLoading: false,
+      currentPage: 1,
+      itemsPerPage: 5,
     }
   },
   computed: {
     ...mapGetters('posisi', ['getPosisi']),
+    totalPages() {
+      return Math.ceil(this.getPosisi.length / this.itemsPerPage);
+    },
+    paginatedUsers() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.getPosisi.slice(start, end);
+    },
   },
   methods: {
     ...mapActions('posisi', ['AddPosisi']),
@@ -86,7 +106,7 @@ export default {
         this.fetchPosisi();
         Swal.fire(
           'Sukses!',
-          'Berhasil Menambah Data jabatan' + this.Dataposisi.jabatan,
+          'Berhasil Menambah jabatan ' + this.Dataposisi.jabatan,
           'success'
         )
         this.isLoading = false;
@@ -105,12 +125,7 @@ export default {
     async deletePosition(id) {
       try {
         await this.$store.dispatch('posisi/deletePosition', id);
-        Swal.fire(
-          'Good job!',
-          'You clicked the button!',
-          'success'
-        ),
-          this.fetchPosisi();
+        this.fetchPosisi();
       } catch (error) {
         Swal.fire({
           icon: 'error',
@@ -120,12 +135,31 @@ export default {
         })
       }
     },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
   },
   beforeMount() {
     this.fetchPosisi();
   },
   created() {
     this.fetchPosisi();
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
   },
 }
 </script>

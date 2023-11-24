@@ -21,9 +21,15 @@
             <input type="password" id="confirmpassword" placeholder="Konfirmasi Password" v-model="userData.confPassword"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <br>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              Simpan
-            </button>
+            <button
+            type="submit"
+            :class="{ 'cursor-not-allowed opacity-50': loading }"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            :disabled="isLoading"
+          >
+            <span v-if="isLoading">Memuat...</span>
+            <span v-else>Simpan</span>
+          </button>
           </div>
         </form>
       </div>
@@ -138,6 +144,7 @@ export default {
       itemsPerPage: 5,
       searchKeyword: '',
       showDropdown: false,
+      isLoading: false
     };
   },
   computed: {
@@ -164,10 +171,19 @@ export default {
     ...mapActions('user', ['AddUser', 'deleteUser', 'fetchUser']),
     async submituser() {
       try {
+        this.isLoading = true
         const response = await this.$store.dispatch('user/AddUser', this.userData);
         this.fetchUser();
+        this.resetForm();
+        Swal.fire(
+          'Sukses!',
+          'Berhasil Menambah user',
+          'success'
+        )
+        this.isLoading = false
         return response;
       } catch (error) {
+        this.isLoading = false
         console.error('Error adding user', error);
         Swal.fire({
           icon: 'error',
@@ -175,6 +191,14 @@ export default {
           text: 'Something went wrong!',
         });
       }
+    },
+    resetForm() {
+      this.userData = {
+        name: '',
+        email: '',
+        password: '',
+        confPassword: '',
+      };
     },
     async deleteUser(uuid) {
       try {
@@ -214,6 +238,15 @@ export default {
   },
   mounted() {
     this.fetchUser();
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
   },
 };
 </script>

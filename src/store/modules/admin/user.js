@@ -20,7 +20,7 @@ const user = {
   actions: {
     async fetchUser({ commit }) {
       try {
-        const response = await axios.get("https://api-absensi-omega.vercel.app/api/v1/users");
+        const response = await axios.get("/users");
         commit("SET_USERS", response.data);
         return response.data;
       } catch (error) {
@@ -31,7 +31,7 @@ const user = {
     async fetchUserById({ commit }, useruuid) {
       try {
         const response = await axios.get(
-          `https://api-absensi-omega.vercel.app/api/v1/users/${useruuid}`
+          `/users/${useruuid}`
         );
         commit("SET_SINGLE_USER", response.data);
         return response.data;
@@ -43,7 +43,7 @@ const user = {
     async AddUser({ commit }, userData) {
       try {
         const response = await axios.post(
-          "https://api-absensi-omega.vercel.app/api/v1/users/add",
+          "/users/add",
           userData
         );
         commit("SET_ADD_USER", response.data);
@@ -55,7 +55,7 @@ const user = {
     async updateUser({ commit }, {uuid, userDataEdit}) {
       try {
         const response = await axios.patch(
-          `https://api-absensi-omega.vercel.app/api/v1/users/update/${uuid}`,
+          `/users/update/${uuid}`,
           userDataEdit
         );
         console.log('Respon dari Backend setelah Update:', response.data);
@@ -76,6 +76,7 @@ const user = {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
+        cancelButtonText: 'tidak',
         confirmButtonText: "Ya, hapus!"
       });
 
@@ -83,13 +84,13 @@ const user = {
       if (confirmationResult.isConfirmed) {
         try {
           // Lakukan penghapusan
-          await axios.delete(`https://api-absensi-omega.vercel.app/api/v1/users/destroy/${uuid}`);
+          await axios.delete(`/users/destroy/${uuid}`);
           
           // Tampilkan SweetAlert sukses
           Swal.fire({
             title: "Terhapus!",
             text: "User Telah terhapus.",
-            icon: "sukses"
+            icon: "success"
           });
 
           // Perbarui daftar pengguna setelah penghapusan
