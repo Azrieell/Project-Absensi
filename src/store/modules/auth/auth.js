@@ -10,6 +10,7 @@ const auth = {
   getters: {
     isError: state => state.loginError,
     isAuthenticated: state => !!state.role,
+    getMe: (state) => state.user,
   },
   actions: {
     async login({
@@ -29,14 +30,16 @@ const auth = {
         return false;
       }
     },
-    async getMe({
+    async fetchMe({
       commit
     }) {
       try {
         const response = await axios.get('http://localhost:5000/api/v1/auth/me');
-        commit('SET_USER', response)
+        commit('SET_USER', response.data['employee'])
+        return response.data['employee']
       } catch (error) {
         console.log(error.message);
+        return false
       }
     },
     async logout({
@@ -66,6 +69,9 @@ const auth = {
       state.role = role;
     },
     SET_USER_LOGIN(state, auth) {
+      state.user = auth;
+    },
+    SET_USER(state, auth) {
       state.user = auth;
     },
     SET_LOGIN_ERROR(state, error) {

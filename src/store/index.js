@@ -6,21 +6,25 @@ import posisi from "./modules/admin/posisi.js";
 import presence from "./modules/admin/presence.js";
 import information from "./modules/admin/information.js";
 import company from "./modules/admin/company.js";
+import userkaryawan from "./modules/karyawan/userkaryawan.js";
+import informationemployee from "./modules/karyawan/informationemployee.js";
+import presensi from "./modules/karyawan/presensi.js"
 
 const store = createStore({
     state: {
-        isLoading: false,
+        isLoading: false,   
     },
     modules: {
         auth,
         user,
         karyawan,
         posisi,
-        perusahaan,
-        userkaryawan,
+        company,
         presence,
         information,
-        company
+        userkaryawan,
+        informationemployee,
+        presensi
     },
 });
 

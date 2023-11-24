@@ -9,7 +9,8 @@
             <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Name</label>
             <input type="text" id="name" placeholder="Masukan Nama" v-model="userDataEdit .name"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
-            <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
+            <label for="default-input"
+              class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Email</label>
             <input type="text" id="email" placeholder="Masukan Email" v-model="userDataEdit.email"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <label for="default-input"
@@ -18,7 +19,8 @@
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <label for="default-input" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">Confirm
               Password</label>
-            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password" v-model="userDataEdit.confPassword"
+            <input type="password" id="confirmpassword" placeholder="Konfirmasi Password"
+              v-model="userDataEdit.confPassword"
               class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
             <input type="text" class="hidden" value="admin" disabled>
             <br>
@@ -37,13 +39,12 @@
   </div>
 </template>
 <script>
-<<<<<<< HEAD
   import {
     mapActions,
     mapGetters
   } from 'vuex';
   export default {
-    props:["useruuid"],
+    props: ["useruuid"],
     data() {
       return {
         userData: {
@@ -62,13 +63,41 @@
       },
     },
     methods: {
-      ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById', 'getSingleById']),
-      updatedUser(){
-        this.updateUser(this.userData)
+      ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById']),
+      async updateUser(uuid) {
+        try {
+          await this.$store.dispatch('user/updateUser', uuid, this.userDataEdit).then(() => {
+            this.$router.push({
+              name: 'DataUser'
+            });
+          });;
+          Swal.fire(
+            'Berhasil mengedit user!',
+            'You clicked the button!',
+            'success'
+          )
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: this.getError || 'gagal mengedit user!',
+          })
+        }
+      },
+      loadData() {
+        const user = this.getSingleById(this.$route.params.uuid);
+        this.userDataEdit.name = user.name;
+        this.userDataEdit.email = user.email;
       },
       scrollToTop() {
         window.scrollTo(0, 0);
-      }
+      },
+      watch: {
+        '$route.params.uuid': 'loadData',
+      },
+    },
+    scrollToTop() {
+      window.scrollTo(0, 0);
     },
     created() {
       this.fetchUser();
@@ -79,66 +108,8 @@
       const useruuid = this.$route.params.uuid;
       console.log("Useruuid:", useruuid);
       this.fetchUserById(useruuid);
-      this.$store.dispatch("user/updateUser", this.useruuid)
-=======
-import {
-  mapActions,
-  mapGetters
-} from 'vuex';
-export default {
-  data() {
-    return {
-      userDataEdit: {
-        name: null,
-        email: null,
-        password: null,
-        confPassword: null,
-      }
->>>>>>> 5ea518a798066ff76b1ed86268f5360d01cdae20
-    }
-  },
-  computed: {
-    ...mapGetters('user', [ 'getError', 'getSingleById']),
-    user() {
-      return this.getSingleById(this.$route.params.uuid);
+      this.$store.dispatch("user/updateUser", this.useruuid);
+      this.loadData();
     },
-  },
-  methods: {
-    ...mapActions('user', ['fetchUser', 'updateUser', 'fetchUserById']),
-    async updateUser(uuid) {
-      try {
-        await this.$store.dispatch('user/updateUser', uuid, this.userDataEdit).then(() => {
-          this.$router.push({ name: 'DataUser' });
-        });;
-        Swal.fire(
-          'Berhasil mengedit user!',
-          'You clicked the button!',
-          'success'
-        )
-      } catch (error) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: this.getError || 'gagal mengedit user!',
-        })
-      }
-    },
-    loadData() {
-      const user = this.getSingleById(this.$route.params.uuid);
-      this.userDataEdit.name = user.name;
-      this.userDataEdit.email = user.email;
-    },
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    },
-    watch: {
-      '$route.params.uuid': 'loadData',
-    },
-  },
-  mounted() {
-    const useruuid = this.$route.params.uuid;
-    this.fetchUserById(useruuid);
-    this.loadData();
   }
-}
 </script>

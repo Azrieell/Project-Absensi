@@ -13,6 +13,7 @@
       <thead>
         <tr>
           <th>ID</th>
+          <td>Tanggal</td>
           <th>Nama</th>
           <th>Keterangan</th>
           <th>Alasan Tidak Hadir</th>
@@ -22,6 +23,7 @@
       <tbody>
         <tr v-for="information in getInformation" :key="information.id">
           <td>{{ information.id }}</td>
+          <td>{{ information.tgl_keterangan}}</td>
           <td>{{ information['user'].name }}</td>
           <td>{{ information.keterangan }}</td>
           <td>{{ information.alasan }}</td>

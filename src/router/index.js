@@ -20,6 +20,7 @@ import store from "../store";
 import KaryawanLayout from "../layouts/KaryawanLayout.vue"
 import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
 import AbsenKaryawan from "../views/karyawan/AbsenKaryawan.vue";
+import AbsenPulang from "../views/karyawan/AbsenPulang.vue";
 import SakitKaryawan from "../views/karyawan/SakitKaryawan.vue";
 import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
 import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
@@ -70,6 +71,17 @@ const routes = [{
         path: '/admin/datakaryawan',
         component: DataKaryawan,
         name: 'DataKaryawan',
+        meta: {
+          requiresLogin: true
+        },
+        meta: {
+          requiresAdmin: true
+        },
+      },
+      {
+        path: '/admin/karyawan/:uuid',
+        component: SingleDataKaryawan,
+        name: 'SingleDataKaryawan',
         meta: {
           requiresLogin: true
         },
@@ -185,8 +197,7 @@ const routes = [{
         next()
       }, 1000)
     },
-    children: [
-      {
+    children: [{
         path: '/karyawan/home',
         name: 'HomeKaryawan',
         component: HomeKaryawan,
@@ -201,6 +212,17 @@ const routes = [{
         path: '/karyawan/absenkaryawan',
         name: 'AbsenKaryawan',
         component: AbsenKaryawan,
+        meta: {
+          requiresLogin: true
+        },
+        meta: {
+          requiresUser: true
+        },
+      },
+      {
+        path: '/karyawan/absenpulang',
+        name: 'AbsenPulang',
+        component: AbsenPulang,
         meta: {
           requiresLogin: true
         },

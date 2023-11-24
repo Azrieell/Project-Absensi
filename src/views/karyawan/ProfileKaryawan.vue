@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full bg-white p-8">
+  <div class="h-full bg-white p-8 sm:mt-10 mt-28">
     <div class="bg-white rounded-lg shadow-xl pb-8">
       <div x-data="{ openSettings: false }" class="absolute right-12 mt-4 rounded">
         <div x-show="openSettings" class="bg-white absolute right-0 w-40 py-2 mt-1 border border-gray-200 shadow-2xl"
@@ -53,9 +53,9 @@
         <img src="https://vojislavd.com/ta-template-demo/assets/img/profile.jpg"
           class="w-40 border-4 border-white rounded-full">
         <div class="flex items-center space-x-2 mt-2">
-          <p class="text-2xl">{{ userkaryawan.nama }}</p>
+          <p class="text-2xl"> - </p>
         </div>
-        <p class="text-gray-700">{{ userkaryawan.jabatan }}</p>
+        <p class="text-gray-700"> - </p>
       </div>
       <div class="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
         <div class="flex items-center space-x-4 mt-2">
@@ -89,41 +89,42 @@
       <div class="grid md:grid-cols-2 text-sm">
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Nip</div>
-          <div class="px-4 py-2">{{ userkaryawan.nip }}</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Nama Lengkap</div>
-          <div class="px-4 py-2">{{ userkaryawan.nama }}</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Tempat Lahir</div>
-          <div class="px-4 py-2">Bandung</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Tanggal Lahir</div>
-          <div class="px-4 py-2">12 Desember 2005</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Jenis Kelamin</div>
-          <div class="px-4 py-2">{{ userkaryawan.jenis_kelamin }}</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Agama</div>
-          <div class="px-4 py-2">{{ userkaryawan.agama }}</div>
+          <div class="px-4 py-2"> - </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">Alamat</div>
           <div class="px-4 py-2">
-            <a class="text-blue-800" href="mailto:jane@example.com">{{ userkaryawan.alamat }}</a>
+            <a class="text-blue-800" href="mailto:jane@example.com"> - </a>
           </div>
         </div>
         <div class="grid grid-cols-2">
           <div class="px-4 py-2 font-semibold">No Handphone</div>
-          <div class="px-4 py-2">{{ userkaryawan.no_hp }}</div>
+          <div class="px-4 py-2"> - </div>
         </div>
       </div>
     </div>
   </div>
+  {{ [Me] }}
   <!-- End of about section -->
 </template>
 <style>
@@ -144,20 +145,20 @@
 
   export default {
     computed: {
-      ...mapGetters('userkaryawan', ['getUserKaryawan']),
-      userkaryawan() {
-        return this.getUserKaryawan;
+      ...mapGetters('auth', ['getMe']),
+      Me() {
+        return this.getMe;
       },
     },
     methods: {
-      ...mapActions('auth', ['logout']),
+      ...mapActions('auth', ['logout', 'fetchMe']),
       scrollToTop() {
         window.scrollTo(0, 0);
       },
-      ...mapActions('userkaryawan', ['fetchUserKaryawan'])
+      
     },
     created() {
-      this.fetchUserKaryawan();
+      this.fetchMe();
     },
   }
 </script>
