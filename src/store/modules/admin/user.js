@@ -20,8 +20,8 @@ const user = {
   actions: {
     async fetchUser({ commit }) {
       try {
-        const response = await axios.get("/users");
-        commit("SET_USERS", response.data);
+        const response = await axios.get("http://localhost:5000/api/v1/users");
+        commit("SET_USER", response.data);
         return response.data;
       } catch (error) {
         alert(error.message);
@@ -31,7 +31,7 @@ const user = {
     async fetchUserById({ commit }, useruuid) {
       try {
         const response = await axios.get(
-          `/users/${useruuid}`
+          `http://localhost:5000/api/v1/users/${useruuid}`
         );
         commit("SET_SINGLE_USER", response.data);
         return response.data;
@@ -43,90 +43,58 @@ const user = {
     async AddUser({ commit }, userData) {
       try {
         const response = await axios.post(
-          "/users/add",
+          "http://localhost:5000/api/v1/users/add",
           userData
         );
         commit("SET_ADD_USER", response.data);
+        Swal.fire("Berhasil!", "Berhasil Menambah User", "success");
         return response.data;
       } catch (error) {
         throw error;
       }
     },
-    async updateUser({ commit }, {uuid, userDataEdit}) {
+    async updateUser({ commit }, uuid, userDataEdit ) {
       try {
         const response = await axios.patch(
-          `/users/update/${uuid}`,
+          `http://localhost:5000/api/v1/users/update/${uuid}`,
           userDataEdit
         );
-        console.log('Respon dari Backend setelah Update:', response.data);
-        commit("SET_UPDATE_USER", { uuid, user: response.data });
+        commit("SET_UPDATE_USER", response.data);
         return response.data;
       } catch (error) {
         const updateError = error.response.data.msg;
         commit("ERROR_UPDATE_USER", updateError);
-        throw error;
+        return false
       }
     },
     async deleteUser({ commit, dispatch }, uuid) {
-      // Tampilkan konfirmasi SweetAlert
-      const confirmationResult = await Swal.fire({
-        title: "Anda yakin?",
-        text: "Ingin menghapus user!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: 'tidak',
-        confirmButtonText: "Ya, hapus!"
-      });
-
-      // Jika pengguna mengonfirmasi penghapusan
-      if (confirmationResult.isConfirmed) {
-        try {
-          // Lakukan penghapusan
-          await axios.delete(`/users/destroy/${uuid}`);
-          
-          // Tampilkan SweetAlert sukses
-          Swal.fire({
-            title: "Terhapus!",
-            text: "User Telah terhapus.",
-            icon: "success"
-          });
-
-          // Perbarui daftar pengguna setelah penghapusan
+      axios
+        .delete(`http://localhost:5000/api/v1/users/destroy/${uuid}`)
+        .then((response) => {
+          console.log("user deleted:", response.data);
           dispatch("fetchUser");
-        } catch (error) {
+        })
+        .catch((error) => {
           console.error("Error deleting user:", error);
-
-          // Tampilkan SweetAlert kesalahan jika penghapusan gagal
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Error Menghapus user!",
-          });
-        }
-      }
+        });
     },
   },
   mutations: {
     ERROR_UPDATE_USER(state, error) {
-      state.errorUpdated = error;
+      state.errorUpdated = error; // Jika Anda ingin menyimpan pesan kesalahan, Anda bisa menyimpannya di state juga
     },
-    SET_USERS(state, user) {  
-      state.users = user;
+    SET_USER(state, user) {
+      state.user = user;
     },
     SET_ADD_USER(state, user) {
-      state.users = user;
+      state.user = user;
     },
-    SET_UPDATE_USER(state, { uuid, user }) {
-      const updatedUser = state.users.find((u) => u.uuid === uuid);
-      state.users[updatedUser] = user;
-      state.errorUpdated = null;
+    SET_UPDATE_USER(state, user) {
+      state.singleId = user;
     },
     SET_SINGLE_USER(state, user) {
       state.singleId = user;
     },
   },
 };
-
 export default user;

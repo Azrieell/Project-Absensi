@@ -1,52 +1,256 @@
 <template>
-    <div class="rounded-lg w-90 p-4  border border-gray-200 ml-10 mr-10"
-        style="margin-top: 2%; background-color: #EEEEEE;">
-        <div class="container">
-            <p class="text-sm text-black">Selamat Pagi</p>
-            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Leonel Messi</h5>
-        </div>
-
-        <hr class="mt-2 my-6 border-black sm:mx-auto ">
-
-
-        <div class="w-full max-w-sm  border  rounded-lg shadow" style="background-color: #D9D9D9; margin-left: 35%;">
-
-            <div class="flex items-center justify-center w-full">
-                <label for="dropzone-file"
-                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                        </svg>
-                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
-                                upload</span></p>
-                    </div>
-                    <input id="dropzone-file" type="file" class="hidden" />
-                </label>
+    <div class="flex items-center sm:mt-52 mt-40 mb-10">
+        <div
+            class="container mx-auto p-9 bg-white max-w-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-lg">{{ greeting }}</p>
+                    <h1 class="mt-1 text-lg font-semibold">Aloe Cactus</h1>
+                </div>
+                <div class="flex flex-col-reverse ml-12">
+                    <p class="ml-12 text-m">{{ currentTime }} {{ timeZoneString }}</p>
+                    <p class="ml-12 text-m">{{ formDataPresence.tgl_absen }}</p>
+                </div>
             </div>
-
-        </div>
-        <br>
-
-
-        <div class="mr-30 ml-32  block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
-            style="background-color: #DDDDDD; max-width: 30%; margin-left: 37%;">
-            <div class="grid grid-cols-2 mt-6 ml-10">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-12 h-12 ml-10">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                </svg>
-                <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50 "
-                    style="margin-left: -35%; margin-top: 7%;">
-                    Absen Masuk
-                </h5>
+            <br />
+            <div v-if="showCamera">
+                <video ref="videoElement" autoplay></video>
+                <button @click="takeSnapshot"
+                    class="text-white items-center mt-5 mx-20 text-md w-50 font-semibold bg-green-400 py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110">
+                    <span>{{ isAbsenClicked ? 'Absen Pulang' : 'Absen Sekarang' }}</span>
+                </button>
+            </div>
+            <div v-else>
+                <img :src="imageData" alt="" />
             </div>
         </div>
-
     </div>
 </template>
+
+<script>
+    import axios from 'axios'; // Import axios here
+
+    import VueWebCam from 'vue-web-cam';
+
+    export default {
+        components: {
+            VueWebCam
+        },
+        data() {
+            return {
+                formDataPresence: {
+                    tgl_absen: null,
+                    masuk: '',
+                    file: null
+                },
+                showCamera: true,
+                imageData: null,
+                videoElement: null,
+                currentTime: '',
+                greeting: '',
+                isAbsenClicked: false,
+                intervalId: null, // Menyimpan ID interval untuk di-clear nanti
+                timeZoneString: '', // Menyimpan singkatan zona waktu
+            };
+        },
+        methods: {
+            async takeSnapshot() {
+                const video = this.$refs.videoElement;
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const context = canvas.getContext('2d');
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                const imageData = canvas.toDataURL('image/jpeg');
+                // Perbarui state
+                this.imageData = imageData;
+                this.showCamera = false;
+                // Ubah data URI menjadi objek File
+                const blob = this.dataURItoBlob(imageData);
+                const file = new File([blob], 'snapshot.jpg');
+                // Atur nilai file dalam formDataPresence
+                this.formDataPresence.file = file;
+                // Jika tombol belum diklik, set formDataPresence.masuk sesuai dengan waktu saat ini
+                if (!this.isAbsenClicked) {
+                    this.formDataPresence.masuk = this.formatTime(this.currentTime);
+                }
+                // Hentikan pembaruan waktu
+                clearInterval(this.intervalId);
+                
+                // Sekarang formDataPresence telah diperbarui, Anda dapat menggunakannya untuk mengirim data ke backend
+                await this.uploadDataToApi(this.formDataPresence);
+                // Ubah properti isAbsenClicked menjadi true setelah semua pemrosesan selesai
+                this.isAbsenClicked = true;
+                // Mulai kembali interval untuk memperbarui waktu setelah absen berhasil
+                this.intervalId = setInterval(this.updateTime, 1000);
+                this.resetForm()
+            },
+
+            async uploadDataToApi(formDataPresence) {
+                console.log('Sending data to API:', formDataPresence); // Menampilkan data sebelum mengirim
+                try {
+                    const response = await axios.post(
+                        'http://localhost:5000/api/v1/employee/presence/in',
+                        formDataPresence, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            },
+                        }
+                    );
+                    console.log('Response from API:', response.data); // Menampilkan respons dari server
+                    if (response.status >= 200 && response.status < 300) {
+                        console.log('Data successfully uploaded');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: `Anda berhasil mengisi absensi pada jam ${this.currentTime}`,
+                        });
+                        this.$router.push({
+                            name: 'HomeKaryawan',
+                        });
+                    } else {
+                        console.error('Failed to upload data to API');
+                    }
+                } catch (error) {
+                    console.error('Error uploading data to API:', error.response || error.message);
+                }
+            },
+            dataURItoBlob(dataURI) {
+                const byteString = atob(dataURI.split(',')[1]);
+                const ab = new ArrayBuffer(byteString.length);
+                const ia = new Uint8Array(ab);
+                for (let i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ab], {
+                    type: 'image/jpeg'
+                });
+            },
+
+            resetForm() {
+                this.formDataPresenceOut = {
+                    tgl_absen: null,
+                    pulang: '',
+                    fileOut: null
+                }
+            },
+
+            detectUserTimeZone() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const latitude = position.coords.latitude;
+                            const longitude = position.coords.longitude;
+
+                            // Mendapatkan zona waktu berdasarkan koordinat lintang dan bujur
+                            const timeZoneOffset = this.getTimeZoneOffset(latitude, longitude);
+                            this.setTimeZoneString(timeZoneOffset);
+                        },
+                        (error) => {
+                            console.error('Gagal mendapatkan lokasi:', error);
+                        }
+                    );
+                } else {
+                    console.error('Geolocation tidak didukung pada peramban ini.');
+                }
+            },
+            getTimeZoneOffset(latitude, longitude) {
+                const timestamp = Date.now() / 1000; // Waktu saat ini dalam detik
+                const apiUrl =
+                    `https://api.timezonedb.com/v2.1/get-time-zone?key=1LI0K87DBHTX&format=json&by=position&lat=${latitude}&lng=${longitude}&time=${timestamp}`;
+                const dummyOffset = 7; // Contoh offset untuk WIB
+
+                return dummyOffset; // Kembalikan offset zona waktu
+            },
+            setTimeZoneString(timeZoneOffset) {
+                let timeZoneString = '';
+
+                // Deteksi zona waktu berdasarkan offset
+                if (timeZoneOffset === 7 || timeZoneOffset === -17) {
+                    timeZoneString = 'WIB'; // Waktu Indonesia Bagian Barat (WIB)
+                } else if (timeZoneOffset === 8 || timeZoneOffset === -16) {
+                    timeZoneString = 'WITA'; // Waktu Indonesia Bagian Tengah (WITA)
+                } else if (timeZoneOffset === 9 || timeZoneOffset === -15) {
+                    timeZoneString = 'WIT'; // Waktu Indonesia Bagian Timur (WIT)
+                } else {
+                    timeZoneString = 'Waktu lokal tidak diketahui';
+                }
+
+                this.timeZoneString = timeZoneString;
+            },
+
+            formatTime(time) {
+                // Format waktu menjadi 'HH:MM:SS'
+                const date = new Date(`01/01/2000 ${time}`);
+                return date.toTimeString().split(' ')[0];
+            },
+
+            updateTime() {
+                const now = new Date();
+                const hours = `${now.getHours()}`.padStart(2, '0');
+                const minutes = `${now.getMinutes()}`.padStart(2, '0');
+                const seconds = `${now.getSeconds()}`.padStart(2, '0');
+                this.currentTime = `${hours}:${minutes}:${seconds}`;
+
+                // Mengatur formDataPresence.masuk
+                this.formDataPresence.masuk = this.currentTime;
+
+                // Mengatur formDataPresence.tgl_absen
+                const year = now.getFullYear();
+                const month = `${(now.getMonth() + 1)}`.padStart(2, '0'); // Tambah 1 karena Januari dimulai dari 0
+                const date = `${now.getDate()}`.padStart(2, '0');
+                this.formDataPresence.tgl_absen = `${year}-${month}-${date}`;
+
+                // Mengatur salam (greeting)
+                const currentHour = now.getHours();
+                if (currentHour >= 5 && currentHour < 10) {
+                    this.greeting = 'Selamat Pagi';
+                } else if (currentHour >= 10 && currentHour < 15) {
+                    this.greeting = 'Selamat Siang';
+                } else if (currentHour >= 15 && currentHour < 18) {
+                    this.greeting = 'Selamat Sore';
+                } else {
+                    this.greeting = 'Selamat Malam';
+                }
+            },
+
+            loadData() {
+                this.formDataPresence.tgl_absen = this.formDataPresence.tgl_absen;
+                this.formDataPresence.masuk = this.formatTime(this.currentTime); // Menggunakan formatTime
+                this.formDataPresence.file = this.imageData;
+            }
+        },
+
+        mounted() {
+            const video = this.$refs.videoElement;
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(stream => {
+                        video.srcObject = stream;
+                        this.videoElement = video;
+                    })
+                    .catch(error => {
+                        console.error('Could not access the webcam: ', error);
+                    });
+            }
+            this.updateTime();
+            // Simpan ID interval untuk di-clear nanti
+            this.intervalId = setInterval(this.updateTime, 1000);
+            this.loadData();
+            this.detectUserTimeZone();
+        },
+        watch: {
+            currentTime(newValue) {
+                // Jika tombol belum diklik, formDataPresence.masuk tetap kosong
+                if (!this.isAbsenClicked) {
+                    this.formDataPresence.masuk = '';
+                } else {
+                    this.formDataPresence.masuk = newValue;
+                }
+            }
+        }
+
+    };
+</script>

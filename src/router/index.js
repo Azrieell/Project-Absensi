@@ -11,13 +11,14 @@ import EditDataKaryawan from "../views/admin/EditDataKaryawan.vue"
 import TambahKaryawan from "../views/admin/TambahKaryawan.vue";
 import DataUser from "../views/admin/DataUser.vue";
 import EditDataAdmin from "../views/admin/EditDataAdmin.vue";
-import DataJabatan from "../views/admin/DataJabatan.vue"  ;
+import DataJabatan from "../views/admin/DataJabatan.vue";
 import DataAbsen from "../views/admin/DataAbsen.vue";
 import DataKeterangan from "../views/admin/DataKeterangan.vue";
 import Perusahaan from "../views/admin/Perusahaan.vue";
 import EditPerusahaan from "../views/admin/EditPerusahaan.vue";
-import  store  from "../store";
+import store from "../store";
 
+import KaryawanLayout from "../layouts/KaryawanLayout.vue"
 import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
 
 const routes = [
@@ -58,8 +59,7 @@ const routes = [
       requiresLogin: true, 
       requiresAdmin: true
     },
-    children: [
-      {
+    children: [{
         path: '/admin/home',
         component: HomeAdmin,
         name: 'HomeAdmin',
@@ -78,7 +78,7 @@ const routes = [
         },
       },
       {
-        path: '/admin/singledatakaryawan/:uuid',
+        path: '/admin/karyawan/:uuid',
         component: SingleDataKaryawan,
         name: 'SingleDataKaryawan',
         meta: {
@@ -160,8 +160,7 @@ const routes = [
     ]
   },
 
-  
-
+  //page karyawan
   {
     path: '/karyawan/home',
     name: 'HomeKaryawan',

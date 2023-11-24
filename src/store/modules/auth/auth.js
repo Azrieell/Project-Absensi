@@ -10,8 +10,7 @@ const auth = {
   },
   getters: {
     isError: state => state.loginError,
-    isAuthenticated: state => !!state.role && state.role !== '',
-    getMe: (state) => state.user
+    isAuthenticated: state => !!state.role,
   },
   actions: {
     async login({ commit }, credentials) {
@@ -42,21 +41,14 @@ const auth = {
         return false;
       }
     },
-    async fetchMe({ commit, dispatch }) {
-      // Pemeriksaan token kedaluwarsa sebelum mengambil data pengguna
-      await dispatch('checkTokenExpiration');
-  
+    async getMe({
+      commit
+    }) {
       try {
-        const response = await axios.get('/auth/me');
-        // Menggunakan array destructuring untuk mengambil data yang diubah dari server
-        const [userData] = response.data;
-  
-        // Committing ke mutations untuk mengubah state
-        commit('SET_USER', userData);
-        return userData;
+        const response = await axios.get('http://localhost:5000/api/v1/auth/me');
+        commit('SET_USER', response)
       } catch (error) {
-        console.error('Error fetching user data:', error.message);
-        return false;
+        console.log(error.message);
       }
     },
     async logout({ commit }) {
