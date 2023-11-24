@@ -23,15 +23,16 @@
               <td>{{ presence['user'].name }}</td>
               <td :class="{ 'text-red-500': isLate(presence.masuk) }">
                 {{ presence.tgl_absen }} {{ presence.masuk }}
-                <small v-if="isLate(presence.masuk)">
+                <p class="text-xs" v-if="isLate(presence.masuk)">
                   Terlambat
-                </small>
-                <small v-else class="text-lime-600">
+                </p>
+                <p v-else class="text-lime-600 text-xs">
                   Tepat Waktu
-                </small>
+                </p>
               </td>
               <td :class="{ 'text-orange-400': !presence.pulang }">
-                {{ presence.tgl_absen }} {{ presence.pulang || 'Belum pulang' }}
+                <span v-show="presence.pulang">{{ presence.tgl_absen }} {{ presence.pulang }}</span>
+                <span v-show="!presence.pulang">Belum pulang</span>
               </td>
               <td class="py-2 px-4 border-b"><img
                   :src="presence?.url || 'https://www.komysafety.com/images/banner/no-image.png'" alt=""
@@ -50,7 +51,7 @@
       <div class="flex justify-between items-center mt-4">
         <input type="date" v-model="selectedDate" class="p-2 border rounded" />
         <button @click="filterByDate" hidden
-          class="bg-blue-500 text-white font-bold py-2 px-4 rounded cursor-pointer hover:bg-blue-700">
+          class="bg-blue-500 text-base text-white font-bold py-2 px-4 rounded cursor-pointer hover:bg-blue-700">
           Filter by Date
         </button>
         <button @click="rekapData"
@@ -81,8 +82,10 @@
 <script>
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { mapActions, mapGetters } from 'vuex';
+import presence from '../../store/modules/admin/presence';
 
 export default {
   data() {
@@ -100,17 +103,34 @@ export default {
       return this.getCompany;
     },
     totalPages() {
-      return Math.ceil(this.getPresence.length / this.perPage);
+      let filteredData = this.getPresence;
+
+      // Filter berdasarkan tanggal
+      if (this.selectedDate) {
+        const selectedDate = new Date(this.selectedDate);
+        filteredData = filteredData.filter(
+          (presence) => new Date(presence.tgl_absen).toDateString() === selectedDate.toDateString()
+        );
+      }
+
+      return Math.ceil(filteredData.length / this.perPage);
     },
     paginatedPresence() {
       let filteredData = this.getPresence;
+
+      // Filter berdasarkan tanggal
       if (this.selectedDate) {
         const selectedDate = new Date(this.selectedDate);
-        filteredData = filteredData.filter(presence => new Date(presence.tgl_absen) >= selectedDate);
+        filteredData = filteredData.filter(
+          (presence) => new Date(presence.tgl_absen).toDateString() === selectedDate.toDateString()
+        );
       }
+
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
+
       if (filteredData.length === 0) return [];
+
       return filteredData.slice(start, end);
     },
   },
@@ -120,11 +140,24 @@ export default {
       this.currentPage = 1;
     },
     nextPage() {
-      if (this.currentPage < this.totalPages) {
+      // Menambahkan filter tanggal pada currentPage
+      let filteredData = this.getPresence;
+      if (this.selectedDate) {
+        const selectedDate = new Date(this.selectedDate);
+        filteredData = filteredData.filter(
+          (presence) => new Date(presence.tgl_absen).toDateString() === selectedDate.toDateString()
+        );
+      }
+
+      // Menyesuaikan currentPage berdasarkan data yang sesuai dengan filter tanggal
+      const totalPages = Math.ceil(filteredData.length / this.perPage);
+
+      if (this.currentPage < totalPages) {
         this.currentPage++;
       }
     },
     prevPage() {
+      // Mengganti kondisi untuk mengecek currentPage
       if (this.currentPage > 1) {
         this.currentPage--;
       }
@@ -172,40 +205,86 @@ export default {
     },
 
     getMonthYearString() {
-    const selectedDate = new Date(this.selectedDate);
-    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    const month = monthNames[selectedDate.getMonth()];
-    const year = selectedDate.getFullYear();
-    return `${month} ${year}`;
-  },
-
+      const selectedDate = new Date(this.selectedDate);
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const month = monthNames[selectedDate.getMonth()];
+      const year = selectedDate.getFullYear();
+      return `${month} ${year}`;
+    },
     // Fungsi untuk mengunduh data ke format PDF
-downloadPDF() {
-  const pdf = new jsPDF();
-  const monthYear = this.getMonthYearString();
-  pdf.text(`Daftar Kehadiran - ${monthYear}`, 20, 10);
-  let yPosition = 20;
-  this.getPresence.forEach(presence => {
-    yPosition += 10;
-    pdf.text(`${presence['user'].name}: ${presence.tgl_absen} - Masuk: ${presence.masuk} - Pulang: ${presence.pulang || 'Belum Pulang'}`, 20, yPosition);
-  });
-  pdf.save(`daftar_kehadiran_${monthYear}.pdf`);
-},
+    downloadPDF() {
+      // Tambahkan SweetAlert2 konfirmasi di sini
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Apakah Anda yakin ingin mengunduh file PDF?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          try {
+            const pdf = new jsPDF();
+            const monthYear = this.getMonthYearString();
 
-// Fungsi untuk mengunduh data ke format Excel
-downloadExcel() {
-  const monthYear = this.getMonthYearString();
-  const dataWithNames = this.getPresence.map(presence => ({
-    ...presence,
-    userName: presence['user'].name,
-  }));
+            // Header
+            const headers = [['Nama Karyawan', 'Tanggal Absen', 'Jam Masuk', 'Jam Pulang', 'Status Terlambat']];
 
-  const worksheet = XLSX.utils.json_to_sheet(dataWithNames);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, `Daftar Kehadiran - ${monthYear}`);
-  XLSX.writeFile(workbook, `daftar_kehadiran_${monthYear}.xlsx`);
-},
+            // Data
+            const data = this.paginatedPresence.map((presence) => {
+              const jamPulang = presence.pulang ? presence.pulang : 'Belum Pulang';
+              const statusTerlambat = this.isLate(presence.masuk) ? 'Terlambat' : 'Tidak Terlambat';
+              return [presence['user'].name, presence.tgl_absen, presence.masuk, jamPulang, statusTerlambat];
+            });
 
+            pdf.autoTable({
+              head: headers,
+              body: data,
+              startY: 20,
+              theme: 'striped', // Ganti dengan tema lain jika diinginkan
+            });
+
+            pdf.text(`Rekap Absensi - ${monthYear}`, 20, 10);
+            pdf.save(`rekap_absensi_${monthYear}.pdf`);
+          } catch (error) {
+            Swal.fire('Error', 'Gagal mengunduh PDF.', 'error');
+          }
+        }
+      });
+    },
+
+    // Fungsi untuk mengunduh data ke format Excel
+    downloadExcel() {
+      const monthYear = this.getMonthYearString();
+
+      // Tambahkan SweetAlert2 konfirmasi di sini
+      Swal.fire({
+        title: 'Konfirmasi',
+        text: 'Apakah Anda yakin ingin mengunduh file Excel?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Tidak',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          try {
+            const dataWithNames = this.paginatedPresence.map((presence) => ({
+              ...presence,
+              Nama_Karyawan: presence['user'].name,
+              Jam_Pulang: presence.pulang ? presence.pulang : 'Belum Pulang',
+              Status_Terlambat: this.isLate(presence.masuk) ? 'Terlambat' : 'Tidak Terlambat',
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(dataWithNames);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, `Rekap Absensi - ${monthYear}`);
+            XLSX.writeFile(workbook, `rekap_absensi_${monthYear}.xlsx`);
+          } catch (error) {
+            Swal.fire('Error', 'Gagal mengunduh Excel.', 'error');
+          }
+        }
+      });
+    },
   },
   created() {
     const today = new Date();

@@ -3,26 +3,34 @@
 <template>
   <div class="mt-5">
     <div class="relative group">
-      <div class="w-full h-24 bg-pink-500 rounded-2xl">
-        <div class="container">
-          <h1 class="text-3xl text-white pl-12 pt-7 font-bold">{{ getPageName }}</h1>
+      <div class="w-full h-24 bg-pink-500 rounded-2xl flex items-center justify-between px-8">
+        <div>
+          <h1 class="text-3xl text-white font-bold">{{ getPageName }}</h1>
         </div>
-      </div>
-      <div class="absolute top-0 right-0 mt-4 mr-4">
-        <div class="mt-4 relative">
+        <div class="flex items-center">
+          <div class="text-white mr-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
+              class="bi bi-clock mr-2" viewBox="0 0 16 16">
+              <path
+                d="M7.5 1a6.5 6.5 0 0 1 6.473 7.757.5.5 0 0 1-1.002.09 5.5 5.5 0 0 0-10.946 0 .5.5 0 0 1-1.002-.09A6.5 6.5 0 0 1 7.5 1zm0 13a6.5 6.5 0 0 1-6.473-7.757.5.5 0 0 1 1.002-.09 5.5 5.5 0 0 0 10.946 0 .5.5 0 0 1 1.002.09A6.5 6.5 0 0 1 7.5 14zm-1-7a.5.5 0 0 1 .5.5v4.568l2.657 1.513a.5.5 0 0 1-.5.866l-3-1.714a.5.5 0 0 1-.157-.764l.157-.094L8 8.432V3.5a.5.5 0 0 1 1 0z" />
+            </svg>
+            <span>{{ currentTimestamp }}</span>
+          </div>
           <button id="dropdownUserAvatarButton" @click="toggleDropdown"
-            class="flex mx-3 text-sm  rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+            class="flex mx-3 text-sm rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             type="button">
             <span class="sr-only">Open user menu</span>
             <img class="w-8 h-8 rounded-full border border-1 border-gray-50"
               src="https://sipadek.bengkulukota.go.id/assets/chat/images/admin.png" alt="user photo">
           </button>
-
+        </div>
+      </div>
+      <div class="absolute top-0 right-0 mt-4 mr-16">
+        <div class="mt-4 relative">
           <div v-if="isDropdownOpen" id="dropdownAvatarName"
             class="bg-gray-50 -mx-28 divide-y divide-gray-200 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600"
             :style="dropdownStyle">
             <div class="px-4 py-3 text-sm text-gray-900 dark:text-white">
-              <!-- Gunakan rendering kondisional untuk memeriksa apakah 'me' telah didefinisikan -->
               <div v-if="me">
                 <div class="font-medium">{{ me.user.name }}</div>
                 <div class="truncate">{{ me.user.email }}</div>
@@ -76,9 +84,10 @@ export default {
       isLoading: false,
       dropdownStyle: {
         position: "absolute",
-        top: "40px", // Sesuaikan posisi atas sebagaimana diperlukan
-        left: "0", // Sesuaikan posisi kiri sebagaimana diperlukan
+        top: "40px",
+        left: "0",
       },
+      currentTimestamp: '',
     };
   },
   methods: {
@@ -89,39 +98,37 @@ export default {
     async logout() {
       try {
         this.isLoading = true;
-        // Memanggil aksi logout dan menunggu selesai
         await this.$store.dispatch('auth/logout');
-        // Menghentikan animasi loading setelah selesai
         this.isLoading = false;
-        // Mengarahkan pengguna ke halaman login
         this.$router.push({ name: 'Login' });
       } catch (error) {
-        // Menangani kesalahan jika logout gagal
         console.log(error.message);
-        // Memberitahu pengguna bahwa logout gagal
         throw error;
       }
+    },
+    updateTimestamp() {
+      const currentTime = new Date();
+      const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const userTime = new Date(currentTime.toLocaleString('en-US', { timeZone: userTimeZone }));
+
+      this.currentTimestamp = userTime.toLocaleTimeString();
     },
   },
   computed: {
     ...mapGetters('auth', ['getMe']),
-    me(){
-      return this.getMe
+    me() {
+      return this.getMe;
     },
     getPageName() {
-      // Mengambil nama route dari route saat ini
       const name = this.$route.name;
-
-      // Mengambil meta title dari route saat ini
       const metaTitle = this.$route.meta.title;
-
-      // Menggunakan meta title jika tersedia, jika tidak, menggunakan nama route
       return metaTitle ? metaTitle : (name ? name : 'Teks Default');
     },
   },
   created() {
-    // Memanggil aksi untuk mengambil data pengguna saat komponen dibuat
     this.fetchMe();
+    this.updateTimestamp();
+    setInterval(this.updateTimestamp, 1000);
   },
 };
 </script>

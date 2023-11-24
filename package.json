@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "axios": "^1.5.1",
+    "esri-leaflet": "^3.0.11",
+    "esri-leaflet-geocoder": "^3.1.4",
     "flowbite": "^1.8.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.7.1",
     "leaflet": "^1.9.4",
+    "leaflet-geosearch": "^3.11.0",
+    "leaflet-search": "^4.0.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "sweetalert2": "^11.10.0",
@@ -27,6 +31,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/vue-cropperjs": "^4.1.6",
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.30",

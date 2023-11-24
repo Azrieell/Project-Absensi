@@ -67,17 +67,23 @@
               </label>
             </div>
           </div>
-          <button type="submit" @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-              <span v-if="isLoading">Menyimpan...</span>
-              <span v-else>Simpan</span>
-            </button>
+          <button type="submit" @click="scrollToTop"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <span v-if="isLoading">Menyimpan...</span>
+            <span v-else>Simpan</span>
+          </button>
         </div>
       </form>
     </div>
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet-search/dist/leaflet-search.src.css";
+import "leaflet-search";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -143,20 +149,55 @@ export default {
           maxZoom: 20,
         }).addTo(this.map);
 
+        const provider = new OpenStreetMapProvider();
+        const searchControl = new L.Control.Search({
+          provider: provider,
+        });
+
+        searchControl.addTo(this.map);
+
+        searchControl.on("search:locationfound", (e) => {
+          if (e && e.latlng) {
+            // Pindahkan peta ke lokasi yang dicari
+            this.map.setView(e.latlng, 15);
+
+            // Atur lokasi perusahaan dan marker sesuai dengan hasil pencarian
+            this.companyData.latitude = e.latlng.lat;
+            this.companyData.longitude = e.latlng.lng;
+            this.marker.setLatLng(e.latlng);
+          } else {
+            console.error("Data hasil pencarian tidak valid:", e);
+          }
+        });
+
+        searchControl.on("search:collapsed", () => {
+          console.log("Pencarian Ditutup");
+        });
+
+        searchControl.on("search:cancel", () => {
+          console.log("Pencarian Dibatalkan");
+        });
+
+        searchControl.on("search:error", (e) => {
+          console.error("Kesalahan Pencarian:", e);
+        });
+
         this.circle = L.circle([latitude, longitude], {
           color: "red",
           fillColor: "#f03",
           fillOpacity: 0.5,
           radius: radius,
         }).addTo(this.map);
+
         // Inisialisasi marker yang dapat digandeng
         this.marker = L.marker([latitude, longitude], {
           draggable: true,
         }).addTo(this.map);
-        // Menambahkan event handler untuk penanganan gandeng marker
+
+        // Tambahkan event handler untuk penanganan gandeng marker
         this.marker.on("dragend", (event) => {
           const { lat, lng } = event.target.getLatLng();
-          console.log("New Location:", lat, lng);
+          console.log("Lokasi Baru:", lat, lng);
           this.companyData.latitude = lat;
           this.companyData.longitude = lng;
         });

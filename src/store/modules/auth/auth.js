@@ -10,7 +10,7 @@ const auth = {
   },
   getters: {
     isError: state => state.loginError,
-    isAuthenticated: state => !!state.role,
+    isAuthenticated: state => !!state.role && state.role !== '',
     getMe: (state) => state.user
   },
   actions: {
@@ -22,7 +22,7 @@ const auth = {
         localStorage.setItem('role', user);
 
         // Set waktu kedaluwarsa token (12 jam dari sekarang)
-        const expirationTime = new Date().getTime() + 12 * 60 * 60 * 1000;
+        const expirationTime = new Date().getTime() + 6 * 60 * 60 * 1000;
         localStorage.setItem('tokenExpiration', expirationTime);
         commit('SET_USER_LOGIN', null);
         commit('SET_ROLE', user);
@@ -33,7 +33,7 @@ const auth = {
           localStorage.removeItem('role');
           localStorage.removeItem('tokenExpiration');
           window.location.href = '/';
-        }, 12 * 60 * 60 * 1000);
+        }, 6 * 60 * 60 * 1000);
 
         return true;
       } catch (error) {

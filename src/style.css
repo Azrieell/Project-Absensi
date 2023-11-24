@@ -1,9 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Fredoka&display=swap');
-
 * {
   font-family: 'Fredoka', sans-serif;
   scroll-behavior: smooth;

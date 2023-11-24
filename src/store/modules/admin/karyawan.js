@@ -47,11 +47,11 @@ const karyawan = {
     resetSingleKaryawan({ commit }) {
       commit("SET_SINGLE_EMPLOYEE", null);
     },
-    async createEmployee({ commit }, employeeData) {
+    async createEmployee({ commit }, formData) {
       try {
         const response = await axios.post(
           "/employee/user/create",
-          employeeData,
+          formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",

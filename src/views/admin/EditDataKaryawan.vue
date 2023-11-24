@@ -7,14 +7,19 @@
           class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-8 mx-4">
           <h1><b>Edit Foto Karyawan</b></h1>
           <div class="pt-5 mx-5">
-            <!-- Tampilkan gambar profil -->
-            <img :src="employeeEditData.file || employee.url" :alt="employeeEditData.file || employee.url"
+            <!-- Tampilkan gambar profil jika ada -->
+            <img v-if="employeeEditData.file" :src="employeeEditData.file" :alt="employeeEditData.file"
               class="h-64 w-64 rounded-full">
+            <!-- Tampilkan placeholder atau pesan jika tidak ada gambar -->
+            <div v-else class="h-64 w-64 bg-gray-200 flex items-center justify-center rounded-full">
+              <span class="text-gray-500">Preview Foto</span>
+            </div>
             <!-- Input untuk mengganti foto -->
-            <label for="file" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">GANTI
-              FOTO</label>
-            <input type="file" id="file" @change="onFileChange"
-              class="bg-white border-gray-500 text-sm focus:ring-red-600 focus:border-red-600 block w-full p-2.5">
+            <div v-if="!employeeEditData.file" class="text-base text-red-500 font-semibold">Foto harus diunggah.</div>
+            <div v-if="imageValidation.error" class="text-base text-red-500 font-semibold">{{ imageValidation.message }}
+            </div>
+            <input type="file" id="file" @change="onFileChange" ref="fileInput"
+              class="bg-white border-gray-500 text-sm block w-full p-2.5">
           </div>
         </div>
       </div>
@@ -118,6 +123,10 @@ export default {
         jabatan: '',
         file: null,
       },
+      imageValidation: {
+        error: false,
+        message: ''
+      },
       phoneError: '',
       isLoading: false,
       loading: true
@@ -139,9 +148,17 @@ export default {
     async saveEmployee() {
       try {
         this.isLoading = true;
+        const formData = new FormData();
+        Object.keys(this.employeeEditData).forEach((key) => {
+          if (key !== 'file' && key !== 'fileObject') {
+            formData.append(key, this.employeeEditData[key]);
+          }
+        });
+        formData.append('file', this.employeeEditData.fileObject);
+        this.scrollToTop()
         await this.$store.dispatch('karyawan/updateEmployee', {
           uuid: this.$route.params.uuid,
-          employeeEditData: this.employeeEditData,
+          employeeEditData: formData,
         });
         this.$router.push({ name: 'DataKaryawan' });
         this.isLoading = false;
@@ -154,8 +171,40 @@ export default {
         });
       }
     },
-    onFileChange(event) {
-      this.employeeEditData.file = event.target.files[0];
+    onFileChange() {
+      const fileInput = this.$refs.fileInput;
+      const file = fileInput.files[0];
+
+      if (file) {
+        // Validasi tipe file
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+        if (!allowedTypes.includes(file.type)) {
+          this.imageValidation.error = true;
+          this.imageValidation.message = 'Tipe file tidak valid. Harap pilih file dengan tipe .png, .jpg, atau .jpeg.';
+          return;
+        }
+
+        // Validasi ukuran file
+        const maxSize = 5 * 1024 * 1024; // 5 MB dalam byte
+        if (file.size > maxSize) {
+          this.imageValidation.error = true;
+          this.imageValidation.message = 'Ukuran file terlalu besar. Harap pilih file yang kurang dari 5 MB.';
+          return;
+        }
+
+
+        // Mengonversi URL gambar menjadi objek File
+        const imageUrl = URL.createObjectURL(file);
+        this.employeeEditData.file = imageUrl;
+
+        // Simpan objek File ke dalam data
+        this.employeeEditData.fileObject = file;
+      } else {
+        this.employeeEditData.file = null;
+        this.employeeEditData.fileObject = null;
+        this.imageValidation.error = false;
+        this.imageValidation.message = '';
+      }
     },
     async loadData() {
       // Memastikan data terbaru diambil dari server saat masuk ke halaman edit
@@ -197,7 +246,9 @@ export default {
         this.phoneError = "";
       }
     },
-
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    },
   },
   beforeRouteUpdate(to, from, next) {
     const employeeUuid = to.params.uuid;

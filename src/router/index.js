@@ -19,24 +19,33 @@ import EditPerusahaan from "../views/admin/EditPerusahaan.vue";
 import  store  from "../store";
 
 import HomeKaryawan from "../views/karyawan/HomeKaryawan.vue";
-// import AbsenKaryawan from "../views/karyawan/AbsenKaryawan.vue";
-// import SakitKaryawan from "../views/karyawan/SakitKaryawan.vue";
-// import IzinKaryawan from "../views/karyawan/IzinKaryawan.vue";
-// import InformasiKaryawan from "../views/karyawan/InformasiKaryawan.vue";
+
 const routes = [
   {
     path: '/',
     name: 'Login',
     component: Login,
-    meta: { requiresGuest: true },
-    beforeEnter: (to, from, next) => {
-      // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
-      setTimeout(() => {
-        next()
-      }, 1000)
-    },
     meta: {
       title: 'login',
+    },
+    beforeEnter: (to, from, next) => {
+      const isAuthenticated = store.getters["auth/isAuthenticated"];
+      if (isAuthenticated) {
+        // Jika pengguna sudah login, arahkan ke halaman yang sesuai dengan rolenya
+        const role = localStorage.getItem('role');
+        if (role === 'admin') {
+          next('/admin/home');
+        } else if (role === 'user') {
+          next('/karyawan/home');
+        } else {
+          next("/");
+        }
+      } else {
+        // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
+        setTimeout(() => {
+          next();
+        }, 1000);
+      }
     },
   },
 
@@ -44,34 +53,26 @@ const routes = [
     path: '/admin',
     component: AdminLayout,
     name: 'AdminLayout',
-    meta: { requiresLogin: true },
-    meta: { requiresAdmin: true },
     meta: {
       title: 'Admin Dashboard',
-    },
-    beforeEnter: (to, from, next) => {
-      // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
-      setTimeout(() => {
-        next()
-      }, 1000)
+      requiresLogin: true, 
+      requiresAdmin: true
     },
     children: [
       {
         path: '/admin/home',
         component: HomeAdmin,
         name: 'HomeAdmin',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
-          title: 'Beranda',
+          title: 'Admin Dashboard',
+          requiresLogin: true, 
+          requiresAdmin: true
         },
       },
       {
         path: '/admin/datakaryawan',
         component: DataKaryawan,
         name: 'DataKaryawan',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data Karyawan',
         },
@@ -80,8 +81,6 @@ const routes = [
         path: '/admin/singledatakaryawan/:uuid',
         component: SingleDataKaryawan,
         name: 'SingleDataKaryawan',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Detail Data Karyawan',
         },
@@ -90,8 +89,6 @@ const routes = [
         path: '/admin/EditDataKaryawan/:uuid',
         component: EditDataKaryawan,
         name: 'Edit Data Karyawan',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Edit Data Karyawan',
         },
@@ -100,8 +97,6 @@ const routes = [
         path: '/admin/datakaryawan/tambah',
         component: TambahKaryawan,
         name: 'TamabahKaryawan',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Tambah Data Karyawan',
         },
@@ -110,8 +105,6 @@ const routes = [
         path: '/admin/datauser',
         component: DataUser,
         name: 'DataUser',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data User',
         },
@@ -120,8 +113,6 @@ const routes = [
         path: '/admin/datauser/edit/:uuid',
         component: EditDataAdmin,
         name: 'EditDataAdmin',
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Edit User',
         },
@@ -130,8 +121,6 @@ const routes = [
         path: '/admin/datajabatan',
         name: 'DataJabatan',
         component: DataJabatan,
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data Jabatan',
         },
@@ -140,8 +129,6 @@ const routes = [
         path: '/admin/keterangan',
         name: 'DataKeterangan',
         component: DataKeterangan,
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data Keterangan Karyawan',
         },
@@ -150,8 +137,6 @@ const routes = [
         path: '/admin/dataabsen',
         name: 'DataAbsen',
         component: DataAbsen,
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data Absensi Karyawan',
         },
@@ -160,8 +145,6 @@ const routes = [
         path: '/admin/perusahaan',
         name: 'Perusahaan',
         component: Perusahaan,
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Data Perusahaan',
         },
@@ -170,8 +153,6 @@ const routes = [
         path: '/admin/perusahaan/edit',
         name: 'EditPerusahaan',
         component: EditPerusahaan,
-        meta: { requiresLogin: true },
-        meta: { requiresAdmin: true },
         meta: {
           title: 'Edit Data Perusahaan',
         },
@@ -185,57 +166,8 @@ const routes = [
     path: '/karyawan/home',
     name: 'HomeKaryawan',
     component: HomeKaryawan,
-    meta: { requiresLogin: true },
-    meta: { requiresUser: true }
+    meta: { requiresLogin: true, requiresUser: true }
   },
-  // {
-  //   path: '/absenkaryawan',
-  //   name: 'AbsenKaryawan',
-  //   component: AbsenKaryawan
-  // },
-  // {
-  //   path: '/sakitkaryawan',
-  //   name: 'SakitKaryawan',
-  //   component: SakitKaryawan
-  // },
-  // {
-  //   path: '/izinkaryawan',
-  //   name: 'IzinKaryawan',
-  //   component: IzinKaryawan
-  // },
-  // {
-  //   path: '/informasikaryawan',
-  //   name: 'InformasiKaryawan',
-  //   component: InformasiKaryawan
-  // },
-
-
-
-  // {
-  //   path: '/homekaryawan',
-  //   name: 'HomeKaryawan',
-  //   component: HomeKaryawan
-  // },
-  // {
-  //   path: '/absenkaryawan',
-  //   name: 'AbsenKaryawan',
-  //   component: AbsenKaryawan
-  // },
-  // {
-  //   path: '/sakitkaryawan',
-  //   name: 'SakitKaryawan',
-  //   component: SakitKaryawan
-  // },
-  // {
-  //   path: '/izinkaryawan',
-  //   name: 'IzinKaryawan',
-  //   component: IzinKaryawan
-  // },
-  // {
-  //   path: '/informasikaryawan',
-  //   name: 'InformasiKaryawan',
-  //   component: InformasiKaryawan
-  // },
 
 
 ];
@@ -245,32 +177,37 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  const role =  localStorage.getItem('role');
-  if (to.meta.requiresGuest && store.getters["auth/isAuthenticated"] && role === 'admin') {
-    next('/admin/home');
-  } else if (to.meta.requiresGuest && store.getters["auth/isAuthenticated"] && role === 'user') {
-    next('/karyawan/home');
-  } else {
-    next()
+router.beforeEach(async (to, from, next) => {
+  const isAuthenticated = store.getters["auth/isAuthenticated"];
+
+  // Pastikan status otentikasi dan role diperbarui
+  if (!isAuthenticated) {
+    await store.dispatch("auth/checkTokenExpiration");
   }
-}); 
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresLogin && !store.getters["auth/isAuthenticated"]) {
+
+  const role = localStorage.getItem('role');
+
+  if (to.meta.requiresLogin && !isAuthenticated) {
+    // Jika halaman membutuhkan login dan pengguna belum login, arahkan ke halaman login
+    next("/");
+  } else if (to.meta.requiresGuest && isAuthenticated) {
+    // Jika halaman membutuhkan tamu dan pengguna sudah login, arahkan sesuai rolenya
+    if (role === 'admin') {
+      next('/admin/home');
+    } else if (role === 'user') {
+      next('/karyawan/home');
+    } else {
+      next("/");
+    }
+  } else if (to.meta.requiresAdmin && role !== 'admin') {
+    // Jika halaman membutuhkan admin dan pengguna bukan admin
+    next("/");
+  } else if (to.meta.requiresUser && role !== 'user') {
+    // Jika halaman membutuhkan user dan pengguna bukan user
     next("/");
   } else {
-    next()
+    next(); // Melanjutkan ke halaman yang diminta
   }
 });
 
-router.beforeEach((to, from, next) => {
-  const role =  localStorage.getItem('role');
-  if (to.meta.requiresAdmin && role !== 'admin') {
-    next("/");
-  } else if (to.meta.requiresUser && role !== 'user') {
-    next("/");
-  } else {
-    next()
-  }
-});
 export default router;
