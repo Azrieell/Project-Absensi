@@ -18,28 +18,8 @@
           </div>
           <input type="text" id="table-search"
             class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Cari Karyawan" v-model="searchKeyword" @input="handleSearch">
-          <!-- Dropdown hasil pencarian -->
-          <div v-if="showDropdown" class="search-results">
-            <router-link @click="scrollToTop" v-for="result in searchResults"
-              :to="{ name: 'SingleDataKaryawan', params: { uuid: result.uuid } }" :key="result.uuid">
-              <div class="search-result p-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
-                {{ result.nama }}
-                <router-link
-                 :to="{ name: 'Edit Data Karyawan', params: { uuid: result.uuid } }">
-                <button @click="scrollToTop" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded">
-                  <svg class="w-3 h-3 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor" viewBox="0 0 20 18">
-                    <path
-                      d="M12.687 14.408a3.01 3.01 0 0 1-1.533.821l-3.566 .713a3 3 0 0 1-3.53-3.53l.713-3.566a3.01 3.01 0 0 1 .821-1.533L10.905 2H2.167A2.169 2.169 0 0 0 0 4.167v11.666A2.169 2.169 0 0 0 2.167 18h11.666A2.169 2.169 0 0 0 16 15.833V11.1l-3.313 3.308Zm5.53-9.065.546-.546a2.518 2.518 0 0 0 0-3.56 2.576 2.576 0 0 0-3.559 0l-.547.547 3.56 3.56Z" />
-                    <path
-                      d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z" />
-                  </svg>
-                </button>
-              </router-link>
-              </div>
-            </router-link>
-          </div>
+            placeholder="Cari Karyawan" v-model="searchKeyword" @input="handleSearch" @focus="showDropdown = true"
+            @blur="showDropdown = false">
         </div>
       </div>
       <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -66,7 +46,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="karyawan in paginatedKaryawan" :key="karyawan.uuid"
+          <tr v-for="(karyawan, index) in paginatedKaryawan" :key="karyawan.uuid"
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td class="px-6 py-4">{{ karyawan.nip }}</td>
             <td class="px-6 py-4">{{ karyawan.nama }}</td>
@@ -74,17 +54,15 @@
             <td class="px-6 py-4">{{ karyawan.jenis_kelamin }}</td>
             <td class="px-6 py-4">{{ karyawan.jabatan }}</td>
             <td class="px-6 py-4">
-              <router-link @click="scrollToTop" :to="{ name: 'SingleDataKaryawan', params: { uuid: karyawan.uuid } }">
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
-                  <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor" viewBox="0 0 16 3">
-                    <path
-                      d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                  </svg>
-                </button>
-              </router-link>
-              <router-link @click="scrollToTop" :to="{ name: 'Edit Data Karyawan', params: { uuid: karyawan.uuid } }">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              <button @click="toDetailEmployee(karyawan)"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-2">
+                <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor" viewBox="0 0 16 3">
+                  <path
+                    d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                </svg>
+              </button>
+                <button @click="toEditEmployee(karyawan)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor" viewBox="0 0 20 18">
                     <path
@@ -93,7 +71,6 @@
                       d="M13.243 3.2 7.359 9.081a.5.5 0 0 0-.136.256L6.51 12.9a.5.5 0 0 0 .59.59l3.566-.713a.5.5 0 0 0 .255-.136L16.8 6.757 13.243 3.2Z" />
                   </svg>
                 </button>
-              </router-link>
             </td>
           </tr>
           <tr v-if="getkaryawan.length === 0">
@@ -132,22 +109,44 @@ export default {
   },
   computed: {
     ...mapGetters('karyawan', ['getkaryawan']),
+    employee() {
+      return this.getkaryawan.uuid;
+    },
     totalPages() {
-      return Math.ceil(this.getkaryawan.length / this.perPage);
+      return Math.ceil(this.searchResults.length / this.perPage);
     },
     paginatedKaryawan() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-      return this.getkaryawan.slice(start, end);
+      return this.searchResults.slice(start, end);
     },
+
     searchResults() {
-      // Logika pencarian berdasarkan kata kunci
-      return this.getkaryawan.filter(karyawan =>
-        karyawan.nama.toLowerCase().includes(this.searchKeyword.toLowerCase())
-      );
+      return this.getkaryawan.filter((karyawan) => {
+        const nip = karyawan.nip ? karyawan.nip.toString() : '';
+        const nama = karyawan.nama ? karyawan.nama.toLowerCase() : '';
+        const jabatan = karyawan.jabatan ? karyawan.jabatan.toLowerCase() : '';
+        const email = karyawan.email ? karyawan.email.toLowerCase() : '';
+
+        return (
+          nip.includes(this.searchKeyword.toLowerCase()) ||
+          nama.includes(this.searchKeyword.toLowerCase()) ||
+          jabatan.includes(this.searchKeyword.toLowerCase()) ||
+          email.includes(this.searchKeyword.toLowerCase())
+        );
+      });
     },
+
   },
   methods: {
+    toDetailEmployee(karyawan) {
+      this.scrollToTop();
+      this.$router.push({ name: 'SingleDataKaryawan', params: { uuid: karyawan.uuid } });
+    },
+    toEditEmployee(karyawan) {
+      this.scrollToTop();
+      this.$router.push({ name: 'EditDataKaryawan', params: { uuid: karyawan.uuid } });
+    },
     nextPage() {
       this.changePage('next');
     },
@@ -174,9 +173,6 @@ export default {
     ...mapActions('karyawan', ['fetchKaryawan']),
   },
   created() {
-    this.fetchKaryawan();
-  },
-  beforeMount() {
     this.fetchKaryawan();
   },
   beforeRouteEnter(to, from, next) {
@@ -211,5 +207,4 @@ export default {
 
 .search-result:hover {
   background-color: #f3f4f6;
-}
-</style>
+}</style>

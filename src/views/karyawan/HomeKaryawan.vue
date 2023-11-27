@@ -383,6 +383,15 @@ export default {
     this.fetchInformation(); // Hapus jika tidak diperlukan
     this.loadData(); // Memanggil loadData
     this.updateTime();
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

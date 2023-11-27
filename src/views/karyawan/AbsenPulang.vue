@@ -15,9 +15,9 @@
       <br />
       <div v-if="showCamera">
         <video ref="videoElement" autoplay></video>
-        <button @click="takeSnapshot"
+        <button @click="validateLocationAndTakeSnapshot"
           class="text-white items-center mt-5 mx-20 text-md w-50 font-semibold bg-green-400 py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110">
-          <span>Absen Sekarang</span>
+          <span>{{ isAbsenClicked ? 'Absen Pulang' : 'Absen Sekarang' }}</span>
         </button>
       </div>
       <div v-else>
@@ -86,6 +86,88 @@ export default {
       this.resetForm()
     },
 
+
+    async validateLocationAndTakeSnapshot() {
+      try {
+        await this.$store.dispatch('company/fetchCompany');
+        const companyData = this.$store.getters['company/getCompany'];
+
+        if (companyData) {
+          const locationValid = await this.validateLocation(companyData);
+          if (locationValid) {
+            this.takeSnapshot();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal Absen',
+              text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.',
+            });
+          }
+        } else {
+          console.error('Company data is not available.');
+        }
+      } catch (error) {
+        console.error('Error validating location and taking snapshot:', error);
+      }
+    },
+
+    async validateLocation(companyData) {
+      try {
+        // Mendapatkan lokasi pengguna
+        const userLocation = await this.getUserLocation();
+
+        // Menghitung jarak antara lokasi pengguna dan lokasi perusahaan
+        const distance = this.calculateDistance(
+          userLocation.latitude,
+          userLocation.longitude,
+          companyData.latitude,
+          companyData.longitude
+        );
+
+        // Memeriksa apakah pengguna berada dalam radius perusahaan
+        const isWithinRadius = distance <= companyData.radius;
+
+        return isWithinRadius;
+      } catch (error) {
+        console.error('Error validating location:', error);
+        return false;
+      }
+    },
+    getUserLocation() {
+      return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const userLocation = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              };
+              resolve(userLocation);
+            },
+            (error) => {
+              reject(error);
+            }
+          );
+        } else {
+          reject('Geolocation tidak didukung pada peramban ini.');
+        }
+      });
+    },
+    calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula untuk menghitung jarak antara dua titik koordinat
+            const R = 6371; // Radius of the earth in km
+            const dLat = this.deg2rad(lat2 - lat1);
+            const dLon = this.deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Distance in km
+            return distance;
+        },
+        deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        },
     async uploadDataToApi(formDataPresenceOut) {
       console.log('Sending data to API:', formDataPresenceOut); // Menampilkan data sebelum mengirim
       try {
@@ -265,7 +347,15 @@ export default {
         this.formDataPresenceOut.pulang = newValue;
       }
     }
-  }
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

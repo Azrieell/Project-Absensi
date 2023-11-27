@@ -162,7 +162,7 @@ export default {
       return this.getusers.filter((user) => {
         return (
           user.name.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
-          user.email.toLowerCase().includes(this.searchKeyword.toLowerCase())
+          user.email.toLowerCase().includes(this.searchKeyword.toLowerCase()) 
         );
       });
     },

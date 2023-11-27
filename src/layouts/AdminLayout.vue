@@ -18,7 +18,7 @@
                   <path
                     d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146ZM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5Z" />
                 </svg>
-                <router-link @click="scrollToTop" to="/admin/home">
+                <router-link  @click="scrollToTop" to="/admin/home">
                   <span class="text-xl ml-3 text-white hover:text-gray-300"
                     style="font-family: 'Fredoka', sans-serif;">Beranda</span>
                 </router-link>
@@ -178,13 +178,14 @@ export default {
     };
   },
   watch: {
-    $route(to, from) {
+   $route(to, from) {
       this.loading = true;
-      setTimeout(() => {
-        this.loading = false;
-      }, 1200);
-    }
-  },
+      this.$nextTick(() => {
+         this.loading = false;
+      });
+   }
+},
+
   mounted() {
     this.loading = false;
   },

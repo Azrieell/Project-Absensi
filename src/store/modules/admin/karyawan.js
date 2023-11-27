@@ -12,14 +12,9 @@ const karyawan = {
   getters: {
     getkaryawan: (state) => state.karyawan,
     getErrorUpdated: (state) => state.errorUpdated,
+    getErrorAdd: (state) => state.errorAdd,
     getEmployeeByUuid: (state) => (employeUuid) => {
-      console.log("fetching single employee by uuid:", employeUuid);
-      console.log("employeeData:", state.singleKaryawan);
-
-      // Ambil elemen pertama dari array singleKaryawan jika ada
       const employee = state.singleKaryawan[0];
-
-      console.log("employee:", employee);
       return employee;
     },
   },
@@ -49,28 +44,26 @@ const karyawan = {
     },
     async createEmployee({ commit }, formData) {
       try {
-        const response = await axios.post(
-          "/employee/user/create",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        const newEmployee = response.data; // Jika server mengembalikan data karyawan yang baru dibuat
+        const response = await axios.post("/employee/user/create", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        const newEmployee = response.data;
         commit("SET_ADD_EMPLOYEE", newEmployee);
         return newEmployee;
       } catch (error) {
-        const erroAddEmployee = error.response.data.msg;
+        const erroAddEmployee =
+          error.response.data.msg || "Failed to create employee";
         Swal.fire({
           icon: "error",
           title: "Oops...",
           text: erroAddEmployee,
         });
-        throw false;
+        throw error;
       }
     },
+
     async updateEmployee({ commit }, { uuid, employeeEditData }) {
       try {
         const response = await axios.patch(
@@ -78,7 +71,7 @@ const karyawan = {
           employeeEditData,
           {
             headers: {
-              "Content-Type": "multipart/form-data", // Set header Content-Type
+              "Content-Type": "multipart/form-data",
             },
           }
         );
@@ -86,7 +79,8 @@ const karyawan = {
         commit("SET_UPDATE_EMPLOYEE", { uuid, karyawan: response.data });
         return response.data;
       } catch (error) {
-        const updateError = error.response.data.msg;
+        const updateError =
+          error.response.data.msg || "Failed to update employee";
         commit("ERROR_UPDATE_KARYAWAN", updateError);
         throw error;
       }
@@ -113,8 +107,9 @@ const karyawan = {
       state.karyawan[updatedKaryawan] = karyawan;
       state.errorUpdated = null;
     },
-    SET_ADD_EMPLOYEE(state, karyawan) {
-      state.karyawan = karyawan;
+    SET_ADD_EMPLOYEE(state, newEmployee) {
+      state.karyawan.push(newEmployee);
+      state.errorAdd = null;
     },
   },
 };

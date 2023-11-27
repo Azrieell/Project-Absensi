@@ -90,7 +90,7 @@ const routes = [
       {
         path: "/admin/EditDataKaryawan/:uuid",
         component: EditDataKaryawan,
-        name: "Edit Data Karyawan",
+        name: "EditDataKaryawan",
         meta: {
           title: "Edit Data Karyawan",
         },
@@ -167,6 +167,7 @@ const routes = [
     name: "KaryawanLayout",
     component: KaryawanLayout,
     meta: {
+      title: "Karyawan",
       requiresLogin: true,
       requiresUser: true,
     },
@@ -181,36 +182,57 @@ const routes = [
         path: "/karyawan/home",
         name: "HomeKaryawan",
         component: HomeKaryawan,
+        meta: {
+          title: "Beranda Karyawan",
+        },
       },
       {
         path: "/karyawan/absenkaryawan",
         name: "AbsenKaryawan",
         component: AbsenKaryawan,
+        meta: {
+          title: "Absen Karyawan",
+        },
       },
       {
         path: "/karyawan/absenpulang",
         name: "AbsenPulang",
         component: AbsenPulang,
+        meta: {
+          title: "Absen Karyawan",
+        },
       },
       {
         path: "/karyawan/sakitkaryawan",
         name: "SakitKaryawan",
         component: SakitKaryawan,
+        meta: {
+          title: "Keterangan Sakit Karyawan",
+        },
       },
       {
         path: "/karyawan/izinkaryawan",
         name: "IzinKaryawan",
         component: IzinKaryawan,
+        meta: {
+          title: "Keterangan Izin Karyawan",
+        },
       },
       {
         path: "/karyawan/informasikaryawan",
         name: "InformasiKaryawan",
         component: InformasiKaryawan,
+        meta: {
+          title: "Informasi Karyawan",
+        },
       },
       {
         path: "/karyawan/profile",
         name: "profilekaryawan",
         component: profilekaryawan,
+        meta: {
+          title: "Profil Karyawan",
+        },
       },
     ],
   },
