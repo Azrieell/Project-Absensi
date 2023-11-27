@@ -18,7 +18,7 @@ const informationEmployee = {
       commit
     }) {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/employee/information/get');
+        const response = await axios.get('/employee/information/get');
         commit('SET_EMPLOYEE_INFORMATION', response.data);
         return response.data
       } catch (error) {
@@ -31,7 +31,7 @@ const informationEmployee = {
     }, informationData) {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/v1/employee/information/send",
+          "/employee/information/send",
           informationData, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -50,7 +50,7 @@ const informationEmployee = {
     }, informationData) {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/v1/employee/information/send",
+          "/employee/information/send",
           informationData, {
             headers: {
               "Content-Type": "multipart/form-data",

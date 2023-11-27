@@ -20,8 +20,8 @@ const user = {
   actions: {
     async fetchUser({ commit }) {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/users");
-        commit("SET_USER", response.data);
+        const response = await axios.get("/users");
+        commit("SET_USERS", response.data);
         return response.data;
       } catch (error) {
         alert(error.message);
@@ -30,10 +30,8 @@ const user = {
     },
     async fetchUserById({ commit }, useruuid) {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/v1/users/${useruuid}`
-        );
-        commit("SET_SINGLE_USER", response.data);
+        const response = await axios.get(`/users/${useruuid}`);
+        commit("SET_SINGLE_ID", response.data);
         return response.data;
       } catch (error) {
         alert(error.message);
@@ -42,10 +40,7 @@ const user = {
     },
     async AddUser({ commit }, userData) {
       try {
-        const response = await axios.post(
-          "http://localhost:5000/api/v1/users/add",
-          userData
-        );
+        const response = await axios.post("/users/add", userData);
         commit("SET_ADD_USER", response.data);
         Swal.fire("Berhasil!", "Berhasil Menambah User", "success");
         return response.data;
@@ -53,48 +48,43 @@ const user = {
         throw error;
       }
     },
-    async updateUser({ commit }, uuid, userDataEdit ) {
+    async updateUser({ commit }, { uuid, userDataEdit }) {
       try {
-        const response = await axios.patch(
-          `http://localhost:5000/api/v1/users/update/${uuid}`,
-          userDataEdit
-        );
+        const response = await axios.patch(`/users/update/${uuid}`, userDataEdit);
         commit("SET_UPDATE_USER", response.data);
         return response.data;
       } catch (error) {
         const updateError = error.response.data.msg;
         commit("ERROR_UPDATE_USER", updateError);
-        return false
+        return false;
       }
     },
-    async deleteUser({ commit, dispatch }, uuid) {
-      axios
-        .delete(`http://localhost:5000/api/v1/users/destroy/${uuid}`)
-        .then((response) => {
-          console.log("user deleted:", response.data);
-          dispatch("fetchUser");
-        })
-        .catch((error) => {
-          console.error("Error deleting user:", error);
-        });
+    async deleteUser({ dispatch }, uuid) {
+      try {
+        await axios.delete(`/users/destroy/${uuid}`);
+        dispatch("fetchUser");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+      }
     },
   },
   mutations: {
     ERROR_UPDATE_USER(state, error) {
-      state.errorUpdated = error; // Jika Anda ingin menyimpan pesan kesalahan, Anda bisa menyimpannya di state juga
+      state.errorUpdated = error;
     },
-    SET_USER(state, user) {
-      state.user = user;
+    SET_USERS(state, users) {
+      state.users = users;
     },
     SET_ADD_USER(state, user) {
-      state.user = user;
+      state.users.push(user); // Menambahkan pengguna baru ke dalam array
     },
     SET_UPDATE_USER(state, user) {
       state.singleId = user;
     },
-    SET_SINGLE_USER(state, user) {
+    SET_SINGLE_ID(state, user) {
       state.singleId = user;
     },
   },
 };
+
 export default user;

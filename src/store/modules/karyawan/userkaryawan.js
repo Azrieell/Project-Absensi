@@ -13,9 +13,10 @@ const userkaryawan = {
       commit
     }) {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/employee');
-        commit('SET_USER_KARYAWAN', response.data)
-        return response.data
+        const response = await axios.get('/employee');
+        const [ employeeData ] = response.data
+        commit('SET_USER_KARYAWAN', employeeData)
+        return employeeData
       } catch (error) {
         alert(error.message)
         return false

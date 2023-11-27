@@ -13,7 +13,7 @@ const presensi = {
       commit
     }) {
       try {
-        const response = await axios.get('http://localhost:5000/api/v1/employee/presence/get');
+        const response = await axios.get('/employee/presence/get');
         commit('SET_PRESENSI_EMPLOYEE', response.data);
         return response.data;
       } catch (error) {
@@ -29,7 +29,7 @@ const presensi = {
     }, informationData) {
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/v1/employee/information/send",
+          "/employee/information/send",
           informationData
         );
         const newPresensiEmployee = response.data;

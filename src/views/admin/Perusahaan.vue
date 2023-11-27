@@ -49,32 +49,34 @@
     </div>
   </div>
 </template>
-
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import StreetMap from "../../components/admin/StreetMap.vue"
+
 export default {
-  components:{
+  components: {
     StreetMap
   },
   computed: {
     company() {
-      return this.$store.state.company.company
+      return this.$store.state.company.company;
     }
   },
-  methods: { // Gunakan methods untuk memanggil actions
-    ...mapActions('company', ['fetchCompany'])
+  methods: {
+    ...mapActions('company', ['fetchCompany']),
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    }
   },
   async created() {
     try {
       await this.$store.dispatch('company/fetchCompany');
-      // Anda dapat mengakses properti nama setelah data sudah diambil
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: error,
-      })
+      });
     }
   },
   beforeMount() {
@@ -84,10 +86,9 @@ export default {
     document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
     next();
   },
-
   beforeRouteUpdate(to, from, next) {
     document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
     next();
   },
-}
+};
 </script>
