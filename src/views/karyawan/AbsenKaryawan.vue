@@ -5,7 +5,7 @@
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-lg">{{ greeting }}</p>
-                    <h1 class="mt-1 text-lg font-semibold">Aloe Cactus</h1>
+                    <h1 class="mt-1 text-lg font-semibold">{{ employee.nama }}</h1>
                 </div>
                 <div class="flex flex-col-reverse ml-12">
                     <p class="ml-12 text-m">{{ currentTime }} {{ timeZoneString }}</p>
@@ -31,6 +31,7 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import VueWebCam from 'vue-web-cam';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     components: {
@@ -54,7 +55,14 @@ export default {
             mediaStream: null,
         };
     },
+    computed: {
+        ...mapGetters('userkaryawan', ['getUserKaryawan']),
+        employee() {
+            return this.getUserKaryawan;
+        },
+    },
     methods: {
+        ...mapActions('userkaryawan', ['fetchUserKaryawan']),
         async takeSnapshot() {
             const video = this.$refs.videoElement;
             const canvas = document.createElement('canvas');
@@ -92,11 +100,13 @@ export default {
                 await this.$store.dispatch('company/fetchCompany');
                 const companyData = this.$store.getters['company/getCompany'];
 
-                if (companyData) {
+                if (companyData && companyData.status) {
                     const locationValid = await this.validateLocation(companyData);
                     if (locationValid) {
-                        this.takeSnapshot();
+                        // Validasi lokasi berhasil, lanjutkan dengan mengambil snapshot
+                        await this.takeSnapshot();
                     } else {
+                        // Lokasi tidak valid, tampilkan pesan kesalahan
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal Absen',
@@ -104,17 +114,26 @@ export default {
                         });
                     }
                 } else {
-                    console.error('Company data is not available.');
+                    // Data perusahaan tidak valid atau perusahaan tidak beroperasi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Absen',
+                        text: `${companyData.nama} tutup! Tidak memungkinkan absensi saat ini.`,
+                    });
                 }
             } catch (error) {
                 console.error('Error validating location and taking snapshot:', error);
             }
         },
-
         async validateLocation(companyData) {
             try {
                 // Mendapatkan lokasi pengguna
                 const userLocation = await this.getUserLocation();
+
+                if (!userLocation) {
+                    console.error('Gagal mendapatkan lokasi pengguna.');
+                    return false;
+                }
 
                 // Menghitung jarak antara lokasi pengguna dan lokasi perusahaan
                 const distance = this.calculateDistance(
@@ -124,13 +143,48 @@ export default {
                     companyData.longitude
                 );
 
+                console.log('Distance:', distance, 'Radius:', companyData.radius);
+
                 // Memeriksa apakah pengguna berada dalam radius perusahaan
                 const isWithinRadius = distance <= companyData.radius;
 
-                return isWithinRadius;
+                // Memeriksa apakah jarak relatif cukup dekat (misalnya, kurang dari 0.1 km)
+                const isCloseEnough = distance <= 0.1; // Sesuaikan dengan kebutuhan Anda
+
+                return isWithinRadius && isCloseEnough;
             } catch (error) {
                 console.error('Error validating location:', error);
                 return false;
+            }
+        },
+
+        async validateLocationOnPageLoad() {
+            try {
+                await this.$store.dispatch('company/fetchCompany');
+                const companyData = this.$store.getters['company/getCompany'];
+
+                if (companyData) {
+                    const locationValid = await this.validateLocation(companyData);
+                    if (!locationValid) {
+                        // Menampilkan pesan SweetAlert2 jika pengguna berada di luar lokasi saat halaman dimuat
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Akses Ditolak',
+                            text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Akses di setujui',
+                            text: 'Anda berada dilokasi segera untuk absen.'
+                        });
+                    }
+
+                } else {
+                    console.error('Company data is not available.');
+                }
+            } catch (error) {
+                console.error('Error validating location on page load:', error);
             }
         },
         getUserLocation() {
@@ -153,18 +207,22 @@ export default {
                 }
             });
         },
+
         calculateDistance(lat1, lon1, lat2, lon2) {
             // Haversine formula untuk menghitung jarak antara dua titik koordinat
-            const R = 6371; // Radius of the earth in km
+            const R = 6371; // Radius bumi dalam kilometer
             const dLat = this.deg2rad(lat2 - lat1);
             const dLon = this.deg2rad(lon2 - lon1);
             const a =
                 Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                 Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distance = R * c; // Distance in km
+            const distance = R * c; // Jarak dalam kilometer
+
             return distance;
         },
+
+
         deg2rad(deg) {
             return deg * (Math.PI / 180);
         },
@@ -321,7 +379,9 @@ export default {
     beforeDestroy() {
         // Panggil metode untuk mematikan kamera sebelum komponen dihancurkan
         this.destroyCamera();
+        clearInterval(this.intervalId); // Hentikan interval
     },
+
     mounted() {
         const video = this.$refs.videoElement;
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -332,6 +392,7 @@ export default {
                     video.srcObject = stream;
                     this.mediaStream = stream; // Simpan referensi ke objek MediaStream
                     this.videoElement = video;
+                    this.validateLocationOnPageLoad();
                 })
                 .catch(error => {
                     console.error('Could not access the webcam: ', error);
@@ -353,14 +414,17 @@ export default {
             }
         }
     },
+    created() {
+        this.fetchUserKaryawan();
+    },
     beforeRouteEnter(to, from, next) {
-    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
-    next();
-  },
+        document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+        next();
+    },
 
-  beforeRouteUpdate(to, from, next) {
-    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
-    next();
-  },
+    beforeRouteUpdate(to, from, next) {
+        document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+        next();
+    },
 };
 </script>

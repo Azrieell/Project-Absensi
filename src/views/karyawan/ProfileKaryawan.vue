@@ -18,8 +18,7 @@
               class="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
               <span>Ganti Password</span>
             </button>
-            <router-link to="/">
-              <button @click="logout"
+              <button @click="islogout"
                 class="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
                 <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                     class="bi bi-box-arrow-left" viewBox="0 0 16 16">
@@ -30,7 +29,6 @@
                   </svg></span>
                 <span>LogOut</span>
               </button>
-            </router-link>
           </div>
         </div>
       </div>
@@ -105,7 +103,10 @@ export default {
     scrollToTop() {
       window.scrollTo(0, 0);
     },
-
+    islogout(){
+      this.logout()
+      this.$router.push('/')
+    }
   },
   created() {
     this.fetchUserKaryawan();

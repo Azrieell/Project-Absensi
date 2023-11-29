@@ -19,8 +19,9 @@ const informationEmployee = {
     }) {
       try {
         const response = await axios.get('/employee/information/get');
-        commit('SET_EMPLOYEE_INFORMATION', response.data);
-        return response.data
+        const [ information ] = response.data
+        commit('SET_EMPLOYEE_INFORMATION', information);
+        return information
       } catch (error) {
         alert(error.message)
         return false
