@@ -7,7 +7,7 @@
         <router-link v-if="isAbsenMasuk && !isAbsenPulang" to="/karyawan/absenpulang">
           <button :disabled="presensiEmployee.pulang !== 'Belum ada data'" class="r-500 mb-5 mt-6">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            :class="{ 'text-gray-500': presensiEmployee.pulang !== 'Belum ada data' }"
+              :class="{ 'text-gray-500': presensiEmployee.pulang !== 'Belum ada data' }"
               class="bi bi-clipboard-data w-11 h-10 cursor-no-drop text-rose-600 " viewBox="0 0 16 16">
               <path
                 d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
@@ -84,7 +84,7 @@
           <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2 text-center text-white w-40">Jam Masuk</div>
             <p class="text-white text-center text-xl">
-              {{ presensiEmployee.pulang }}
+              {{ presensiEmployee.masuk }}
             </p>
           </div>
         </div>
@@ -111,7 +111,7 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Kehadiran</div>
           <p class="text-gray-700 text-center">
-            {{ getInformationLength.length }}
+          
           </p>
         </div>
       </div>
@@ -119,7 +119,7 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Sakit</div>
           <p class="text-gray-700 text-base text-center">
-
+            {{ getInformation['informationSick'] ? getInformation.informationSick.length : 0 }}
           </p>
         </div>
       </div>
@@ -127,7 +127,7 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Izin</div>
           <p class="text-gray-700 text-center">
-
+            {{ getInformation['informationPermission'] ? getInformation.informationPermission.length : 0 }}
           </p>
         </div>
       </div>
@@ -291,98 +291,93 @@
   </div>
 </template>
 <style>
-.hide-scroll-bar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+  .hide-scroll-bar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 
-.hide-scroll-bar::-webkit-scrollbar {
-  display: none;
-}
+  .hide-scroll-bar::-webkit-scrollbar {
+    display: none;
+  }
 </style>
 <script>
-import {
-  mapActions,
-  mapGetters
-} from 'vuex';
+  import {
+    mapActions,
+    mapGetters
+  } from 'vuex';
 
-export default {
-  data() {
-    return {
-      tgl_absen: '',
-    }
-  },
-  computed: {
-    ...mapGetters('informationemployee', ['getInformation', 'getInformationLength']),
-    ...mapGetters('presensi', ['getpresensiemployee']),
-    presensiEmployee() {
-      const presensiData = this.getpresensiemployee;
-
-      console.log('presensiData:', presensiData);
-      console.log('today:', this.tgl_absen);
-
-      // Lakukan filter data berdasarkan tanggal terbaru/hari ini
-      const filteredData = presensiData.filter(item => {
-        return item.tgl_absen === this.tgl_absen;
-      });
-      console.log('filteredData:', filteredData);
-
-      if (filteredData.length > 0) {
-        const firstData = filteredData[0];
-        if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
-          // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
-          console.log('Jam Masuk:', firstData.masuk);
-          console.log('Jam Pulang:', firstData.pulang);
-          // ... (lanjutan logika Anda)
-          return firstData;
-        }
-      }
-
+  export default {
+    data() {
       return {
-        masuk: 'Belum ada data',
-        pulang: 'Belum ada data',
-      };
-    },
-
-    isAbsenMasuk() {
-      return this.getpresensiemployee.length > 0;
-    },
-    isAbsenPulang() {
-      return this.getpresensiemployee.filter(item => item.type === 'AbsenPulang').length > 0;
-    },
-
-  },
-  methods: {
-    ...mapActions('informationemployee', ['fetchInformation']),
-    ...mapActions('presensi', ['fetchPresensiEmployee']),
-    switchPage(routeName) {
-      this.$router.push({
-        name: routeName
-      });
-    },
-    updateTime() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = `${(now.getMonth() + 1)}`.padStart(2, '0');
-      const date = `${now.getDate()}`.padStart(2, '0');
-      this.tgl_absen = `${year}-${month}-${date}`;
-    },
-    async loadData() {
-      try {
-        await this.fetchPresensiEmployee();
-      } catch (error) {
-        console.error('Error fetching presensi employee data:', error);
+        tgl_absen: '',
       }
     },
-  },
-  created() {
-    this.fetchInformation(); // Hapus jika tidak diperlukan
-    this.loadData(); // Memanggil loadData
-  },
-  mounted() {
-    this.fetchInformation(); // Hapus jika tidak diperlukan
-    this.loadData(); // Memanggil loadData
-    this.updateTime();
-  }
-};
+    computed: {
+      ...mapGetters('informationemployee', ['getInformation']),
+      ...mapGetters('presensi', ['getpresensiemployee']),
+      presensiEmployee() {
+        const presensiData = this.getpresensiemployee;
+
+        console.log('presensiData:', presensiData);
+        console.log('today:', this.tgl_absen);
+
+        // Lakukan filter data berdasarkan tanggal terbaru/hari ini
+        const filteredData = presensiData.filter(item => {
+          return item.tgl_absen === this.tgl_absen;
+        });
+        console.log('filteredData:', filteredData);
+
+        if (filteredData.length > 0) {
+          const firstData = filteredData[0];
+          if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
+            // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
+            console.log('Jam Masuk:', firstData.masuk);
+            console.log('Jam Pulang:', firstData.pulang);
+            // ... (lanjutan logika Anda)
+            return firstData;
+          }
+        }
+
+        return {
+          masuk: 'Belum ada data',
+          pulang: 'Belum ada data',
+        };
+      },
+
+      isAbsenMasuk() {
+        return this.getpresensiemployee.length > 0;
+      },
+      isAbsenPulang() {
+        return this.getpresensiemployee.filter(item => item.type === 'AbsenPulang').length > 0;
+      },
+
+    },
+    methods: {
+      ...mapActions('informationemployee', ['fetchInformation']),
+      ...mapActions('presensi', ['fetchPresensiEmployee']),
+      updateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = `${(now.getMonth() + 1)}`.padStart(2, '0');
+        const date = `${now.getDate()}`.padStart(2, '0');
+        this.tgl_absen = `${year}-${month}-${date}`;
+      },
+      async loadData() {
+        try {
+          await this.fetchPresensiEmployee();
+        } catch (error) {
+          console.error('Error fetching presensi employee data:', error);
+        }
+      },
+    },
+    created() {
+      this.fetchInformation(); // Hapus jika tidak diperlukan
+      this.loadData(); // Memanggil loadData
+    },
+    mounted() {
+      this.fetchInformation(); // Hapus jika tidak diperlukan
+      this.loadData(); // Memanggil loadData
+      this.updateTime();
+    }
+  };
 </script>

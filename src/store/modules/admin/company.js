@@ -9,7 +9,9 @@ const company = {
     getCompany: (state) => state.company,
   },
   actions: {
-    async fetchCompany({ commit }) {
+    async fetchCompany({
+      commit
+    }) {
       try {
         const response = await axios.get(
           "/employee/company/get"
@@ -21,7 +23,10 @@ const company = {
         return false;
       }
     },
-    async updateCompany({commit, dispatch}, companyData){
+    async updateCompany({
+      commit,
+      dispatch
+    }, companyData) {
       try {
         const response = await axios.patch('/employee/company/update', companyData);
         commit('SET_UPDATE_COMPANY', response.data)
@@ -37,7 +42,7 @@ const company = {
     SET_COMPANY(state, company) {
       state.company = company;
     },
-    SET_UPDATE_COMPANY(state, company){
+    SET_UPDATE_COMPANY(state, company) {
       state.company = company
     }
   },

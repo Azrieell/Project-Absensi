@@ -8,7 +8,7 @@
     </svg>
     <!-- Router Link ke HomeKaryawan (tidak diubah) -->
     <router-link :to="{name: 'HomeKaryawan'}">
-      <span class="absolute top-5 p- text-white sm:text-5xl sm:mt-5 text-3xl ml-8 mt-3 font-bold responsive-text">Absensi</span>
+      <span class="absolute top-5 text-white sm:text-5xl sm:mt-2 text-3xl ml-8 mt-3 font-bold responsive-text">Absensi  <p class="text-sm responsive-text">{{ company.nama }}</p></span>
     </router-link>
     <!-- Router Link ke /karyawan/profile (tidak diubah) -->
     <router-link to="/karyawan/profile">
@@ -55,23 +55,25 @@
 
   export default {
     name: 'KaryawanLayout',
-    data() {
-      return {};
-    },
     computed: {
       ...mapGetters('userkaryawan', ['getUserKaryawan']),
       employee() {
         return this.getUserKaryawan;
       },
+      company() {
+      return this.$store.state.company.company;
+    }
     },
     methods: {
       ...mapActions('userkaryawan', ['fetchUserKaryawan']),
+      ...mapActions('company', ['fetchCompany']),
       scrollToTop() {
         window.scrollTo(0, 0);
       },
     },
     created() {
       this.fetchUserKaryawan();
+      this.fetchCompany();
     },
   };
 </script>
@@ -88,7 +90,7 @@
 @media screen and (max-width: 500px) {
   /* Responsive styling for profile text */
   .responsive-text {
-    top: 1rem; /* Adjust top position for smaller screens */
+    top: 0.1rem; /* Adjust top position for smaller screens */
     font-size: 1.5rem; /* Adjust font size for smaller screens */
   }
 
