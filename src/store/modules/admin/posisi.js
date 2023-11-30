@@ -82,7 +82,7 @@ const posisi = {
       state.posisi = posisi;
     },
     SET_ADDPOSISI(state, posisi) {
-      state.posisi = posisi;
+      state.posisi.push(posisi);
     },
     SET_LOADING(state, isLoading) {
       state.isLoading = isLoading;

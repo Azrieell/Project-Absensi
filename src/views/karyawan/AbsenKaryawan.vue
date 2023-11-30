@@ -1,52 +1,491 @@
 <template>
-    <div class="rounded-lg w-90 p-4  border border-gray-200 ml-10 mr-10"
-        style="margin-top: 2%; background-color: #EEEEEE;">
-        <div class="container">
-            <p class="text-sm text-black">Selamat Pagi</p>
-            <h5 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Leonel Messi</h5>
-        </div>
-
-        <hr class="mt-2 my-6 border-black sm:mx-auto ">
-
-
-        <div class="w-full max-w-sm  border  rounded-lg shadow" style="background-color: #D9D9D9; margin-left: 35%;">
-
-            <div class="flex items-center justify-center w-full">
-                <label for="dropzone-file"
-                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                        </svg>
-                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to
-                                upload</span></p>
-                    </div>
-                    <input id="dropzone-file" type="file" class="hidden" />
-                </label>
+    <div class="fullscreen-container flex items-center mb-10">
+        <div
+            class="container mx-auto p-9 bg-white max-w-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-lg">{{ greeting }}</p>
+                    <h1 class="mt-1 text-lg font-semibold">{{ employee.nama }}</h1>
+                </div>
+                <div class="flex flex-col-reverse ml-12">
+                    <p class="ml-12 text-m">{{ currentTime }} {{ timeZoneString }}</p>
+                    <p class="ml-12 text-m">{{ formDataPresence.tgl_absen }}</p>
+                </div>
             </div>
-
-        </div>
-        <br>
-
-
-        <div class="mr-30 ml-32  block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
-            style="background-color: #DDDDDD; max-width: 30%; margin-left: 37%;">
-            <div class="grid grid-cols-2 mt-6 ml-10">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-12 h-12 ml-10">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
-                </svg>
-                <h5 class="mb-2 text-xl font-medium leading-tight text-neutral-800 dark:text-neutral-50 "
-                    style="margin-left: -35%; margin-top: 7%;">
-                    Absen Masuk
-                </h5>
+            <div v-if="showCamera">
+                <video ref="videoElement" autoplay class="rounded-xl mt-2"></video>
+                <button @click="validateLocationAndTakeSnapshot"
+                    class="text-white items-center mt-5 mx-20 text-md w-50 font-semibold bg-green-400 py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110">
+                    <span>{{ isAbsenClicked ? 'Absen Pulang' : 'Absen Sekarang' }}</span>
+                </button>
+            </div>
+            <div v-else>
+                <img :src="imageData" alt="" />
             </div>
         </div>
-
     </div>
 </template>
+<style>
+.fullscreen-container {
+    width: 100vw;
+    /* Lebar 100% dari viewport width */
+    height: 80vh;
+    /* Tinggi 100% dari viewport height */
+    /* Tetap di posisi saat scroll */
+    top: 0;
+    left: 0;
+    z-index: 1;
+    /* Atur z-index sesuai kebutuhan */
+}
+</style>
+<script>
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import VueWebCam from 'vue-web-cam';
+import { mapGetters, mapActions } from 'vuex';
+
+export default {
+    components: {
+        VueWebCam
+    },
+    data() {
+        return {
+            formDataPresence: {
+                tgl_absen: null,
+                masuk: '',
+                file: null
+            },
+            showCamera: true,
+            imageData: null,
+            videoElement: null,
+            currentTime: '',
+            greeting: '',
+            isAbsenClicked: false,
+            intervalId: null, // Menyimpan ID interval untuk di-clear nanti
+            timeZoneString: '', // Menyimpan singkatan zona waktu
+            mediaStream: null,
+            tgl_absen: '',
+        };
+    },
+    computed: {
+        ...mapGetters('userkaryawan', ['getUserKaryawan']),
+        ...mapGetters('informationemployee', ['getInformation', 'getInformationLength']),
+        ...mapGetters('presensi', ['getpresensiemployee']),
+        getpresensiemployee() {
+            return this.$store.getters['presensi/getpresensiemployee'] || [];
+        },
+        presensiEmployee() {
+            const presensiData = this.getpresensiemployee;
+
+            console.log('presensiData:', presensiData);
+            console.log('today:', this.tgl_absen);
+
+            // Lakukan filter data berdasarkan tanggal terbaru/hari ini
+            const filteredData = presensiData.filter(item => {
+                return item.tgl_absen === this.tgl_absen;
+            });
+            console.log('filteredData:', filteredData);
+
+            if (filteredData.length > 0) {
+                const firstData = filteredData[0];
+                if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
+                    // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
+                    console.log('Jam Masuk:', firstData.masuk);
+                    console.log('Jam Pulang:', firstData.pulang);
+                    // ... (lanjutan logika Anda)
+                    return firstData;
+                }
+            }
+
+            return {
+                masuk: 'Belum ada data',
+                pulang: 'Belum ada data',
+            };
+        },
+        employee() {
+            return this.getUserKaryawan;
+        },
+        isCheckInDone() {
+            return this.presensiEmployee.masuk !== 'Belum ada data';
+        },
+    },
+    methods: {
+        ...mapActions('userkaryawan', ['fetchUserKaryawan']),
+        ...mapActions('presensi', ['fetchPresensiEmployee']),
+        async takeSnapshot() {
+            const video = this.$refs.videoElement;
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg');
+            // Perbarui state
+            this.imageData = imageData;
+            this.showCamera = false;
+            // Ubah data URI menjadi objek File
+            const blob = this.dataURItoBlob(imageData);
+            const file = new File([blob], 'snapshot.jpg');
+            // Atur nilai file dalam formDataPresence
+            this.formDataPresence.file = file;
+            // Jika tombol belum diklik, set formDataPresence.masuk sesuai dengan waktu saat ini
+            if (!this.isAbsenClicked) {
+                this.formDataPresence.masuk = this.formatTime(this.currentTime);
+            }
+            // Hentikan pembaruan waktu
+            clearInterval(this.intervalId);
+
+            // Sekarang formDataPresence telah diperbarui, Anda dapat menggunakannya untuk mengirim data ke backend
+            await this.uploadDataToApi(this.formDataPresence);
+            // Ubah properti isAbsenClicked menjadi true setelah semua pemrosesan selesai
+            this.isAbsenClicked = true;
+            // Mulai kembali interval untuk memperbarui waktu setelah absen berhasil
+            this.intervalId = setInterval(this.updateTime, 1000);
+            this.resetForm()
+        },
+
+        async validateLocationAndTakeSnapshot() {
+            try {
+                await this.$store.dispatch('company/fetchCompany');
+                const companyData = this.$store.getters['company/getCompany'];
+
+                if (!this.isCheckInDone) {
+                    if (companyData && companyData.status) {
+                        const locationValid = await this.validateLocation(companyData);
+                        if (locationValid) {
+                            // Validasi lokasi berhasil, lanjutkan dengan mengambil snapshot
+                            await this.takeSnapshot();
+                        } else {
+                            // Lokasi tidak valid, tampilkan pesan kesalahan
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal Absen',
+                                text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.',
+                            });
+                        }
+                    } else {
+                        // Data perusahaan tidak valid atau perusahaan tidak beroperasi
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Absen',
+                            text: `${companyData.nama} tutup! Tidak memungkinkan absensi saat ini.`,
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Info',
+                        text: 'Anda sudah melakukan absen masuk.',
+                    });
+                    this.$router.push({
+                        name: 'HomeKaryawan',
+                    });
+                }
+            } catch (error) {
+                console.error('Error validating location and taking snapshot:', error);
+            }
+        },
+        async validateLocation(companyData) {
+            try {
+                // Mendapatkan lokasi pengguna
+                const userLocation = await this.getUserLocation();
+
+                if (!userLocation) {
+                    console.error('Gagal mendapatkan lokasi pengguna.');
+                    return false;
+                }
+
+                // Menghitung jarak antara lokasi pengguna dan lokasi perusahaan
+                const distance = this.calculateDistance(
+                    userLocation.latitude,
+                    userLocation.longitude,
+                    companyData.latitude,
+                    companyData.longitude
+                );
+
+                console.log('Distance:', distance, 'Radius:', companyData.radius);
+
+                // Memeriksa apakah pengguna berada dalam radius perusahaan
+                const isWithinRadius = distance <= companyData.radius;
+
+                // Memeriksa apakah jarak relatif cukup dekat (misalnya, kurang dari 0.1 km)
+                const isCloseEnough = distance <= 0.1; // Sesuaikan dengan kebutuhan Anda
+
+                return isWithinRadius && isCloseEnough;
+            } catch (error) {
+                console.error('Error validating location:', error);
+                return false;
+            }
+        },
+
+        async validateLocationOnPageLoad() {
+            try {
+                await this.$store.dispatch('company/fetchCompany');
+                const companyData = this.$store.getters['company/getCompany'];
+
+                if (companyData) {
+                    const locationValid = await this.validateLocation(companyData);
+                    if (!locationValid) {
+                        // Menampilkan pesan SweetAlert2 jika pengguna berada di luar lokasi saat halaman dimuat
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Akses Ditolak',
+                            text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.'
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Akses di setujui',
+                            text: 'Anda berada dilokasi segera untuk absen.'
+                        });
+                    }
+
+                } else {
+                    console.error('Company data is not available.');
+                }
+            } catch (error) {
+                console.error('Error validating location on page load:', error);
+            }
+        },
+        getUserLocation() {
+            return new Promise((resolve, reject) => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const userLocation = {
+                                latitude: position.coords.latitude,
+                                longitude: position.coords.longitude,
+                            };
+                            resolve(userLocation);
+                        },
+                        (error) => {
+                            reject(error);
+                        }
+                    );
+                } else {
+                    reject('Geolocation tidak didukung pada peramban ini.');
+                }
+            });
+        },
+
+        calculateDistance(lat1, lon1, lat2, lon2) {
+            // Haversine formula untuk menghitung jarak antara dua titik koordinat
+            const R = 6371; // Radius bumi dalam kilometer
+            const dLat = this.deg2rad(lat2 - lat1);
+            const dLon = this.deg2rad(lon2 - lon1);
+            const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distance = R * c; // Jarak dalam kilometer
+
+            return distance;
+        },
+
+
+        deg2rad(deg) {
+            return deg * (Math.PI / 180);
+        },
+        async uploadDataToApi(formDataPresence) {
+            console.log('Sending data to API:', formDataPresence); // Menampilkan data sebelum mengirim
+            try {
+                const response = await axios.post(
+                    '/employee/presence/in',  // Perbarui URL di sini
+                    formDataPresence,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    }
+                );
+                console.log('Response from API:', response.data); // Menampilkan respons dari server
+                if (response.status >= 200 && response.status < 300) {
+                    console.log('Data successfully uploaded');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: `Anda berhasil mengisi absensi pada jam ${this.currentTime}`,
+                    });
+                    this.$router.push({
+                        name: 'HomeKaryawan',
+                    });
+                } else {
+                    console.error('Failed to upload data to API');
+                }
+            } catch (error) {
+                console.error('Error uploading data to API:', error.response || error.message);
+            }
+        },
+        dataURItoBlob(dataURI) {
+            const byteString = atob(dataURI.split(',')[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            return new Blob([ab], {
+                type: 'image/jpeg'
+            });
+        },
+
+        resetForm() {
+            this.formDataPresence = {
+                tgl_absen: null,
+                masuk: '',
+                file: null
+            }
+        },
+
+        detectUserTimeZone() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+
+                        // Mendapatkan zona waktu berdasarkan koordinat lintang dan bujur
+                        const timeZoneOffset = this.getTimeZoneOffset(latitude, longitude);
+                        this.setTimeZoneString(timeZoneOffset);
+                    },
+                    (error) => {
+                        console.error('Gagal mendapatkan lokasi:', error);
+                    }
+                );
+            } else {
+                console.error('Geolocation tidak didukung pada peramban ini.');
+            }
+        },
+        getTimeZoneOffset(latitude, longitude) {
+            const timestamp = Date.now() / 1000; // Waktu saat ini dalam detik
+            const apiUrl =
+                `https://api.timezonedb.com/v2.1/get-time-zone?key=1LI0K87DBHTX&format=json&by=position&lat=${latitude}&lng=${longitude}&time=${timestamp}`;
+            const dummyOffset = 7; // Contoh offset untuk WIB
+
+            return dummyOffset; // Kembalikan offset zona waktu
+        },
+        setTimeZoneString(timeZoneOffset) {
+            let timeZoneString = '';
+
+            // Deteksi zona waktu berdasarkan offset
+            if (timeZoneOffset === 7 || timeZoneOffset === -17) {
+                timeZoneString = 'WIB'; // Waktu Indonesia Bagian Barat (WIB)
+            } else if (timeZoneOffset === 8 || timeZoneOffset === -16) {
+                timeZoneString = 'WITA'; // Waktu Indonesia Bagian Tengah (WITA)
+            } else if (timeZoneOffset === 9 || timeZoneOffset === -15) {
+                timeZoneString = 'WIT'; // Waktu Indonesia Bagian Timur (WIT)
+            } else {
+                timeZoneString = 'Waktu lokal tidak diketahui';
+            }
+
+            this.timeZoneString = timeZoneString;
+        },
+
+        formatTime(time) {
+            // Format waktu menjadi 'HH:MM:SS'
+            const date = new Date(`01/01/2000 ${time}`);
+            return date.toTimeString().split(' ')[0];
+        },
+
+        updateTime() {
+            const now = new Date();
+            const hours = `${now.getHours()}`.padStart(2, '0');
+            const minutes = `${now.getMinutes()}`.padStart(2, '0');
+            const seconds = `${now.getSeconds()}`.padStart(2, '0');
+            this.currentTime = `${hours}:${minutes}:${seconds}`;
+
+            // Mengatur formDataPresence.masuk
+            this.formDataPresence.masuk = this.currentTime;
+
+            // Mengatur formDataPresence.tgl_absen
+            const year = now.getFullYear();
+            const month = `${(now.getMonth() + 1)}`.padStart(2, '0'); // Tambah 1 karena Januari dimulai dari 0
+            const date = `${now.getDate()}`.padStart(2, '0');
+            this.formDataPresence.tgl_absen = `${year}-${month}-${date}`;
+
+            // Mengatur salam (greeting)
+            const currentHour = now.getHours();
+            if (currentHour >= 5 && currentHour < 10) {
+                this.greeting = 'Selamat Pagi';
+            } else if (currentHour >= 10 && currentHour < 15) {
+                this.greeting = 'Selamat Siang';
+            } else if (currentHour >= 15 && currentHour < 18) {
+                this.greeting = 'Selamat Sore';
+            } else {
+                this.greeting = 'Selamat Malam';
+            }
+            this.tgl_absen = `${year}-${month}-${date}`;
+        },
+
+        loadData() {
+            this.formDataPresence.tgl_absen = this.formDataPresence.tgl_absen;
+            this.formDataPresence.masuk = this.formatTime(this.currentTime); // Menggunakan formatTime
+            this.formDataPresence.file = this.imageData;
+        },
+        destroyCamera() {
+            const video = this.$refs.videoElement;
+
+            if (this.mediaStream) {
+                const tracks = this.mediaStream.getTracks();
+
+                tracks.forEach(track => {
+                    track.stop(); // Memberhentikan track
+                });
+
+                video.srcObject = null; // Membersihkan objek video
+                this.mediaStream = null; // Menghapus referensi ke objek MediaStream
+            }
+        },
+    },
+    beforeDestroy() {
+        // Panggil metode untuk mematikan kamera sebelum komponen dihancurkan
+        this.destroyCamera();
+        clearInterval(this.intervalId); // Hentikan interval
+    },
+
+    mounted() {
+        const video = this.$refs.videoElement;
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({
+                video: true
+            })
+                .then(stream => {
+                    video.srcObject = stream;
+                    this.mediaStream = stream; // Simpan referensi ke objek MediaStream
+                    this.videoElement = video;
+                    this.validateLocationOnPageLoad();
+                })
+                .catch(error => {
+                    console.error('Could not access the webcam: ', error);
+                });
+        }
+        this.fetchPresensiEmployee()
+        this.updateTime();
+        // Simpan ID interval untuk di-clear nanti
+        this.intervalId = setInterval(this.updateTime, 1000);
+        this.loadData();
+        this.detectUserTimeZone();
+    },
+    watch: {
+        currentTime(newValue) {
+            // Jika tombol belum diklik, formDataPresence.masuk tetap kosong
+            if (!this.isAbsenClicked) {
+                this.formDataPresence.masuk = '';
+            } else {
+                this.formDataPresence.masuk = newValue;
+            }
+        }
+    },
+    created() {
+        this.fetchUserKaryawan();
+    },
+    beforeRouteEnter(to, from, next) {
+        document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+        next();
+    },
+
+    beforeRouteUpdate(to, from, next) {
+        document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+        next();
+    },
+};
+</script>

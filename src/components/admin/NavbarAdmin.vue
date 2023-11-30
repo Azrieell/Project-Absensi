@@ -9,8 +9,8 @@
         </div>
         <div class="flex items-center">
           <div class="text-white mr-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor"
-              class="bi bi-clock mr-2" viewBox="0 0 16 16">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-clock mr-2"
+              viewBox="0 0 16 16">
               <path
                 d="M7.5 1a6.5 6.5 0 0 1 6.473 7.757.5.5 0 0 1-1.002.09 5.5 5.5 0 0 0-10.946 0 .5.5 0 0 1-1.002-.09A6.5 6.5 0 0 1 7.5 1zm0 13a6.5 6.5 0 0 1-6.473-7.757.5.5 0 0 1 1.002-.09 5.5 5.5 0 0 0 10.946 0 .5.5 0 0 1 1.002.09A6.5 6.5 0 0 1 7.5 14zm-1-7a.5.5 0 0 1 .5.5v4.568l2.657 1.513a.5.5 0 0 1-.5.866l-3-1.714a.5.5 0 0 1-.157-.764l.157-.094L8 8.432V3.5a.5.5 0 0 1 1 0z" />
             </svg>
@@ -111,8 +111,15 @@ export default {
       const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userTime = new Date(currentTime.toLocaleString('en-US', { timeZone: userTimeZone }));
 
-      this.currentTimestamp = userTime.toLocaleTimeString();
+      const timeOptions = { hour: 'numeric', minute: 'numeric', second: 'numeric' };
+      const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+
+      const formattedTime = userTime.toLocaleTimeString(undefined, timeOptions);
+      const formattedDate = userTime.toLocaleDateString(undefined, dateOptions);
+
+      this.currentTimestamp = `${formattedDate} | ${formattedTime}`;
     },
+
   },
   computed: {
     ...mapGetters('auth', ['getMe']),

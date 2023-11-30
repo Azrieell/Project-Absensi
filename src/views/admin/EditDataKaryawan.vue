@@ -46,7 +46,7 @@
                       v-model="employeeEditData.kota"
                       class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
                   </div>
-                  <input type="date" id="ttl" required placeholder="Masukkan Tempat Tanggal Lahir"
+                  <input type="date" id="kota" required placeholder="Masukkan Tempat Tanggal Lahir"
                     v-model="employeeEditData.tgl_lahir"
                     class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
                 </div>
@@ -77,9 +77,9 @@
                   v-model="employeeEditData.alamat"
                   class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4"></textarea>
 
-                <label for="default-input" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">NO
+                <label for="default-input" id="no_hp" class="block mb-2 text-lg font-medium text-gray-500 dark:text-white">NO
                   TELEPHONE</label>
-                <input type="text" id="telp" placeholder="+62" v-model="employeeEditData.no_hp" @input="formatPhoneNumber"
+                <input type="text" id="no_hp" placeholder="+62" v-model="employeeEditData.no_hp" @input="formatPhoneNumber"
                   class="bg-white border-gray-500 text-sm focus:ring-gray-600 focus:border-gray-600 block w-full p-2.5 rounded-lg mb-4">
                 <p class="text-red-500 text-xs mt-1">{{ phoneError }}</p>
                 <label for="jabatan" class="block mb-3 text-lg font-medium text-gray-500 dark:text-white">PILIH
@@ -107,6 +107,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import Loading from '../../components/Loading.vue';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -155,16 +156,16 @@ export default {
           }
         });
         formData.append('file', this.employeeEditData.fileObject);
-        this.scrollToTop()
         await this.$store.dispatch('karyawan/updateEmployee', {
           uuid: this.$route.params.uuid,
           employeeEditData: formData,
         });
         this.$router.push({ name: 'DataKaryawan' });
+        this.scrollToTop();
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
-        this.$swal({
+        Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: this.getErrorUpdated || 'Gagal mengedit data karyawan!',

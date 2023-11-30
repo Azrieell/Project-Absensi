@@ -10,8 +10,6 @@
   },
   "dependencies": {
     "axios": "^1.5.1",
-    "esri-leaflet": "^3.0.11",
-    "esri-leaflet-geocoder": "^3.1.4",
     "flowbite": "^1.8.1",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.7.1",
@@ -25,6 +23,8 @@
     "vue-cookie": "^1.1.4",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.2.5",
+    "vue-sweetalert2": "^5.0.5",
+    "vue-web-cam": "^1.9.0",
     "vue3-geolocation": "^1.0.0",
     "vue3-google-map": "^0.18.0",
     "vuex": "^4.0.2",

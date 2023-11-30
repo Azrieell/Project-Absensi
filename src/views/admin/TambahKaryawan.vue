@@ -134,7 +134,6 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import axios from "axios";
 
 export default {
   data() {
@@ -166,6 +165,7 @@ export default {
   },
   computed: {
     ...mapGetters('posisi', ['getPosisi']),
+    ...mapGetters('karyawan', ['getErrorAdd']),
   },
   methods: {
     ...mapActions('posisi', ['fetchPosisi']),
@@ -196,7 +196,11 @@ export default {
       } catch (error) {
         this.isLoading = false;
         console.error(error);
-        // Handle error appropriately, misalnya dengan menampilkan pesan kesalahan
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: this.getErrorAdd || 'Gagal Menambah data karyawan!',
+        });
       }
     },
     onFileChange() {
@@ -265,9 +269,6 @@ export default {
     togglePasswordVisibility() {
       this.passwordVisible = !this.passwordVisible;
     },
-  },
-  beforeMount() {
-    this.fetchPosisi();
   },
   created() {
     this.fetchPosisi();
