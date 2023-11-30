@@ -85,7 +85,6 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { mapActions, mapGetters } from 'vuex';
-import presence from '../../store/modules/admin/presence';
 
 export default {
   data() {

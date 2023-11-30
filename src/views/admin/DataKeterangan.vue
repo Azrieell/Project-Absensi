@@ -9,7 +9,8 @@
           <thead class="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th class="py-2 px-4 border-b">ID</th>
-              <th class="py-2 px-4 border-b">Tanggal</th>
+              <th class="py-2 px-4 border-b">Dari Tanggal</th>
+              <th class="py-2 px-4 border-b">Sampai Tanggal</th>
               <th class="py-2 px-4 border-b">Nama</th>
               <th class="py-2 px-4 border-b">Keterangan</th>
               <th class="py-2 px-4 border-b">Alasan Tidak Hadir</th>
@@ -20,6 +21,7 @@
             <tr v-for="information in paginatedInformation" :key="information.id"
               class="hover:bg-gray-100 dark:hover:bg-gray-600">
               <td class="py-2 px-4 border-b">{{ information.id }}</td>
+              <td class="py-2 px-4 border-b">{{ information.tgl_keterangan }}</td>
               <td class="py-2 px-4 border-b">{{ information.tgl_keterangan }}</td>
               <td class="py-2 px-4 border-b">{{ information['user'].name }}</td>
               <td class="py-2 px-4 border-b">{{ information.keterangan }}</td>
