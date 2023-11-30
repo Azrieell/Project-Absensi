@@ -199,7 +199,7 @@ export default {
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
-          text: this.getErrorAdd || 'Gagal mengedit data karyawan!',
+          text: this.getErrorAdd || 'Gagal Menambah data karyawan!',
         });
       }
     },

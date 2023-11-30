@@ -1,14 +1,13 @@
 <template>
-  <div class="rounded-t-lg w-full p-4 mt-20 sm:mt-52">
+  <div class="rounded-t-lg w-full p-4 -mt-10 sm:mt-5">
     <!-- Button-->
     <div
       class="mx-auto grid p-5 gap-y-3 grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 text-center overflow-hidden shadow-xl rounded-lg mb-10">
       <div class="group cursor duration-200 hover:-translate-y-4">
-        <button v-if="!isAbsenMasuk && !isAbsenPulang" :disabled="presensiEmployee.pulang !== 'Belum ada data'"
-          @click="absen('masuk')" class="r-500 mb-5 mt-6">
+        <button v-if="presensiEmployee.masuk === 'Belum ada data' || presensiEmployee.pulang === 'Belum ada data'"
+          @click="absen('masuk')" class="r-500 mb-4 mt-6">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            :class="{ 'text-gray-500': presensiEmployee.pulang !== 'Belum ada data' }"
-            class="bi bi-clipboard-data w-11 h-10 cursor-no-drop text-rose-600 " viewBox="0 0 16 16">
+            class="bi bi-clipboard-data w-11 h-11 cursor-no-drop text-rose-600 " viewBox="0 0 16 16">
             <path
               d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
             <path
@@ -18,12 +17,10 @@
           </svg>
           <br>
           <span class="text-base font-bold">Absen</span>
-          <p class="text-xs">Masuk</p>
         </button>
-        <button v-else-if="isAbsenMasuk == true && !isAbsenPulang" :disabled="presensiEmployee.masuk === 'Belum ada data'"
-          @click="absen('pulang')" class="r-500 mb-5 mt-6">
+        <button v-else-if="presensiEmployee.pulang === null" @click="absen('pulang')" class="r-500 mb-4 mt-6">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            class="bi bi-clipboard-data w-11 h-10 text-rose-600 " viewBox="0 0 16 16">
+            class="bi bi-clipboard-data w-11 h-11 text-rose-600 " viewBox="0 0 16 16">
             <path
               d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
             <path
@@ -33,11 +30,10 @@
           </svg>
           <br>
           <span class="text-base font-bold">Absen</span>
-          <p class="text-xs">Pulang</p>
         </button>
-        <button v-else class="r-500 mb-5 mt-6" disabled>
+        <button v-else class="r-500 mb-4 mt-6" disabled>
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            class="bi bi-clipboard-data w-11 h-10 text-gray-600 " viewBox="0 0 16 16">
+            class="bi bi-clipboard-data w-11 h-11 text-gray-600 " viewBox="0 0 16 16">
             <path
               d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
             <path
@@ -45,6 +41,8 @@
             <path
               d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
           </svg>
+          <br>
+          <span class="text-base font-bold">Absen</span>
         </button>
       </div>
       <div class="group cursor duration-200 hover:-translate-y-4">
@@ -356,16 +354,6 @@ export default {
         pulang: 'Belum ada data',
       };
     },
-
-    isAbsenMasuk() {
-      console.log('Checking Absen Masuk:', this.getpresensiemployee);
-      return this.getpresensiemployee.some(item => item.type === 'masuk');
-    },
-    isAbsenPulang() {
-      console.log('Checking Absen Pulang:', this.getpresensiemployee);
-      return this.getpresensiemployee.some(item => item.type === 'pulang');
-    },
-
   },
   methods: {
     ...mapActions('informationemployee', ['fetchInformation']),

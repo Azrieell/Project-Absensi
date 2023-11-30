@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center sm:mt-52 mt-40 mb-10">
+  <div class="fullscreen-container flex items-center mb-10">
     <div
       class="container mx-auto p-9 bg-white max-w-sm rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition duration-300">
       <div class="flex justify-between items-center">
@@ -12,9 +12,8 @@
           <p class="ml-12 text-m">{{ formDataPresenceOut.tgl_absen }}</p>
         </div>
       </div>
-      <br />
       <div v-if="showCamera">
-        <video ref="videoElement" autoplay></video>
+        <video ref="videoElement" autoplay class="rounded-xl mt-2"></video>
         <button @click="validateLocationAndTakeSnapshot"
           class="text-white items-center mt-5 mx-20 text-md w-50 font-semibold bg-green-400 py-2 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-500 transform-gpu hover:scale-110">
           <span>Absen Pulang</span>
@@ -26,7 +25,19 @@
     </div>
   </div>
 </template>
-
+<style>
+.fullscreen-container {
+  width: 100vw;
+  /* Lebar 100% dari viewport width */
+  height: 80vh;
+  /* Tinggi 100% dari viewport height */
+  /* Tetap di posisi saat scroll */
+  top: 0;
+  left: 0;
+  z-index: 1;
+  /* Atur z-index sesuai kebutuhan */
+}
+</style>
 <script>
 import axios from 'axios'; // Import axios here
 import { mapGetters, mapActions } from 'vuex';
@@ -53,15 +64,53 @@ export default {
       intervalId: null, // Menyimpan ID interval untuk di-clear nanti
       timeZoneString: '', // Menyimpan singkatan zona waktu
       mediaStream: null,
+      tgl_absen: '',
     };
   },
   computed: {
     ...mapGetters('userkaryawan', ['getUserKaryawan']),
+    ...mapGetters('informationemployee', ['getInformation', 'getInformationLength']),
+    ...mapGetters('presensi', ['getpresensiemployee']),
+    getpresensiemployee() {
+      return this.$store.getters['presensi/getpresensiemployee'] || [];
+    },
+    presensiEmployee() {
+      const presensiData = this.getpresensiemployee;
+
+      console.log('presensiData:', presensiData);
+      console.log('today:', this.tgl_absen);
+
+      // Lakukan filter data berdasarkan tanggal terbaru/hari ini
+      const filteredData = presensiData.filter(item => {
+        return item.tgl_absen === this.tgl_absen;
+      });
+      console.log('filteredData:', filteredData);
+
+      if (filteredData.length > 0) {
+        const firstData = filteredData[0];
+        if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
+          // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
+          console.log('Jam Masuk:', firstData.masuk);
+          console.log('Jam Pulang:', firstData.pulang);
+          // ... (lanjutan logika Anda)
+          return firstData;
+        }
+      }
+
+      return {
+        masuk: 'Belum ada data',
+        pulang: 'Belum ada data',
+      };
+    },
     employee() {
       return this.getUserKaryawan;
     },
+    isCheckInDone() {
+      return this.presensiEmployee.pulang !== null;
+    },
   },
   methods: {
+    ...mapActions('presensi', ['fetchPresensiEmployee']),
     ...mapActions('userkaryawan', ['fetchUserKaryawan']),
     async takeSnapshot() {
       const video = this.$refs.videoElement;
@@ -98,25 +147,36 @@ export default {
         await this.$store.dispatch('company/fetchCompany');
         const companyData = this.$store.getters['company/getCompany'];
 
-        if (companyData && companyData.status) {
-          const locationValid = await this.validateLocation(companyData);
-          if (locationValid) {
-            // Validasi lokasi berhasil, lanjutkan dengan mengambil snapshot
-            await this.takeSnapshot();
+        if (!this.isCheckInDone) {
+          if (companyData && companyData.status) {
+            const locationValid = await this.validateLocation(companyData);
+            if (locationValid) {
+              // Validasi lokasi berhasil, lanjutkan dengan mengambil snapshot
+              await this.takeSnapshot();
+            } else {
+              // Lokasi tidak valid, tampilkan pesan kesalahan
+              Swal.fire({
+                icon: 'error',
+                title: 'Gagal Absen',
+                text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.',
+              });
+            }
           } else {
-            // Lokasi tidak valid, tampilkan pesan kesalahan
+            // Data perusahaan tidak valid atau perusahaan tidak beroperasi
             Swal.fire({
               icon: 'error',
               title: 'Gagal Absen',
-              text: 'Anda tidak berada di lokasi yang diizinkan untuk absen.',
+              text: `${companyData.nama} tutup! Tidak memungkinkan absensi saat ini.`,
             });
           }
         } else {
-          // Data perusahaan tidak valid atau perusahaan tidak beroperasi
           Swal.fire({
-            icon: 'error',
-            title: 'Gagal Absen',
-            text: `${companyData.nama} tutup! Tidak memungkinkan absensi saat ini.`,
+            icon: 'info',
+            title: 'Info',
+            text: 'Anda sudah melakukan absen Pulang.',
+          });
+          this.$router.push({
+            name: 'HomeKaryawan',
           });
         }
       } catch (error) {
@@ -350,6 +410,7 @@ export default {
       } else {
         this.greeting = 'Selamat Malam';
       }
+      this.tgl_absen = `${year}-${month}-${date}`;
     },
 
     loadData() {
@@ -394,6 +455,7 @@ export default {
     this.intervalId = setInterval(this.updateTime, 1000);
     this.loadData();
     this.detectUserTimeZone();
+    this.fetchPresensiEmployee();
   },
   watch: {
     currentTime(newValue) {

@@ -1,16 +1,14 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-50">
-
     <div class="max-w-sm w-full">
-      <div class="p-10" style="margin-left: 118px ;
-    margin-right: 112px;">
-      </div>
+      <div class="p-10" style="margin-left: 118px; margin-right: 112px;"></div>
       <div class="border border-collapse border-gray-400 shadow-md rounded-3xl p-8 ">
         <div class="text-center">
           <i class="fas fa-user-circle text-4xl text-indigo-600"></i>
         </div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
           Login Absensi
+          <p class="text-lg">{{ getCompany.nama }}</p>
         </h2>
         <form class="mt-8 space-y-6" @submit.prevent="performLogin">
           <input type="hidden" name="remember" value="true">
@@ -38,12 +36,14 @@
               </label>
             </div>
 
+            <!-- Tautan Lupa Password -->
             <div class="text-sm">
-              <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+              <router-link to="/reset-password" class="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
-              </a>
+              </router-link>
             </div>
           </div>
+
           <div>
             <button type="submit"
               class="group relative w-full flex justify-center py-2 px-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -75,7 +75,6 @@ import {
 } from 'vuex';
 
 export default {
-
   data() {
     return {
       dataLogin: {
@@ -87,9 +86,11 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['loginError', 'isAuthenticated', 'isError']),
+    ...mapGetters('company',['getCompany'])
   },
   methods: {
     ...mapActions('auth', ['login']),
+    ...mapActions('company', ['fetchCompany']),
     async performLogin() {
       this.isLoading = true
       const credentials = {
@@ -107,7 +108,7 @@ export default {
       } else {
         // handle login error
         if (this.loginError) {
-
+          // Handle login error logic here
         } else {
           Swal.fire({
             icon: 'error',
@@ -116,16 +117,16 @@ export default {
           });
           this.isLoading = false
         }
-
       }
-
     },
+  },
+  mounted(){
+    this.fetchCompany();
   },
   beforeRouteEnter(to, from, next) {
     document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
     next();
   },
-
   beforeRouteUpdate(to, from, next) {
     document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
     next();
