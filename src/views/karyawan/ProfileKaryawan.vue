@@ -6,7 +6,7 @@
         </div>
         <div class="flex flex-col items-center -mt-20">
           <img :src="employee.url || 'https://i.pinimg.com/originals/c6/e9/ed/c6e9ed167165ca99c4d428426e256fae.png'"
-            class="w-14 h-14 sm:w-36 sm:h-36 border-4 border-gray-800 rounded-full">
+            class="w-52 h-52 border-4 border-gray-800 rounded-full">
           <div class="flex items-center space-x-2 mt-2">
             <p class="text-2xl"> {{ employee.nama }} </p>
           </div>

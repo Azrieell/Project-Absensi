@@ -76,7 +76,7 @@
                 </router-link>
               </a>
               <div class="py-1 px-3 bg-gray-600 rounded text-gray-300 flex items-center justify-center text-xs">{{
-                presence.length }}
+                presence.length || 0 }}
               </div>
             </li>
             <li class="flex w-full justify-between text-white hover:text-gray-300 cursor-pointer items-center mb-8">

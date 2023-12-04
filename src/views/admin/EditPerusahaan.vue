@@ -67,7 +67,7 @@
               </label>
             </div>
           </div>
-          <button type="submit" @click="scrollToTop"
+          <button type="submit"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             <span v-if="isLoading">Menyimpan...</span>
             <span v-else>Simpan</span>
@@ -129,6 +129,7 @@ export default {
         await this.$store.dispatch('company/updateCompany', this.companyData).then(() => {
           this.$router.push({ name: 'Perusahaan' });
         });
+        this.scrollToTop();
         this.isLoading = false
       } catch (error) {
         this.isLoading = false

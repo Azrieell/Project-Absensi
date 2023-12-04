@@ -119,7 +119,7 @@
                       {{ jabatan.jabatan }}</option>
                   </select>
                 </div>
-                <button type="submit" @click="scrollToTop"
+                <button type="submit"
                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                   <span v-if="isLoading">Menyimpan...</span>
                   <span v-else>Simpan</span>
@@ -190,17 +190,12 @@ export default {
 
         // Kirim formulir ke backend dengan metode POST
         await this.$store.dispatch('karyawan/createEmployee', formData); // Menggunakan axios secara langsung, pastikan Anda telah mengimpor axios
-
+        this.scrollToTop()
         this.$router.push({ name: 'DataKaryawan' });
         this.isLoading = false;
       } catch (error) {
         this.isLoading = false;
         console.error(error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: this.getErrorAdd || 'Gagal Menambah data karyawan!',
-        });
       }
     },
     onFileChange() {

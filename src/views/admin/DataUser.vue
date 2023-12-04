@@ -2,7 +2,7 @@
   <div class="container">
     <div
       class="max-w-full max-h-full p-8 bg-white border border-gray-400 rounded-xl shadow dark:bg-gray-800 dark:border-gray-700 mt-12">
-      <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Akun</b></h1>
+      <h1 style="font-family: 'Fredoka', sans-serif; font-size: 15px;"><b>Tambah Akun Admin</b></h1>
       <div class="pt-4">
         <form @submit.prevent="submituser">
           <div class="mb-6 pt-2">
@@ -203,7 +203,7 @@ export default {
     async deleteUser(uuid) {
       try {
         await this.$store.dispatch('user/deleteUser', uuid);
-        this.fetchUser();
+        this.fetchUser(); 
       } catch (error) {
         console.error('Error deleting user', error);
         Swal.fire({

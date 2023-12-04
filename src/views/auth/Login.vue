@@ -38,7 +38,7 @@
 
             <!-- Tautan Lupa Password -->
             <div class="text-sm">
-              <router-link to="/reset-password" class="font-medium text-indigo-600 hover:text-indigo-500">
+              <router-link to="/auth/reset-password" class="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
               </router-link>
             </div>
@@ -67,12 +67,8 @@
     </div>
   </div>
 </template>
-
 <script>
-import {
-  mapActions,
-  mapGetters
-} from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   data() {
@@ -86,41 +82,48 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['loginError', 'isAuthenticated', 'isError']),
-    ...mapGetters('company',['getCompany'])
+    ...mapGetters('company', ['getCompany'])
   },
   methods: {
     ...mapActions('auth', ['login']),
     ...mapActions('company', ['fetchCompany']),
     async performLogin() {
-      this.isLoading = true
+      this.isLoading = true;
       const credentials = {
         email: this.dataLogin.email,
         password: this.dataLogin.password,
       };
 
-      const success = await this.login(credentials);
-      const role = localStorage.getItem('role');
-      this.isLoading = false
-      if (success && this.isAuthenticated && role === 'admin') {
-        this.$router.push({ name: 'HomeAdmin' });
-      } else if (success && this.isAuthenticated && role === 'user') {
-        this.$router.push({ name: 'HomeKaryawan' });
-      } else {
-        // handle login error
-        if (this.loginError) {
-          // Handle login error logic here
+      try {
+        const success = await this.login(credentials);
+        const role = localStorage.getItem('role');
+        this.isLoading = false;
+
+        if (success && this.isAuthenticated) {
+          if (role === 'admin') {
+            this.$router.push({ name: 'HomeAdmin' });
+          } else if (role === 'user') {
+            this.$router.push({ name: 'HomeKaryawan' });
+          }
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: this.isError || 'Error',
-          });
-          this.isLoading = false
+          // handle login error
+          if (this.loginError) {
+            // Handle login error logic here
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: this.isError || 'Error',
+            });
+          }
         }
+      } catch (error) {
+        console.error('Error during login:', error);
+        this.isLoading = false;
       }
     },
   },
-  mounted(){
+  mounted() {
     this.fetchCompany();
   },
   beforeRouteEnter(to, from, next) {

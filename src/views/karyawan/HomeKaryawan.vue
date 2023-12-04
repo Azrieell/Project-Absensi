@@ -1,42 +1,49 @@
 <template>
-  <div class="rounded-t-lg w-full p-4 -mt-10 sm:mt-5">
+  <div class="rounded-t-lg w-full p-4 -mt-5 sm:mt-5">
     <!-- Button-->
-    <div
-      class="mx-auto grid p-5 gap-y-3 grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 text-center overflow-hidden shadow-xl rounded-lg mb-10">
+      <div
+        class="mx-auto grid p-5 gap-y-3 grid-cols-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 text-center overflow-hidden shadow-xl rounded-lg mb-10">
       <div class="group cursor duration-200 hover:-translate-y-4">
-        <router-link v-if="isAbsenMasuk && !isAbsenPulang" to="/karyawan/absenpulang">
-          <button :disabled="presensiEmployee.pulang !== 'Belum ada data'" class="r-500 mb-5 mt-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-            :class="{ 'text-gray-500': presensiEmployee.pulang !== 'Belum ada data' }"
-              class="bi bi-clipboard-data w-11 h-10 cursor-no-drop text-rose-600 " viewBox="0 0 16 16">
-              <path
-                d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
-              <path
-                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
-              <path
-                d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
-            </svg>
-            <br>
-            <span class="text-base font-bold">Absen</span>
-            <p class="text-xs">Pulang</p>
-          </button>
-        </router-link>
-        <router-link v-else to="/karyawan/absenkaryawan">
-          <button class="r-500 mb-5 mt-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-              class="bi bi-clipboard-data w-11 h-10 text-rose-600 " viewBox="0 0 16 16">
-              <path
-                d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
-              <path
-                d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
-              <path
-                d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
-            </svg>
-            <br>
-            <span class="text-base font-bold">Absen</span>
-            <p class="text-xs">Masuk</p>
-          </button>
-        </router-link>
+        <button v-if="presensiEmployee.masuk === 'Belum ada data' || presensiEmployee.pulang === 'Belum ada data'"
+          @click="absen('masuk')" class="r-500 mb-4 mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+            class="bi bi-clipboard-data w-11 h-11 cursor-no-drop text-rose-600 " viewBox="0 0 16 16">
+            <path
+              d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
+            <path
+              d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+            <path
+              d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+          </svg>
+          <br>
+          <span class="text-base font-bold">Absen</span>
+        </button>
+        <button v-else-if="presensiEmployee.pulang === null" @click="absen('pulang')" class="r-500 mb-4 mt-6">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+            class="bi bi-clipboard-data w-11 h-11 text-rose-600 " viewBox="0 0 16 16">
+            <path
+              d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
+            <path
+              d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+            <path
+              d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+          </svg>
+          <br>
+          <span class="text-base font-bold">Absen</span>
+        </button>
+        <button v-else class="r-500 mb-4 mt-6" disabled>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+            class="bi bi-clipboard-data w-11 h-11 text-gray-600 " viewBox="0 0 16 16">
+            <path
+              d="M4 11a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm6-4a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zM7 9a1 1 0 0 1 2 0v3a1 1 0 1 1-2 0z" />
+            <path
+              d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
+            <path
+              d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
+          </svg>
+          <br>
+          <span class="text-base font-bold">Absen</span>
+        </button>
       </div>
       <div class="group cursor duration-200 hover:-translate-y-4">
         <div>
@@ -76,22 +83,21 @@
 
 
     <!-- Jadwal Kedatangan -->
-    <div v-if="presensiEmployee.masuk !== 'Belum ada data' || presensiEmployee.pulang !== 'Belum ada data'"
-      class="container">
-      <div class="flex justify-center gap-5">
+    <div v-if="presensiEmployee.masuk !== 'Belum ada data' || presensiEmployee.pulang !== 'Belum ada data'" class="container mx-auto">
+  <div class="flex flex-wrap justify-center gap-5">
         <div v-if="presensiEmployee.masuk !== 'Belum ada data'"
-          class="bg-rose-500 max-w-xs rounded-xl overflow-hidden shadow-xl">
+        class="w-full md:w-1/2 lg:w-1/3 bg-rose-500 max-w-xs rounded-xl overflow-hidden shadow-xl text-center">
           <div class="px-6 py-4">
-            <div class="font-bold text-xl mb-2 text-center text-white w-40">Jam Masuk</div>
+            <span class="font-bold text-xl mb-2 text-white w-40">Jam Masuk</span>
             <p class="text-white text-center text-xl">
               {{ presensiEmployee.masuk }}
             </p>
           </div>
         </div>
         <div v-if="presensiEmployee.pulang !== 'Belum ada data'"
-          class="bg-sky-500 max-w-xs rounded-xl overflow-hidden shadow-xl">
+        class="w-full md:w-1/2 lg:w-1/3 bg-sky-500 max-w-xs rounded-xl overflow-hidden shadow-xl text-center">
           <div class="px-6 py-4">
-            <div class="font-bold text-xl mb-2 text-center text-white w-40">Jam Pulang</div>
+            <span class="font-bold text-xl mb-5  text-white w-40">Jam Pulang</span>
             <p class="text-white text-center text-xl">
               {{ presensiEmployee.pulang || 'belum Pulang' }}
             </p>
@@ -111,7 +117,7 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Kehadiran</div>
           <p class="text-gray-700 text-center">
-            {{ getInformationLength.length }}
+            {{ getpresensiemployee ? getpresensiemployee.length : 0 }}
           </p>
         </div>
       </div>
@@ -119,7 +125,7 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Sakit</div>
           <p class="text-gray-700 text-base text-center">
-
+            {{ getInformation && getInformation['informationSick'] ? getInformation['informationSick'].length : 0 }}
           </p>
         </div>
       </div>
@@ -128,7 +134,8 @@
         <div class="px-6 py-4">
           <div class="font-bold text-xl mb-2 text-center">Izin</div>
           <p class="text-gray-700 text-center">
-
+            {{ getInformation && getInformation['informationPermission'] ? getInformation['informationPermission'].length
+              : 0 }}
           </p>
         </div>
       </div>
@@ -291,20 +298,20 @@
   </div>
 </template>
 <style>
-  .hide-scroll-bar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+.hide-scroll-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 
-  .hide-scroll-bar::-webkit-scrollbar {
-    display: none;
-  }
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
 </style>
 <script>
-  import {
-    mapActions,
-    mapGetters
-  } from 'vuex';
+import {
+  mapActions,
+  mapGetters
+} from 'vuex';
 
 export default {
   data() {
@@ -315,46 +322,51 @@ export default {
   computed: {
     ...mapGetters('informationemployee', ['getInformation', 'getInformationLength']),
     ...mapGetters('presensi', ['getpresensiemployee']),
+    getpresensiemployee() {
+      return this.$store.getters['presensi/getpresensiemployee'] || [];
+    },
     presensiEmployee() {
       const presensiData = this.getpresensiemployee;
 
-        console.log('presensiData:', presensiData);
-        console.log('today:', this.tgl_absen);
+      console.log('presensiData:', presensiData);
+      console.log('today:', this.tgl_absen);
 
-        // Lakukan filter data berdasarkan tanggal terbaru/hari ini
-        const filteredData = presensiData.filter(item => {
-          return item.tgl_absen === this.tgl_absen;
-        });
-        console.log('filteredData:', filteredData);
+      // Lakukan filter data berdasarkan tanggal terbaru/hari ini
+      const filteredData = presensiData.filter(item => {
+        return item.tgl_absen === this.tgl_absen;
+      });
+      console.log('filteredData:', filteredData);
 
-        if (filteredData.length > 0) {
-          const firstData = filteredData[0];
-          if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
-            // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
-            console.log('Jam Masuk:', firstData.masuk);
-            console.log('Jam Pulang:', firstData.pulang);
-            // ... (lanjutan logika Anda)
-            return firstData;
-          }
+      if (filteredData.length > 0) {
+        const firstData = filteredData[0];
+        if (firstData.masuk !== undefined && firstData.pulang !== undefined) {
+          // Lakukan sesuatu dengan properti 'masuk' dan 'pulang'
+          console.log('Jam Masuk:', firstData.masuk);
+          console.log('Jam Pulang:', firstData.pulang);
+          // ... (lanjutan logika Anda)
+          return firstData;
         }
+      }
 
       return {
         masuk: 'Belum ada data',
         pulang: 'Belum ada data',
       };
     },
-
-    isAbsenMasuk() {
-      return this.getpresensiemployee.length > 0;
-    },
-    isAbsenPulang() {
-      return this.getpresensiemployee.filter(item => item.type === 'AbsenPulang').length > 0;
-    },
-
   },
   methods: {
     ...mapActions('informationemployee', ['fetchInformation']),
     ...mapActions('presensi', ['fetchPresensiEmployee']),
+    absen(type) {
+      // Implementasikan logika untuk melakukan absen
+      if (type === 'masuk') {
+        // Lakukan sesuatu untuk absen masuk
+        this.$router.push('/karyawan/absenkaryawan');
+      } else if (type === 'pulang') {
+        // Lakukan sesuatu untuk absen pulang
+        this.$router.push('/karyawan/absenpulang');
+      }
+    },
     switchPage(routeName) {
       this.$router.push({
         name: routeName
@@ -375,14 +387,34 @@ export default {
       }
     },
   },
+  async loadData() {
+    try {
+      this.updateTime(); // Memanggil updateTime sebelum mengambil data
+      await this.fetchPresensiEmployee();
+    } catch (error) {
+      console.error('Error fetching presensi employee data:', error);
+    }
+  },
+
   created() {
     this.fetchInformation(); // Hapus jika tidak diperlukan
+    this.updateTime(); // Memanggil updateTime untuk pertama kali
     this.loadData(); // Memanggil loadData
   },
+
   mounted() {
     this.fetchInformation(); // Hapus jika tidak diperlukan
     this.loadData(); // Memanggil loadData
-    this.updateTime();
-  }
+    this.updateTime(); // Memanggil updateTime pada saat mounted
+  },
+  beforeRouteEnter(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    document.title = 'Absensi online - ' + (to.meta.title || 'Teks Default');
+    next();
+  },
 };
 </script>

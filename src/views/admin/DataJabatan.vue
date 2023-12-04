@@ -72,6 +72,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
@@ -102,15 +103,16 @@ export default {
         this.isLoading = true;
         await this.$store.dispatch('posisi/AddPosisi', this.Dataposisi);
         await this.fetchPosisi();
+        this.resetForm()
         this.isLoading = false;
-        this.$swal(
+        Swal.fire(
           'Sukses!',
           'Berhasil Menambah jabatan ' + this.Dataposisi.jabatan,
           'success'
         );
       } catch (error) {
         this.isLoading = false;
-        this.$swal({
+        Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: 'Terjadi kesalahan!',
@@ -125,6 +127,11 @@ export default {
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
+      }
+    },
+    resetForm() {
+      this.Dataposisi = {
+        jabatan: ''
       }
     },
   },

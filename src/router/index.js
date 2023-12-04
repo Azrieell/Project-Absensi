@@ -1,6 +1,7 @@
 import { createWebHistory, createRouter } from "vue-router";
 import AdminLayout from "../layouts/AdminLayout.vue";
 import Login from "../views/auth/Login.vue";
+import ResetPassword from "../views/auth/ResetPassword.vue";
 import HomeAdmin from "../views/admin/HomeAdmin.vue";
 import DataKaryawan from "../views/admin/DataKaryawan.vue";
 import SingleDataKaryawan from "../views/admin/SingleDataKaryawan.vue";
@@ -52,7 +53,33 @@ const routes = [
       }
     },
   },
-
+  {
+    path: "/auth/reset-password",
+    name: "ResetPassword",
+    component: ResetPassword,
+    meta: {
+      title: "Reset Password",
+    },
+    // beforeEnter: (to, from, next) => {
+    //   const isAuthenticated = store.getters["auth/isAuthenticated"];
+    //   if (isAuthenticated) {
+    //     // Jika pengguna sudah login, arahkan ke halaman yang sesuai dengan rolenya
+    //     const role = localStorage.getItem("role");
+    //     if (role === "admin") {
+    //       next("/admin/home");
+    //     } else if (role === "user") {
+    //       next("/karyawan/home");
+    //     } else {
+    //       next("/");
+    //     }
+    //   } else {
+    //     // Menampilkan halaman loading selama 1 detik sebelum masuk ke komponen
+    //     setTimeout(() => {
+    //       next();
+    //     }, 1000);
+    //   }
+    // },
+  },
   {
     path: "/admin",
     component: AdminLayout,
@@ -247,7 +274,6 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const isAuthenticated = store.getters["auth/isAuthenticated"];
 
-  // Pastikan status otentikasi dan role diperbarui
   if (!isAuthenticated) {
     await store.dispatch("auth/checkTokenExpiration");
   }
@@ -255,26 +281,19 @@ router.beforeEach(async (to, from, next) => {
   const role = localStorage.getItem("role");
 
   if (to.meta.requiresLogin && !isAuthenticated) {
-    // Jika halaman membutuhkan login dan pengguna belum login, arahkan ke halaman login
+    // Redirect to login if the route requires login and the user is not authenticated
     next("/");
-  } else if (to.meta.requiresGuest && isAuthenticated) {
-    // Jika halaman membutuhkan tamu dan pengguna sudah login, arahkan sesuai rolenya
-    if (role === "admin") {
-      next("/admin/home");
-    } else if (role === "user") {
-      next("/karyawan/home");
-    } else {
-      next("/");
-    }
   } else if (to.meta.requiresAdmin && role !== "admin") {
-    // Jika halaman membutuhkan admin dan pengguna bukan admin
-    next("/");
+    // Redirect to home if the route requires admin but the user is not an admin
+    next("/"); 
   } else if (to.meta.requiresUser && role !== "user") {
-    // Jika halaman membutuhkan user dan pengguna bukan user
-    next("/");
+    // Redirect to home if the route requires user but the user is not a user
+    next("/"); 
   } else {
-    next(); // Melanjutkan ke halaman yang diminta
+    // Continue with navigation
+    next(); 
   }
 });
+
 
 export default router;

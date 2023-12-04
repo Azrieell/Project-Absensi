@@ -34,8 +34,9 @@ const user = {
         commit("SET_SINGLE_ID", response.data);
         return response.data;
       } catch (error) {
-        alert(error.message);
-        return false;
+        console.error("Error fetching user by ID:", error);
+        commit("SET_SINGLE_ID", null); // Setel menjadi null jika user tidak ditemukan
+        return null;
       }
     },
     async AddUser({ commit }, userData) {
@@ -51,22 +52,60 @@ const user = {
     async updateUser({ commit }, { uuid, userDataEdit }) {
       try {
         const response = await axios.patch(`/users/update/${uuid}`, userDataEdit);
+        
+        // Tambahkan log untuk melihat respons dari server
+        console.log('Server Response:', response.data);
+  
         commit("SET_UPDATE_USER", response.data);
         return response.data;
       } catch (error) {
+        // Tambahkan log untuk melihat kesalahan saat update
+        console.error("Error updating user:", error);
+  
         const updateError = error.response.data.msg;
         commit("ERROR_UPDATE_USER", updateError);
-        return false;
+        throw error;
       }
     },
-    async deleteUser({ dispatch }, uuid) {
-      try {
-        await axios.delete(`/users/destroy/${uuid}`);
-        dispatch("fetchUser");
-      } catch (error) {
-        console.error("Error deleting user:", error);
+    async deleteUser({ commit, dispatch }, uuid) {
+      // Tampilkan konfirmasi SweetAlert
+      const confirmationResult = await Swal.fire({
+        title: "Anda yakin?",
+        text: "Ingin menghapus User!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus!"
+      });
+
+      // Jika pengguna mengonfirmasi penghapusan
+      if (confirmationResult.isConfirmed) {
+        try {
+          // Lakukan penghapusan
+          await axios.delete(`/users/destroy/${uuid}`);
+          
+          // Tampilkan SweetAlert sukses
+          Swal.fire({
+            title: "Terhapus!",
+            text: "User Telah terhapus.",
+            icon: "success"
+          });
+
+          // Perbarui daftar pengguna setelah penghapusan
+          dispatch("fetchUser");
+        } catch (error) {
+          console.error("Error deleting jabatan:", error);
+
+          // Tampilkan SweetAlert kesalahan jika penghapusan gagal
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Error Menghapus user!",
+          });
+        }
       }
-    },
+    }
   },
   mutations: {
     ERROR_UPDATE_USER(state, error) {
